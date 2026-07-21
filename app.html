@@ -6360,5 +6360,15 @@ function renderMarkdown(text) {
     .replace(/¢(\d)/g, '¢$1');
 }
 </script>
-</body>
-</html>
+
+<script>
+// Asignar logo de empresa inmediatamente (COMPANY_LOGOS ya está definido
+// y el DOM de #headerLogo existe porque se parseó antes que este script)
+(function() {
+  var el = document.getElementById('headerLogo');
+  if (el && window.COMPANY_LOGOS && window.CO_PARAM) {
+    el.src = COMPANY_LOGOS[CO_PARAM] || '';
+    el.style.display = COMPANY_LOGOS[CO_PARAM] ? '' : 'none';
+  }
+})();
+</script>
