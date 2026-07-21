@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cálculo de Metas Q3 2026 — COFERSA</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -21,9 +21,9 @@
   --text: #1a2634;
   --text2: #4a6080;
   --text3: #8fa3c0;
-  --font-display: 'Rajdhani', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  --font-display: 'Myriad Pro', 'MyriadPro-Regular', 'Myriad Pro Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Myriad Pro', 'MyriadPro-Regular', 'Myriad Pro Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Myriad Pro', 'MyriadPro-Regular', 'Myriad Pro Regular', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   --radius: 10px;
   --shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
@@ -2104,7 +2104,7 @@ function renderTrendChart(filtVendProj) {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { labels: { color: '#4a6080', font: { family: 'DM Sans', size: 12 } } },
+        legend: { labels: { color: '#4a6080', font: { family: 'Myriad Pro', size: 12 } } },
         tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } }
       },
       scales: {
@@ -2132,7 +2132,7 @@ function renderDonut(filtPortProj) {
     options: {
       responsive: true, cutout: '62%',
       plugins: {
-        legend: { position: 'bottom', labels: { color: '#4a6080', font: { family: 'DM Sans', size: 11 }, padding: 14 } },
+        legend: { position: 'bottom', labels: { color: '#4a6080', font: { family: 'Myriad Pro', size: 11 }, padding: 14 } },
         tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${ctx.label}: ${fmt(ctx.parsed)} (${((ctx.parsed / total)*100).toFixed(1)}%)` } }
       }
     }
@@ -2203,7 +2203,7 @@ function renderVendTable(vendProj) {
     options: {
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#4a6080', font: { family: 'DM Sans', size: 12 } } },
+        legend: { labels: { color: '#4a6080', font: { family: 'Myriad Pro', size: 12 } } },
         tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } }
       },
       scales: {
@@ -2287,7 +2287,7 @@ function renderMarcaTable(marcaProj) {
     options: {
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#4a6080', font:{family:'DM Sans',size:12} } },
+        legend: { labels: { color: '#4a6080', font:{family:'Myriad Pro',size:12} } },
         tooltip: { ...chartTooltip(), callbacks:{label: ctx=>` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`} }
       },
       scales: {
@@ -2406,7 +2406,7 @@ function renderPortChart(portProj) {
         y: { stacked:true, ticks:{color:'#4a6080',callback:v=>fmtShort(v)}, grid:{color:'#e8eef6'} }
       },
       plugins: {
-        legend: { labels:{color:'#4a6080',font:{family:'DM Sans',size:12}} },
+        legend: { labels:{color:'#4a6080',font:{family:'Myriad Pro',size:12}} },
         tooltip: { ...chartTooltip(), callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`} }
       }
     }
