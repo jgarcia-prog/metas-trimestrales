@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cálculo de Metas Q3 2026 — COFERSA</title>
+<title>Cálculo de Metas Trimestrales — COFERSA</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -660,7 +660,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
           <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🤖</div>
           <div>
             <div style="font-family:var(--font-display);font-size:17px;font-weight:700">Análisis Inteligente de Ventas</div>
-            <div style="font-size:11px;color:var(--text2);margin-top:2px">Impulsado por Claude · COFERSA Q3 2026</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px">Impulsado por Claude · COFERSA</div>
           </div>
         </div>
         <button onclick="closeAIAnalysis()" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;padding:4px 8px;border-radius:6px;line-height:1" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text2)'">✕</button>
@@ -759,7 +759,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div id="histMonthlyBreakdown" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px"></div>
     </div>
     <div class="kpi-card gold">
-      <div class="kpi-label">Presupuesto Q3 2026</div>
+      <div class="kpi-label">Presupuesto Trimestral</div>
       <div class="kpi-value" id="kpi_budget">—</div>
       <div class="kpi-sub">Meta estratégica</div>
       <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
@@ -769,7 +769,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div id="budgetMonthlyBreakdown" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px"></div>
     </div>
     <div class="kpi-card blue">
-      <div class="kpi-label">Meta Q3 2026</div>
+      <div class="kpi-label">Meta Trimestral</div>
       <div class="kpi-value" id="kpi_proj">—</div>
       <div class="kpi-sub">Jul + Ago + Sep 2026</div>
       <div id="kpi_proj_badge" class="kpi-badge" style="margin-top:8px"></div>
@@ -792,7 +792,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">Meta por Zona de Venta — Q3 2026</div>
+        <div class="card-title">Meta por Zona de Venta</div>
         <div class="card-sub">Con factores de ajuste aplicados</div>
       </div>
       <input type="text" class="search-input" placeholder="🔍 Buscar vendedor..." id="searchVend" oninput="filterTable('vendTable',this.value,0)">
@@ -810,7 +810,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
             <th class="num">Meta Jul 2026 ($)</th>
             <th class="num">Meta Ago 2026 ($)</th>
             <th class="num">Meta Sep 2026 ($)</th>
-            <th class="num">Total Q3 2026 ($)</th>
+            <th class="num">Total Trimestre ($)</th>
             <th class="num">Var % vs Q3 2025</th>
             <th class="num">Ajuste %</th>
           </tr>
@@ -827,7 +827,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">Meta por Marca — Q3 2026
+        <div class="card-title">Meta por Marca
           <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:10px">✏️ Clic en Meta Jul/Ago/Sep/Total Q3 para editar directamente</span>
           <button onclick="clearAllMarcaOverrides()" style="margin-left:12px;padding:3px 10px;font-size:11px;border:1px solid #fca5a5;background:#fef2f2;color:#dc2626;border-radius:6px;cursor:pointer">✕ Limpiar ajustes de metas</button>
           <button onclick="openMarcaBulkLoad()" style="margin-left:6px;padding:3px 10px;font-size:11px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;cursor:pointer">📋 Carga Masiva</button>
@@ -847,7 +847,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
             <th class="num">Meta Jul 2026 ($)</th>
             <th class="num">Meta Ago 2026 ($)</th>
             <th class="num">Meta Sep 2026 ($)</th>
-            <th class="num">Total Q3 2026 ($)</th>
+            <th class="num">Total Trimestre ($)</th>
             <th class="num">Var % vs Q3 2025</th>
             <th class="num">Ajuste %</th>
           </tr>
@@ -865,7 +865,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">Vista Zona de Ventas × Vendedor Secundario — Meta Q3 2026</div>
+        <div class="card-title">Vista Zona de Ventas × Vendedor Secundario — Meta Trimestral</div>
         <div class="card-sub">Distribución por Vendedor · $ Colones · Haga clic en un vendedor para expandir</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
@@ -884,7 +884,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
             <th class="num">Meta Jul 2026 ($)</th>
             <th class="num">Meta Ago 2026 ($)</th>
             <th class="num">Meta Sep 2026 ($)</th>
-            <th class="num">Total Q3 2026 ($)</th>
+            <th class="num">Total Trimestre ($)</th>
             <th class="num">Var % vs Q3 2025</th>
             <th class="num">% Part.</th>
           </tr>
@@ -917,7 +917,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
             <th class="num">Meta Jul 2026 ($)</th>
             <th class="num">Meta Ago 2026 ($)</th>
             <th class="num">Meta Sep 2026 ($)</th>
-            <th class="num">Total Q3 2026 ($)</th>
+            <th class="num">Total Trimestre ($)</th>
             <th class="num">Var %</th>
             <th class="num">Ajuste</th>
           </tr>
@@ -1072,7 +1072,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div class="card-header"><div class="card-title">🛡️ Validación y Auto-Ajuste</div></div>
       <div class="method-box">
         <p><strong>Verificación de Presupuesto:</strong><br>
-        El sistema compara la suma de metas ajustadas contra el presupuesto Q3 2026 definido.</p>
+        El sistema compara la suma de metas ajustadas contra el presupuesto trimestral definido.</p>
         <br>
         <p><strong>Si Meta < Presupuesto:</strong><br>
         Se calcula un factor de escala proporcional:</p>
@@ -1136,7 +1136,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">Vista Vendedor × Marca — Meta Q3 2026</div>
+        <div class="card-title">Vista Vendedor × Marca — Meta Trimestral</div>
         <div class="card-sub">Distribución proporcional por marca · $ Colones · Haga clic en un vendedor para expandir</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
@@ -1155,7 +1155,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
             <th class="num">Meta Jul 2026 ($)</th>
             <th class="num">Meta Ago 2026 ($)</th>
             <th class="num">Meta Sep 2026 ($)</th>
-            <th class="num">Total Q3 2026 ($)</th>
+            <th class="num">Total Trimestre ($)</th>
             <th class="num">Var % vs 2025</th>
             <th class="num">% Part.</th>
           </tr>
@@ -1172,7 +1172,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">Vista Vendedor × Cliente — Meta Q3 2026</div>
+        <div class="card-title">Vista Vendedor × Cliente — Meta Trimestral</div>
         <div class="card-sub">Cuánto debe vender cada vendedor a cada cliente para construir su meta · Haga clic en un vendedor para expandir</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
@@ -1191,7 +1191,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
             <th class="num">Meta Jul 2026 ($)</th>
             <th class="num">Meta Ago 2026 ($)</th>
             <th class="num">Meta Sep 2026 ($)</th>
-            <th class="num">Total Q3 2026 ($)</th>
+            <th class="num">Total Trimestre ($)</th>
             <th class="num">Var % vs 2025</th>
             <th class="num">% Part.</th>
           </tr>
@@ -1207,7 +1207,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">Vista Zona × Cliente × Marca — Proyección Q3 2026</div>
+        <div class="card-title">Vista Zona × Cliente × Marca — Meta Trimestral</div>
         <div class="card-sub">Expandí un vendedor → expandí un cliente → ver marcas con historial y meta · Requiere datos Supabase</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
@@ -1242,7 +1242,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">📈 Tendencia — Últimos 9 meses + Proyección Q3 2026</div>
+        <div class="card-title">📈 Tendencia — Últimos 9 meses + Proyección Trimestral</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <span class="filter-label">Ver por:</span>
@@ -1272,7 +1272,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </div>
         <div>
-          <div style="font-size:17px;font-weight:700;color:var(--text)">Enviar Metas Q3 2026</div>
+          <div style="font-size:17px;font-weight:700;color:var(--text)">Enviar Metas Trimestrales</div>
           <div id="emailModalSub" style="font-size:12px;color:var(--text3);margin-top:2px">Correo individual a cada vendedor con copia al supervisor</div>
         </div>
       </div>
@@ -1344,7 +1344,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
         <div style="font-size:22px;font-weight:800;color:var(--teal);letter-spacing:-0.5px">COFERSA</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text)">Resumen Ejecutivo — Cálculo de Metas Q3 2026</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text)">Resumen Ejecutivo — Cálculo de Metas Trimestrales</div>
       </div>
       <div style="text-align:right;font-size:11px;color:var(--text2)">
         <div id="pdfDate"></div>
@@ -1590,8 +1590,8 @@ function computeVendProjections() {
   });
 
   // SIEMPRE redistribuye el total mensual usando los pesos del Presupuesto,
-  // para que Meta Q3 2026 tenga exactamente los mismos % Jul/Ago/Sep que
-  // el Presupuesto Q3 2026. Si budgetWeights no está definido aún (primer
+  // para que Meta Trimestral tenga exactamente los mismos % Jul/Ago/Sep que
+  // el Presupuesto Trimestral. Si budgetWeights no está definido aún (primer
   // render), devuelve la distribución natural y getBudgetMonthlyWeights()
   // la almacenará como referencia en la siguiente llamada.
   if (state.budgetWeights) {
@@ -2043,11 +2043,11 @@ function renderAlerts(totalProj, budget) {
     const gap = budget - totalProj;
     box.style.display = 'flex';
     box.className = 'alert-box alert-warn';
-    box.innerHTML = `⚠️ La proyección actual (<strong>${fmt(totalProj)}</strong>) está por debajo del presupuesto Q3 2026 (<strong>${fmt(budget)}</strong>). Brecha: <strong>${fmt(gap)}</strong>. Use el <strong>Auto-Ajuste</strong> en la pestaña Ajustes para compensar proporcionalmente.`;
+    box.innerHTML = `⚠️ La proyección actual (<strong>${fmt(totalProj)}</strong>) está por debajo del presupuesto trimestral (<strong>${fmt(budget)}</strong>). Brecha: <strong>${fmt(gap)}</strong>. Use el <strong>Auto-Ajuste</strong> en la pestaña Ajustes para compensar proporcionalmente.`;
   } else {
     box.style.display = 'flex';
     box.className = 'alert-box alert-ok';
-    box.innerHTML = `✅ La proyección ajustada (<strong>${fmt(totalProj)}</strong>) supera el presupuesto Q3 2026 de <strong>${fmt(budget)}</strong> en un <strong>${fmtPct(((totalProj - budget)/budget)*100)}</strong>.`;
+    box.innerHTML = `✅ La proyección ajustada (<strong>${fmt(totalProj)}</strong>) supera el presupuesto trimestral de <strong>${fmt(budget)}</strong> en un <strong>${fmtPct(((totalProj - budget)/budget)*100)}</strong>.`;
   }
 }
 
@@ -2097,7 +2097,7 @@ function renderTrendChart(filtVendProj) {
       labels,
       datasets: [
         { label: 'Venta Histórica', data: histPadded, borderColor: '#1a73e8', backgroundColor: 'rgba(26,115,232,0.07)', borderWidth: 2, pointRadius: 2, fill: true, tension: 0.3 },
-        { label: 'Meta Q3 2026', data: projPadded, borderColor: '#007a65', backgroundColor: 'rgba(0,122,101,0.10)', borderWidth: 2.5, pointRadius: 5, fill: true, borderDash: [6,3], tension: 0.3, pointBackgroundColor: '#007a65' }
+        { label: 'Meta Trimestral', data: projPadded, borderColor: '#007a65', backgroundColor: 'rgba(0,122,101,0.10)', borderWidth: 2.5, pointRadius: 5, fill: true, borderDash: [6,3], tension: 0.3, pointBackgroundColor: '#007a65' }
       ]
     },
     options: {
@@ -2150,7 +2150,7 @@ function renderVendChart(filtVendProj) {
     type: 'bar',
     data: {
       labels: sorted.map(x => x.v.replace(/^\d+-/, '').replace('..', '').trim().split(' ').slice(0,2).join(' ')),
-      datasets: [{ label: 'Meta Q3 2026', data: sorted.map(x => x.total), backgroundColor: COLORS, borderRadius: 5 }]
+      datasets: [{ label: 'Meta Trimestral', data: sorted.map(x => x.total), backgroundColor: COLORS, borderRadius: 5 }]
     },
     options: { responsive: true, indexAxis: 'y',
       plugins: { legend: { display: false }, tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${fmt(ctx.parsed.x)}` } } },
@@ -2170,7 +2170,7 @@ function renderMarcaChart(filtMarcaProj) {
     type: 'bar',
     data: {
       labels: sorted.map(x => x.m),
-      datasets: [{ label: 'Meta Q3 2026', data: sorted.map(x => x.total), backgroundColor: COLORS.map((c,i) => i%2===0?c:c+'bb'), borderRadius: 5 }]
+      datasets: [{ label: 'Meta Trimestral', data: sorted.map(x => x.total), backgroundColor: COLORS.map((c,i) => i%2===0?c:c+'bb'), borderRadius: 5 }]
     },
     options: { responsive: true, indexAxis: 'y',
       plugins: { legend: { display: false }, tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${fmt(ctx.parsed.x)}` } } },
@@ -2197,7 +2197,7 @@ function renderVendTable(vendProj) {
       labels: byTotal.map(x => x.v.replace(/^\d+-/, '').replace('..','').trim()),
       datasets: [
         { label: 'Q2 2025 Hist', data: byTotal.map(x => x.histQ2_2025), backgroundColor: 'rgba(26,115,232,0.4)', borderRadius: 4 },
-        { label: 'Q3 2026 Proy', data: byTotal.map(x => x.total), backgroundColor: 'rgba(0,122,101,0.75)', borderRadius: 4 }
+        { label: 'Proyección', data: byTotal.map(x => x.total), backgroundColor: 'rgba(0,122,101,0.75)', borderRadius: 4 }
       ]
     },
     options: {
@@ -2281,7 +2281,7 @@ function renderMarcaTable(marcaProj) {
       labels: sorted.slice(0,20).map(x => x.m),
       datasets: [
         { label: 'Q2 2025 Hist', data: sorted.slice(0,20).map(x => x.histQ2_2025), backgroundColor: 'rgba(26,115,232,0.4)', borderRadius:4 },
-        { label: 'Q3 2026 Proy', data: sorted.slice(0,20).map(x => x.total), backgroundColor: 'rgba(196,122,0,0.75)', borderRadius:4 }
+        { label: 'Proyección', data: sorted.slice(0,20).map(x => x.total), backgroundColor: 'rgba(196,122,0,0.75)', borderRadius:4 }
       ]
     },
     options: {
@@ -2364,7 +2364,7 @@ function renderPortCards(portProj) {
     const color = Object.values(PORT_COLORS)[i];
     document.getElementById(portCardIds[i]).innerHTML = `
       <div class="card-header">
-        <div><div class="card-title" style="color:${color}">${port}</div><div class="card-sub">Meta Q3 2026</div></div>
+        <div><div class="card-title" style="color:${color}">${port}</div><div class="card-sub">Meta Trimestral</div></div>
         <span class="kpi-badge ${varPct>=0?'badge-up':'badge-down'}">${fmtPct(varPct)} vs Q3 2025</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px">
@@ -2373,7 +2373,7 @@ function renderPortCards(portProj) {
         <div><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase">Sep 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[2])}</div></div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)">
-        <div><span style="font-size:11px;color:var(--text2)">Total Q3 2026</span><div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:${color}">${fmt(total)}</div></div>
+        <div><span style="font-size:11px;color:var(--text2)">Total Trimestre</span><div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:${color}">${fmt(total)}</div></div>
         <div style="text-align:right"><span style="font-size:11px;color:var(--text2)">Hist Q3 2025</span><div style="font-family:var(--font-display);font-size:16px;color:var(--text2)">${fmt(d.histQ2_2025)}</div></div>
       </div>`;
   });
@@ -3118,7 +3118,7 @@ function makeVendAdjItem(v, vp) {
       ${hasTarget ? `<button onclick="clearVendQ22025('${escQ(v)}')" style="font-size:10px;background:none;border:none;cursor:pointer;color:var(--text3);padding:0" title="Volver a proyección del modelo">✕ modelo</button>` : ''}
     </div>
     <div style="font-size:11px;color:var(--text2);margin-top:3px">
-      Meta Q3 2026: <strong style="color:var(--teal)">$${(metaVal/1e6).toFixed(1)}M</strong>
+      Meta Trimestral: <strong style="color:var(--teal)">$${(metaVal/1e6).toFixed(1)}M</strong>
       ${hasTarget ? '<span style="color:var(--gold);font-size:10px"> · ajuste manual</span>' : '<span style="color:var(--text3);font-size:10px"> · proyección modelo</span>'}
     </div>
   </div>`;
@@ -3514,14 +3514,14 @@ function buildSupervisorEmailHTML(supervisor, vendedoresData) {
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:700px;margin:24px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
   <tr><td style="padding:28px 32px 16px">
     <div style="font-size:16px;color:#111827;font-weight:600">Estimado/a ${supervisor},</div>
-    <div style="font-size:14px;color:#6b7280;margin-top:8px;line-height:1.6">A continuación encontrás el resumen de metas Q3 2026 de tu equipo.</div>
+    <div style="font-size:14px;color:#6b7280;margin-top:8px;line-height:1.6">A continuación encontrás el resumen de metas trimestrales de tu equipo.</div>
   </td></tr>
   <!-- KPI equipo -->
   <tr><td style="padding:0 32px 24px">
     <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #e5e7eb">
       <tr style="background:#f0fdf4">
         <td colspan="3" style="padding:16px 20px">
-          <div style="font-size:11px;font-weight:700;color:#059669;letter-spacing:0.8px;text-transform:uppercase">Meta Total Equipo Q3 2026</div>
+          <div style="font-size:11px;font-weight:700;color:#059669;letter-spacing:0.8px;text-transform:uppercase">Meta Total Equipo</div>
           <div style="font-size:26px;font-weight:800;color:#064e3b;margin-top:4px">${fm(teamTotal)}</div>
         </td>
       </tr>
@@ -3680,7 +3680,7 @@ function buildEmailHTML(vendedor, totals, clientes) {
 <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #e5e7eb">
   <tr style="background:#f0fdf4">
     <td colspan="3" style="padding:16px 20px 10px">
-      <div style="font-size:11px;font-weight:700;color:#059669;letter-spacing:0.8px;text-transform:uppercase">Meta Total Q3 2026</div>
+      <div style="font-size:11px;font-weight:700;color:#059669;letter-spacing:0.8px;text-transform:uppercase">Meta Total</div>
       <div style="font-size:26px;font-weight:800;color:#064e3b;margin-top:4px">${fm(totals.meta_q3)}</div>
     </td>
   </tr>
@@ -3816,7 +3816,7 @@ function renderPreview(){
   if(!_previewList.length)return;
   const{v,html}=_previewList[_previewIdx];
   document.getElementById('previewVendIdx').textContent=`${_previewIdx+1} / ${_previewList.length}`;
-  document.getElementById('previewEmailHeader').innerHTML=`<strong>Para:</strong> ${v.correo} &nbsp; <strong>CC:</strong> ${v.correo_supervisor} &nbsp; <strong>Asunto:</strong> Metas Q3 2026 \u2014 ${v.label}`;
+  document.getElementById('previewEmailHeader').innerHTML=`<strong>Para:</strong> ${v.correo} &nbsp; <strong>CC:</strong> ${v.correo_supervisor} &nbsp; <strong>Asunto:</strong> Metas Trimestrales \u2014 ${v.label}`;
   document.getElementById('emailPreviewFrame').srcdoc=html;
 }
 
@@ -3920,8 +3920,8 @@ function exportPDF() {
   const kpiColor = cumpl>=100?'#007a65':cumpl>=85?'#c47a00':'#dc2626';
   document.getElementById('pdfKPIs').innerHTML = [
     { label:'Venta Q2 2025', val:'$'+fmt(q2Hist), sub:'Histórico real', color:'var(--text)' },
-    { label:'Presupuesto Q3 2026', val:'$'+fmt(budget), sub:'Meta estratégica', color:'#c47a00' },
-    { label:'Meta Q3 2026', val:'$'+fmt(totalProj), sub:(varHist>=0?'▲':'▼')+' '+fmtPct(Math.abs(varHist))+' vs Q3 2025', color:'var(--blue)' },
+    { label:'Presupuesto Trimestral', val:'$'+fmt(budget), sub:'Meta estratégica', color:'#c47a00' },
+    { label:'Meta Trimestral', val:'$'+fmt(totalProj), sub:(varHist>=0?'▲':'▼')+' '+fmtPct(Math.abs(varHist))+' vs Q3 2025', color:'var(--blue)' },
     { label:'Cumplimiento', val:cumpl.toFixed(1)+'%', sub:cumpl>=100?'✓ Meta alcanzada':'Brecha: $'+fmt(budget-totalProj), color:kpiColor }
   ].map(k=>`
     <div style="border:1px solid #dde3ee;border-radius:10px;padding:14px;background:#f8fafd">
@@ -4097,7 +4097,7 @@ async function _doExportExcel(exportBtn) {
 
   // ── FETCH GRANULAR (Vendedor × Cliente × Marca, con redistribución de portafolio) ──
   // Esto alimenta las hojas 2, 8 y 9 — todas comparten la MISMA fuente de verdad,
-  // ya redistribuida al vendedor secundario y escalada al modelo Q3 2026.
+  // ya redistribuida al vendedor secundario y escalada al modelo trimestral.
   if (exportBtn) exportBtn.textContent = '⏳ Cargando datos granulares...';
   const hasSupabase = typeof SUPA_URL !== 'undefined' && SUPA_URL;
   let vcmData = [];
@@ -4158,29 +4158,29 @@ async function _doExportExcel(exportBtn) {
 
   // ── HOJA 1: RESUMEN ──────────────────────────────────────────────────────
   const resRows = [
-    ['CÁLCULO DE METAS Q3 2026 — COFERSA', '', '', '', ''],
+    ['CÁLCULO DE METAS Meta — COFERSA', '', '', '', ''],
     [`Generado: ${now}`, '', '', '', ''],
     [],
     ['INDICADOR', 'VALOR ($ CRC)', '', '', ''],
     ['Venta Q3 2025 (Histórico)', q2Hist, '', '', ''],
-    ['Presupuesto Q3 2026', budget, '', '', ''],
-    ['Meta Q3 2026', totalProj, '', '', ''],
+    ['Presupuesto Trimestral', budget, '', '', ''],
+    ['Meta Trimestral', totalProj, '', '', ''],
     ['Var % vs Q3 2025', (totalProj-q2Hist)/q2Hist, '', '', ''],
     ['Cumplimiento Presupuesto', totalProj/budget, '', '', ''],
     [],
-    ['DISTRIBUCIÓN MENSUAL META Q3 2026', '', '', '', ''],
+    ['DISTRIBUCIÓN MENSUAL META TRIMESTRAL', '', '', '', ''],
     ['Mes', 'Meta $', '% Distribución', '', ''],
     ['Jul 2026', mProj[0], mProj[0]/totalProj, '', ''],
     ['Ago 2026', mProj[1], mProj[1]/totalProj, '', ''],
     ['Sep 2026', mProj[2], mProj[2]/totalProj, '', ''],
-    ['TOTAL Q3 2026', totalProj, 1, '', ''],
+    ['TOTAL TRIMESTRE', totalProj, 1, '', ''],
     [],
-    ['DISTRIBUCIÓN MENSUAL PRESUPUESTO Q3 2026', '', '', '', ''],
+    ['DISTRIBUCIÓN MENSUAL PRESUPUESTO', '', '', '', ''],
     ['Mes', 'Presupuesto $', '% Distribución', '', ''],
     ['Jul 2026', budget*wJul, wJul, '', ''],
     ['Ago 2026', budget*wAgo, wAgo, '', ''],
     ['Sep 2026', budget*wSep, wSep, '', ''],
-    ['TOTAL Q3 2026', budget, 1, '', ''],
+    ['TOTAL TRIMESTRE', budget, 1, '', ''],
   ];
   const wsRes = XLSX.utils.aoa_to_sheet(resRows);
   wsRes['!cols'] = [{wch:42},{wch:20},{wch:16},{wch:1},{wch:1}];
@@ -4195,7 +4195,7 @@ async function _doExportExcel(exportBtn) {
 
   // ── HOJA 2: CLIENTES (Alias Comercial + Código Cliente, granular por sucursal) ──
   const clH = ['#','Alias Comercial','Código Cliente','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Q3 2026 $','Var %'];
+    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %'];
   const byAliasCl = {};
   vcmData.forEach(r => {
     if (!byAliasCl[r.alias]) byAliasCl[r.alias] = { cod: r.cod_cliente, h24:0, h25:0, meta:0 };
@@ -4219,7 +4219,7 @@ async function _doExportExcel(exportBtn) {
 
   // ── HOJA 3: MARCAS ───────────────────────────────────────────────────────
   const mH = ['Marca','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Q3 2026 $','Var %','% Part.'];
+    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','% Part.'];
   const mSorted = Object.entries(marcaProj)
     .map(([m,d])=>({m,...d,total:d.proj.reduce((a,b)=>a+b,0)}))
     .sort((a,b)=>b.total-a.total);
@@ -4235,7 +4235,7 @@ async function _doExportExcel(exportBtn) {
 
   // ── HOJA 5: ZONAS DE VENTA ───────────────────────────────────────────────
   const vH = ['Zona de Venta','Portafolio','Hist Q3 2024 $','Hist Q3 2025 $','Prom Mensual $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Q3 2026 $','Var %','Ajuste %'];
+    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','Ajuste %'];
   const vSorted = Object.entries(vendProj)
     .map(([v,d])=>({v,...d,total:d.proj.reduce((a,b)=>a+b,0)}))
     .sort((a,b)=>a.v.replace(/^\d+-/,'').trim().localeCompare(b.v.replace(/^\d+-/,'').trim(),'es'));
@@ -4256,7 +4256,7 @@ async function _doExportExcel(exportBtn) {
   });
   const histPortGrand = Object.values(pp).reduce((s,d)=>s+d.histQ2_2025,0)||1;
   const zpH = ['Nivel','Zona / Vendedor','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Q3 2026 $','Var %','% Part.'];
+    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','% Part.'];
   const grandVP = vSorted.reduce((s,x)=>s+x.total,0)||1;
   const zpRows = [zpH];
   vSorted.forEach(x=>{
@@ -4278,7 +4278,7 @@ async function _doExportExcel(exportBtn) {
   // ── HOJA 7: VEND-CLIENTE (con Razón Social + Código/Alias) ──────────────
   const hasMap = RAW_DATA.vendedorClientes&&Object.keys(RAW_DATA.vendedorClientes).length>0;
   const vcH = ['Nivel','Zona de Venta','Razón Social','Código / Alias','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Q3 2026 $','Var %','% Part.'];
+    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','% Part.'];
   const vcGrand = vSorted.reduce((s,x)=>s+x.total,0)||1;
   const vcRows = [vcH];
   vSorted.forEach(x=>{
@@ -4302,7 +4302,7 @@ async function _doExportExcel(exportBtn) {
 
   // ── HOJA 8: VEND-MARCA ───────────────────────────────────────────────────
   const vmH = ['Nivel','Zona de Venta','Portafolio','Marca','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Q3 2026 $','Var %','% Part.'];
+    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','% Part.'];
   const vmGrand = vSorted.reduce((s,x)=>s+x.total,0)||1;
   const vmRows = [vmH];
   const vPmap = RAW_DATA.vendedorPortafolio || {};
@@ -4325,7 +4325,7 @@ async function _doExportExcel(exportBtn) {
 
   // ── HOJA 8: VEND-CLIENTE-MARCA (usa vcmData ya cargado, escalado al modelo) ──
   const vcmH = ['Nivel','Zona de Venta','Razón Social','Código Cliente','Alias','Portafolio','Marca',
-    'Hist Q3 2024 $','Hist Q3 2025 $','Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Meta Q3 2026 $','Var %'];
+    'Hist Q3 2024 $','Hist Q3 2025 $','Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Meta Trimestral $','Var %'];
   const vcmRows = [vcmH];
 
   if (vcmData.length > 0) {
@@ -5020,7 +5020,7 @@ function buildDataContext(type) {
   const varTotal = ((totalProj-q2Hist)/q2Hist*100).toFixed(1);
 
   // Always include a compact summary
-  const summary = `COFERSA Ventas Q3 2026 | Hist Q3 2025: $${(q2Hist/1e6).toFixed(0)}M | Meta Q3 2026: $${(totalProj/1e6).toFixed(0)}M | Var: ${varTotal}% | Presup: $${(state.budgetTarget/1e6).toFixed(0)}M | Cumpl: ${cumplimiento}%`;
+  const summary = `COFERSA Ventas Trimestrales | Hist Q3 2025: $${(q2Hist/1e6).toFixed(0)}M | Meta Trimestral: $${(totalProj/1e6).toFixed(0)}M | Var: ${varTotal}% | Presup: $${(state.budgetTarget/1e6).toFixed(0)}M | Cumpl: ${cumplimiento}%`;
 
   // Portafolio (always compact)
   const portLine = Object.entries(portProj).map(([p,d])=>{
@@ -5055,7 +5055,7 @@ function buildDataContext(type) {
     .sort((a,b)=>b.t-a.t).slice(0,5)
     .map(x=>`${x.c}:$${(x.t/1e6).toFixed(0)}M`).join(' | ');
 
-  return `DATOS VENTAS COFERSA Q3 2026:
+  return `DATOS VENTAS COFERSA:
 ${summary}
 PORTAFOLIOS: ${portLine}
 TENDENCIA(últ.6m): ${trend6}
@@ -5068,7 +5068,7 @@ TOTALES: ${Object.keys(RAW_DATA.vendedores).length} vendedores | ${Object.keys(R
 const AI_PROMPTS = {
   completo: (ctx) => `Experto analista ventas COFERSA Costa Rica. Analizá estos datos en español con Markdown:
 ${ctx}
-Secciones: ### 🎯 Resumen Ejecutivo | ### 💪 Fortalezas (3, con cifras) | ### 🚀 Oportunidades (3, priorizadas) | ### ⚠️ Riesgos | ### 🏆 Recomendaciones Q3 2026 (3 acciones). Breve y accionable.`,
+Secciones: ### 🎯 Resumen Ejecutivo | ### 💪 Fortalezas (3, con cifras) | ### 🚀 Oportunidades (3, priorizadas) | ### ⚠️ Riesgos | ### 🏆 Recomendaciones (3 acciones). Breve y accionable.`,
 
   fortalezas: (ctx) => `Experto ventas COFERSA. Identificá 5 FORTALEZAS clave del negocio con datos numéricos específicos. Formato Markdown, sección ### 💪 Fortalezas.
 ${ctx}`,
@@ -5119,14 +5119,14 @@ async function runAIResumen(btn) {
     .map(([k,d])=>({ n:(RAW_DATA.clientes[k]?.nombre||k).substring(0,35), meta:d.proj.reduce((a,b)=>a+b,0) }))
     .sort((a,b)=>b.meta-a.meta).slice(0,5);
 
-  const ctx = `COFERSA Q3 2026
+  const ctx = `COFERSA
 Meta Total: $${(totalMeta/1e6).toFixed(1)}M | Q3 2025 Real: $${(totalHist/1e6).toFixed(1)}M | Variacion: ${varPct}%
 TOP VENDEDORES (meta): ${topVend.map(v=>`${v.n} $${(v.meta/1e6).toFixed(1)}M`).join(' | ')}
 VENDEDORES EN BAJA: ${lowVend.map(v=>`${v.n} ${((v.meta-v.hist)/v.hist*100).toFixed(0)}%`).join(' | ')}
 TOP MARCAS: ${topMarcas.map(m=>`${m.m}(${m.port||'?'}) $${(m.meta/1e6).toFixed(1)}M`).join(' | ')}
 TOP CLIENTES: ${topClientes.map(c=>`${c.n} $${(c.meta/1e6).toFixed(1)}M`).join(' | ')}`;
 
-  const prompt = `Eres el analista comercial de COFERSA Costa Rica. Analiza estos datos de ventas Q3 2026 y genera un resumen ejecutivo en Markdown con estas secciones exactas:
+  const prompt = `Eres el analista comercial de COFERSA Costa Rica. Analiza estos datos de ventas trimestrales y genera un resumen ejecutivo en Markdown con estas secciones exactas:
 
 ${ctx}
 
