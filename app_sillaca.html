@@ -1372,6 +1372,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
 
 // ── Empresa: Sillaca ──
 const CO_PARAM = 'sillaca';
+const CO_VENDEDORES_TABLE = 'Sillaca Vendedores';
 const CO_NAME  = 'Sillaca';
 const CO_COLOR = '#e91e63';
 const STORAGE_KEY  = 'forecast_sillaca_state_v1';
@@ -3402,8 +3403,8 @@ async function openEmailModal() {
   document.getElementById('modeSuperBtn').style.color = 'var(--text2)';
 
   try {
-    const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_vendedores_emails`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }, body: '{}'
+    const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_vendedores_emails_v2`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }, body: JSON.stringify({ tabla: CO_VENDEDORES_TABLE })
     });
     const rows = await res.json();
     _emailVendorData = rows.map(r => ({
