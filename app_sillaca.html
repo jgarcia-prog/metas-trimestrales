@@ -1373,6 +1373,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
 // ── Empresa: Sillaca ──
 const CO_PARAM = 'sillaca';
 const CO_VENDEDORES_TABLE = 'Sillaca Vendedores';
+const CO_VENTAS_TABLE = 'Sillaca_ventas_24_meses';
 const CO_NAME  = 'Sillaca';
 const CO_COLOR = '#e91e63';
 const STORAGE_KEY  = 'forecast_sillaca_state_v1';
@@ -2544,10 +2545,10 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
     const content = document.getElementById(`${rowId}_content`);
     if (content) content.innerHTML = '<span style="color:var(--text3);font-size:12px">⏳ Cargando marcas...</span>';
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_cliente_marcas`, {
+      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_cliente_marcas_v2`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` },
-        body: JSON.stringify({ p_vendedor: vendedor, p_alias: alias })
+        body: JSON.stringify({ p_vendedor: vendedor, p_alias: alias, tabla: CO_VENTAS_TABLE })
       });
       _vcmCache[cacheKey] = await res.json();
     } catch(e) {
@@ -3776,7 +3777,7 @@ async function buildVCMPayload(vcmData, vendedor, vendProjData) {
 async function loadVCMEmailData() {
   // Sin cache: siempre datos frescos de Supabase para evitar que correcciones
   // de nombres en la BD queden atrapadas en memoria de la sesión.
-  const res=await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export?limit=50000`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'count=none'},body:'{}'});
+  const res=await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export_v2?limit=50000`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'count=none'},body:JSON.stringify({tabla: CO_VENTAS_TABLE})});
   return await res.json();
 }
 
@@ -4104,10 +4105,10 @@ async function _doExportExcel(exportBtn) {
   let vcmData = [];
   if (hasSupabase) {
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export?limit=50000`, {
+      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export_v2?limit=50000`, {
         method: 'POST',
         headers: { 'Content-Type':'application/json', 'apikey':SUPA_KEY, 'Authorization':`Bearer ${SUPA_KEY}`, 'Prefer':'count=none' },
-        body: '{}'
+        body: JSON.stringify({tabla: CO_VENTAS_TABLE})
       });
       const data = await res.json();
       if (Array.isArray(data)) vcmData = data;
@@ -4551,7 +4552,7 @@ const SUPA_MONTH_LABELS = [
   'ene-26','feb-26','mar-26','abr-26','may-26','jun-26'
 ];
 
-async function supaRPC(fn) {
+async function supaRPC(fn, params = {}) {
   const res = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
     method: 'POST',
     headers: {
@@ -4559,7 +4560,7 @@ async function supaRPC(fn) {
       'apikey': SUPA_KEY,
       'Authorization': `Bearer ${SUPA_KEY}`
     },
-    body: '{}'
+    body: JSON.stringify(params)
   });
   if (!res.ok) throw new Error(`RPC ${fn} failed: ${res.status} ${await res.text()}`);
   return res.json();
@@ -4590,12 +4591,12 @@ async function loadFromSupabase() {
   try {
     // Fetch all 6 RPCs in parallel
     const [vendRows, marcaRows, clienteRows, portReglas, vendMarcaRows, vcmRows] = await Promise.all([
-      supaRPC('get_vendedores_hist'),
-      supaRPC('get_marcas_hist'),
-      supaRPC('get_clientes_hist'),
+      supaRPC('get_vendedores_hist_v2', { tabla: CO_VENTAS_TABLE }),
+      supaRPC('get_marcas_hist_v2', { tabla: CO_VENTAS_TABLE }),
+      supaRPC('get_clientes_hist_v2', { tabla: CO_VENTAS_TABLE }),
       supaRPC('get_vendor_portafolio'),
-      supaRPC('get_vend_marca_hist'),
-      supaRPC('get_vcm_export')
+      supaRPC('get_vend_marca_hist_v2', { tabla: CO_VENTAS_TABLE }),
+      supaRPC('get_vcm_export_v2', { tabla: CO_VENTAS_TABLE })
     ]);
 
     // ── Build RAW_DATA.vendMarcaHist: { marca: { vendedor: {w, h25, h24} } } ──
