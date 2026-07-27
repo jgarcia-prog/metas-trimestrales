@@ -1512,6 +1512,55 @@ function getHistQ2(historico, year) {
 
 // Returns projection for an entity — uses cached value for defaults,
 // recalculates dynamically when blend weight or smoothing is changed,
+function winsorize(historico, sigma) {
+  const n = historico.length;
+  if (n < 3) return historico;
+  const mean = historico.reduce((a, b) => a + b, 0) / n;
+  const std = Math.sqrt(historico.reduce((s, v) => s + (v - mean) ** 2, 0) / n);
+  if (std === 0) return historico;
+  return historico.map(v => Math.abs(v - mean) > sigma * std ? mean : v);
+}
+
+function projectQ2JS(historico) {
+  // Apply outlier smoothing if enabled
+  const data = state.smoothOutliers ? winsorize(historico, state.smoothSigma) : historico;
+
+  const n = data.length;
+  const window = Math.min(24, n);           // use up to 24 months
+  const last24 = data.slice(n - window);
+  const nMeses = last24.length;             // actual months used (≤24)
+
+  const x = last24.map((_, i) => i);
+  const sumX  = x.reduce((a,b)=>a+b,0);
+  const sumY  = last24.reduce((a,b)=>a+b,0);
+  const sumXY = x.reduce((s,xi,i)=>s+xi*last24[i],0);
+  const sumX2 = x.reduce((s,xi)=>s+xi*xi,0);
+  const denom = nMeses*sumX2 - sumX*sumX;
+  const m = denom !== 0 ? (nMeses*sumXY - sumX*sumY)/denom : 0;
+  const b = (sumY - m*sumX) / nMeses;
+
+  // Project the 3 months immediately after the last loaded month
+  // e.g. 24 months loaded → project months 25, 26, 27
+  const trend = [nMeses, nMeses+1, nMeses+2].map(t => Math.max(0, m*t+b));
+
+  // Seasonality: Q3 months (Jul/Ago/Sep) relative to START of full data array
+  // Q3 2024=[6,7,8], Q3 2025=[18,19,20] — consistent for both embedded and Supabase data
+  const offset = n - window;
+  const q2AbsIdx = { 0: [6,7,8], 1: [18,19,20] };
+  const getQ2 = (yr) => (q2AbsIdx[yr] || []).map(i => {
+    const relIdx = i - offset;             // relative index within last24
+    return (relIdx >= 0 && relIdx < nMeses) ? last24[relIdx] : (data[i] || 0);
+  });
+  const q2_2024 = getQ2(0);
+  const q2_2025 = getQ2(1);
+
+  return trend.map((_, i) => {
+    const seasonal = ((q2_2024[i]||0) + (q2_2025[i]||0)) / 2;
+    const tw = state.blendWeight;
+    return Math.max(0, tw * trend[i] + (1 - tw) * seasonal);
+  });
+}
+
 // or when the vendor was modified by a reasignacion (_reasigned flag)
 function getProyeccion(d) {
   if (!d._reasigned && state.blendWeight === 0.60 && !state.smoothOutliers) {
