@@ -723,6 +723,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="tab" onclick="switchTab(9)">🏪👤 Vend-Cliente</div>
   <div class="tab" onclick="switchTab(8)">🏷️👤 Vend-Marca</div>
   <div class="tab" onclick="switchTab(10)">🏪👤🏷️ Vend-Cliente-Marca</div>
+  <div class="tab" onclick="switchTab(12)">📦 Vend-Marca-Art</div>
   <div class="tab" onclick="switchTab(11)">📈 Tendencia</div>
   <div class="tab" onclick="switchTab(7)">📐 Metodología</div>
   <div class="tab" onclick="switchTab(6)">⚙️ Ajustes</div>
@@ -1258,6 +1259,33 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <thead><tr id="tendenciaTableHead"></tr></thead>
         <tbody id="tendenciaTableBody"></tbody>
         <tfoot id="tendenciaTableFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 12: VEND-MARCA-ARTICULO -->
+<div class="panel-section" id="tab12">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">📦 Vend · Marca · Artículo — Tendencia histórica + Proyección</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span class="filter-label">Vendedor:</span>
+        <select id="artVendSel" class="filter-select" onchange="onArtVendChange()"><option value="">Todos</option></select>
+        <span class="filter-label">Marca:</span>
+        <select id="artMarcaSel" class="filter-select" onchange="onArtMarcaChange()"><option value="">— elegí marca —</option></select>
+        <input type="text" class="search-input" placeholder="🔍 Buscar artículo..." id="searchArt" oninput="filterTable('artTable',this.value,2)">
+        <button class="btn btn-primary" onclick="loadArticulos()" id="artLoadBtn" style="font-size:12px;padding:6px 14px">⚡ Cargar artículos</button>
+      </div>
+    </div>
+    <div id="artStatus" style="font-size:12px;color:var(--text3);padding:4px 0 0 2px"></div>
+    <div class="table-wrap" style="max-height:60vh">
+      <table class="data-table" id="artTable">
+        <thead><tr id="artTableHead"></tr></thead>
+        <tbody id="artTableBody"></tbody>
+        <tfoot id="artTableFoot"></tfoot>
       </table>
     </div>
   </div>
@@ -2976,6 +3004,10 @@ function renderClientTable(clientProj) {
 // ==================== TENDENCIA (TAB 11) ====================
 function setTendenciaView(mode) {
   state.tendenciaView = mode;
+  const artSel   = document.getElementById('tendArtSel');
+  const artLbl   = document.getElementById('artSelLabel');
+  if (artSel) artSel.style.display = mode==='marca' ? '' : 'none';
+  if (artLbl) artLbl.style.display = mode==='marca' ? '' : 'none';
   document.getElementById('tendPillVend').classList.toggle('active', mode === 'vendedor');
   document.getElementById('tendPillMarca').classList.toggle('active', mode === 'marca');
   render();
