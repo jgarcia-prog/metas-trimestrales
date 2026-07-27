@@ -2572,7 +2572,7 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
     const content = document.getElementById(`${rowId}_content`);
     if (content) content.innerHTML = '<span style="color:var(--text3);font-size:12px">⏳ Cargando marcas...</span>';
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_cliente_marcas`, {
+      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_cliente_marcas_mundipartes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` },
         body: JSON.stringify({ p_vendedor: vendedor, p_alias: alias })
@@ -3808,7 +3808,7 @@ async function buildVCMPayload(vcmData, vendedor, vendProjData) {
 async function loadVCMEmailData() {
   // Sin cache: siempre datos frescos de Supabase para evitar que correcciones
   // de nombres en la BD queden atrapadas en memoria de la sesión.
-  const res=await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export?limit=50000`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'count=none'},body:'{}'});
+  const res=await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export_mundipartes?limit=50000`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'count=none'},body:'{}'});
   return await res.json();
 }
 
@@ -4136,7 +4136,7 @@ async function _doExportExcel(exportBtn) {
   let vcmData = [];
   if (hasSupabase) {
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export?limit=50000`, {
+      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export_mundipartes?limit=50000`, {
         method: 'POST',
         headers: { 'Content-Type':'application/json', 'apikey':SUPA_KEY, 'Authorization':`Bearer ${SUPA_KEY}`, 'Prefer':'count=none' },
         body: '{}'
@@ -4622,12 +4622,12 @@ async function loadFromSupabase() {
   try {
     // Fetch all 6 RPCs in parallel
     const [vendRows, marcaRows, clienteRows, portReglas, vendMarcaRows, vcmRows] = await Promise.all([
-      supaRPC('get_vendedores_hist'),
-      supaRPC('get_marcas_hist'),
-      supaRPC('get_clientes_hist'),
+      supaRPC('get_vendedores_hist_mundipartes'),
+      supaRPC('get_marcas_hist_mundipartes'),
+      supaRPC('get_clientes_hist_mundipartes'),
       supaRPC('get_vendor_portafolio'),
-      supaRPC('get_vend_marca_hist'),
-      supaRPC('get_vcm_export')
+      supaRPC('get_vend_marca_hist_mundipartes'),
+      supaRPC('get_vcm_export_mundipartes')
     ]);
 
     // ── Build RAW_DATA.vendMarcaHist: { marca: { vendedor: {w, h25, h24} } } ──
