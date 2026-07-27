@@ -1483,6 +1483,7 @@ function initAdjustments() {
 }
 
 function populateFilters() {
+  populateArtFilters();
   const selV = document.getElementById('filterVendedor');
   const selM = document.getElementById('filterMarca');
   Object.keys(RAW_DATA.vendedores).sort().forEach(v => {
@@ -6365,5 +6366,148 @@ function renderMarkdown(text) {
     .replace(/^(?!<[hup])/gm, '')
     .replace(/¢(\d)/g, '¢$1');
 }
+
+// ==================== VEND-MARCA-ARTÍCULO (TAB 12) ====================
+let _artData = [];
+
+function populateArtFilters() {
+  const vs = document.getElementById('artVendSel');
+  const ms = document.getElementById('artMarcaSel');
+  if (!vs || !ms) return;
+  vs.length = 1;
+  Object.keys(RAW_DATA.vendedores || {})
+    .sort((a,b) => a.replace(/^\d+-/,'').trim().localeCompare(b.replace(/^\d+-/,'').trim(),'es'))
+    .forEach(v => {
+      const o = document.createElement('option');
+      o.value = v;
+      o.text = v.replace(/^\d+-/,'').trim();
+      vs.add(o);
+    });
+  ms.length = 1;
+  Object.keys(RAW_DATA.marcas || {})
+    .sort((a,b) => a.localeCompare(b,'es'))
+    .forEach(m => {
+      const o = document.createElement('option');
+      o.value = m; o.text = m; ms.add(o);
+    });
+}
+
+function onArtVendChange() {
+  _artData = [];
+  renderArtTable();
+}
+
+function onArtMarcaChange() {
+  _artData = [];
+  renderArtTable();
+}
+
+async function loadArticulos() {
+  const marca = document.getElementById('artMarcaSel')?.value;
+  const vend  = document.getElementById('artVendSel')?.value || null;
+  if (!marca) { alert('Seleccioná una marca para cargar artículos.'); return; }
+  const btn = document.getElementById('artLoadBtn');
+  const st  = document.getElementById('artStatus');
+  btn.textContent = '⏳ Cargando...'; btn.disabled = true;
+  st.textContent  = 'Consultando Supabase...';
+  try {
+    const fn = `get_articulos_hist_${CO_PARAM}`;
+    const res = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}` },
+      body: JSON.stringify({ p_vendedor: vend || null, p_marca: marca })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    _artData = await res.json();
+    st.textContent = `${_artData.length} artículos cargados — ${marca}${vend ? ' · '+vend.replace(/^\d+-/,'').trim() : ''}`;
+    renderArtTable();
+  } catch(e) {
+    st.textContent = '❌ Error: ' + e.message;
+    console.error('[art tab]', e);
+  } finally {
+    btn.textContent = '⚡ Cargar artículos'; btn.disabled = false;
+  }
+}
+
+function renderArtTable() {
+  const head = document.getElementById('artTableHead');
+  const body = document.getElementById('artTableBody');
+  const foot = document.getElementById('artTableFoot');
+  if (!head) return;
+
+  const allMonths = RAW_DATA.months || [];
+  // Últimos 9 meses históricos
+  const histLabels = allMonths.slice(-9).map(m => {
+    if (/^[a-z]{3}-\d{2}$/i.test(m)) return m;
+    const p = m.split(' de ');
+    return p.length === 2 ? p[0].slice(0,3)+'-'+p[1].slice(-2) : m;
+  });
+  const projLabels = ['Jul-26','Ago-26','Sep-26'];
+
+  head.innerHTML = '<th>Artículo</th><th>Descripción</th><th>Marca</th><th>Portafolio</th><th>Vendedor</th>' +
+    histLabels.map(m => `<th class="num">${m}</th>`).join('') +
+    projLabels.map(m => `<th class="num" style="color:var(--gold)">${m}</th>`).join('') +
+    '<th class="num">Hist Q3 2025</th>';
+
+  if (!_artData.length) {
+    body.innerHTML = `<tr><td colspan="17" style="text-align:center;color:var(--text3);padding:32px">
+      Seleccioná una marca y presioná <strong>⚡ Cargar artículos</strong>
+    </td></tr>`;
+    foot.innerHTML = '';
+    return;
+  }
+
+  const PORT_COLORS = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
+  const bw = getBudgetMonthlyWeights();
+  const vendProj = computeVendProjections();
+
+  // m0-m23 from RPC: index 6-14 = últimos 9 meses históricos (oct-25 a jun-26)
+  const HIST_IDX = [6,7,8,9,10,11,12,13,14];
+
+  const rows = _artData.map(r => {
+    const hist9 = HIST_IDX.map(i => Number(r[`m${i}`]) || 0);
+    const artHist25 = Number(r.hist_q3_2025) || 0;
+
+    // Proyección: proporción del artículo sobre el total del vendedor en Q3 2025
+    const vendKey = r.vendedor;
+    const vp = vendProj[vendKey] || Object.values(vendProj).find(
+      (_,i) => Object.keys(vendProj)[i] &&
+        Object.keys(vendProj)[i].replace(/^\d+-/,'').trim().toLowerCase() ===
+        (vendKey||'').replace(/^\d+-/,'').trim().toLowerCase()
+    );
+    const vHistTotal = Object.values(RAW_DATA.vendedores[vendKey]?.historico || []).slice(-3).reduce((a,b)=>a+b,0);
+    const share = vHistTotal > 0 ? artHist25 / vHistTotal : 0;
+    const proj3 = vp ? vp.proj.map(p => p * share) : bw.map(w => artHist25 * w);
+
+    const pc = PORT_COLORS[r.portafolio] || 'var(--text3)';
+    const portBadge = r.portafolio
+      ? `<span style="font-size:10px;font-weight:600;color:${pc};background:${pc}18;padding:2px 6px;border-radius:4px;border:1px solid ${pc}40">${r.portafolio}</span>`
+      : '';
+
+    return `<tr>
+      <td style="font-family:monospace;font-size:11px;white-space:nowrap">${r.articulo || ''}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(r.descripcion||'').replace(/"/g,'&quot;')}">${r.descripcion || ''}</td>
+      <td style="font-size:12px">${r.marca || ''}</td>
+      <td>${portBadge}</td>
+      <td style="font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(r.vendedor||'').replace(/^\d+-/,'').trim()}</td>
+      ${hist9.map(x => `<td class="num">${fmt(x)}</td>`).join('')}
+      ${proj3.map(x => `<td class="num" style="color:var(--gold);font-weight:600">${fmt(x)}</td>`).join('')}
+      <td class="num" style="font-weight:600">${fmt(artHist25)}</td>
+    </tr>`;
+  });
+
+  body.innerHTML = rows.join('');
+
+  // Totals footer
+  const grandHist9 = HIST_IDX.map(i => _artData.reduce((s,r) => s+(Number(r[`m${i}`])||0), 0));
+  const grandHist25 = _artData.reduce((s,r) => s+(Number(r.hist_q3_2025)||0), 0);
+  foot.innerHTML = `<tr class="total-row">
+    <td colspan="5"><strong>TOTAL — ${_artData.length} artículos</strong></td>
+    ${grandHist9.map(x => `<td class="num"><strong>${fmt(x)}</strong></td>`).join('')}
+    <td class="num" style="color:var(--gold)" colspan="3"><strong>—</strong></td>
+    <td class="num"><strong>${fmt(grandHist25)}</strong></td>
+  </tr>`;
+}
+
 </script>
 
