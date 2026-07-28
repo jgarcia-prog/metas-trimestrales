@@ -1241,12 +1241,21 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div>
         <div class="card-title">📈 Tendencia — Últimos 9 meses + Proyección Trimestral</div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <span class="filter-label">Ver por:</span>
         <div class="pill-group">
-          <div class="pill active" id="tendPillVend" onclick="setTendenciaView('vendedor')">Vendedor</div>
+          <div class="pill active" id="tendPillVend"  onclick="setTendenciaView('vendedor')">Vendedor</div>
           <div class="pill" id="tendPillMarca" onclick="setTendenciaView('marca')">Marca</div>
+          <div class="pill" id="tendPillMarcaArt" onclick="setTendenciaView('marca-art')">Marca · Art</div>
         </div>
+        <span class="filter-label" id="tendMarcaArtLbl" style="display:none">Marca:</span>
+        <select id="tendMarcaArtSel" class="filter-select" style="display:none;max-width:200px" onchange="onTendMarcaArtChange()">
+          <option value="">— elegí marca —</option>
+        </select>
+        <span class="filter-label" id="tendArtArtLbl" style="display:none">Art:</span>
+        <select id="tendArtArtSel" class="filter-select" style="display:none;max-width:240px" onchange="renderTendenciaTab()">
+          <option value="">Todos (total marca)</option>
+        </select>
         <input type="text" class="search-input" placeholder="🔍 Buscar..." id="searchTendencia" oninput="filterTable('tendenciaTable',this.value,0)">
       </div>
     </div>
@@ -3056,13 +3065,77 @@ function renderClientTable(clientProj) {
 // ==================== TENDENCIA (TAB 11) ====================
 function setTendenciaView(mode) {
   state.tendenciaView = mode;
-  const artSel   = document.getElementById('tendArtSel');
-  const artLbl   = document.getElementById('artSelLabel');
-  if (artSel) artSel.style.display = mode==='marca' ? '' : 'none';
-  if (artLbl) artLbl.style.display = mode==='marca' ? '' : 'none';
+
+  // Pills
   document.getElementById('tendPillVend').classList.toggle('active', mode === 'vendedor');
   document.getElementById('tendPillMarca').classList.toggle('active', mode === 'marca');
+  const pMarcaArt = document.getElementById('tendPillMarcaArt');
+  if (pMarcaArt) pMarcaArt.classList.toggle('active', mode === 'marca-art');
+
+  // Selectores de la nueva vista Marca · Art
+  const show = mode === 'marca-art';
+  const els = ['tendMarcaArtLbl','tendMarcaArtSel','tendArtArtLbl','tendArtArtSel'];
+  els.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = show ? '' : 'none'; });
+
+  // Llenar el selector de marcas si está vacío
+  if (show) {
+    const sel = document.getElementById('tendMarcaArtSel');
+    if (sel && sel.options.length <= 1) {
+      Object.keys(RAW_DATA.marcas || {}).sort((a,b)=>a.localeCompare(b,'es')).forEach(m => {
+        const o = document.createElement('option'); o.value = m; o.text = m; sel.add(o);
+      });
+    }
+  }
+
+  // Artículo dropdown (vista Marca normal — ya existía)
+  const artSel = document.getElementById('tendArtSel');
+  const artLbl = document.getElementById('artSelLabel');
+  if (artSel) artSel.style.display = mode === 'marca' ? '' : 'none';
+  if (artLbl) artLbl.style.display = mode === 'marca' ? '' : 'none';
+
   render();
+}
+
+async function onTendMarcaArtChange() {
+  const marca = document.getElementById('tendMarcaArtSel')?.value;
+  const artSel = document.getElementById('tendArtArtSel');
+  if (!artSel) return;
+  artSel.innerHTML = '<option value="">Todos (total marca)</option>';
+  window._tendArtArtData = null;
+  if (!marca) { renderTendenciaTab(); return; }
+
+  artSel.disabled = true;
+  artSel.options[0].text = '⏳ Cargando artículos...';
+  try {
+    const fn = `get_articulos_hist_${CO_PARAM}`;
+    const res = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}` },
+      body: JSON.stringify({ p_vendedor: null, p_marca: marca })
+    });
+    const arts = await res.json();
+    window._tendArtArtData = arts;
+    artSel.options[0].text = 'Todos (total marca)';
+    // Agrupar por artículo (suma de vendedores) y ordenar por hist desc
+    const byArt = {};
+    arts.forEach(r => {
+      if (!byArt[r.articulo]) byArt[r.articulo] = { articulo: r.articulo, descripcion: r.descripcion, hist: 0, m: Array(24).fill(0) };
+      byArt[r.articulo].hist += Number(r.hist_q3_2025) || 0;
+      for (let i = 0; i < 24; i++) byArt[r.articulo].m[i] += Number(r['m'+i]) || 0;
+    });
+    Object.values(byArt).sort((a,b) => b.hist - a.hist).forEach(a => {
+      const o = document.createElement('option');
+      o.value = a.articulo;
+      o.text = `${a.articulo} — ${a.descripcion}`;
+      artSel.add(o);
+    });
+  } catch(e) {
+    artSel.options[0].text = 'Error al cargar';
+    console.error('[tendencia art]', e);
+  } finally {
+    artSel.disabled = false;
+    renderTendenciaTab();
+  }
 }
 
 function shortMonthLabel(m) {
@@ -3077,7 +3150,15 @@ function renderTendenciaTab(vendProj, marcaProj) {
   const head = document.getElementById('tendenciaTableHead');
   if (!head) return; // tab not in DOM yet
 
-  const byMarca = state.tendenciaView === 'marca';
+  const byMarca    = state.tendenciaView === 'marca';
+  const byMarcaArt = state.tendenciaView === 'marca-art';
+
+  // ── Vista Marca · Artículo ─────────────────────────────────────────────
+  if (byMarcaArt) {
+    renderTendenciaMarcaArt();
+    return;
+  }
+
   const allMonths = RAW_DATA.months || [];
   const histLabels = allMonths.slice(-9).map(shortMonthLabel);
   const projLabels = ['Jul-26', 'Ago-26', 'Sep-26'];
@@ -6191,6 +6272,107 @@ document.addEventListener('click', e => {
   const modal = document.getElementById('confirmModal');
   if (e.target === modal) closeConfirm();
 });
+
+
+function renderTendenciaMarcaArt() {
+  const head = document.getElementById('tendenciaTableHead');
+  const body = document.getElementById('tendenciaTableBody');
+  const foot = document.getElementById('tendenciaTableFoot');
+  if (!head) return;
+
+  const marca = document.getElementById('tendMarcaArtSel')?.value || '';
+  const artSel = document.getElementById('tendArtArtSel');
+  const artFiltro = artSel?.value || '';
+
+  const allMonths = RAW_DATA.months || [];
+  const histLabels = allMonths.slice(-9).map(shortMonthLabel);
+  const projLabels = ['Jul-26','Ago-26','Sep-26'];
+  const HIST_IDX = [6,7,8,9,10,11,12,13,14];
+
+  head.innerHTML = '<th>Artículo</th><th>Descripción</th><th>Portafolio</th>' +
+    histLabels.map(m => `<th class="num">${m}</th>`).join('') +
+    projLabels.map(m => `<th class="num" style="color:var(--gold)">${m}</th>`).join('') +
+    '<th class="num">Hist Q3 2025</th>';
+
+  if (!marca) {
+    body.innerHTML = `<tr><td colspan="15" style="text-align:center;color:var(--text3);padding:28px">Seleccioná una marca en el filtro superior</td></tr>`;
+    foot.innerHTML = '';
+    return;
+  }
+
+  const data = window._tendArtArtData || [];
+  if (!data.length) {
+    body.innerHTML = `<tr><td colspan="15" style="text-align:center;color:var(--text3);padding:28px">⏳ Cargando artículos para <strong>${marca}</strong>...</td></tr>`;
+    foot.innerHTML = '';
+    return;
+  }
+
+  const PORT_COLORS = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
+
+  // Agrupar por artículo (suma todos los vendedores)
+  const byArt = {};
+  data.forEach(r => {
+    if (!byArt[r.articulo]) {
+      byArt[r.articulo] = {
+        articulo: r.articulo, descripcion: r.descripcion,
+        portafolio: r.portafolio, hist_q3_2025: 0, hist_q3_2024: 0,
+        m: Array(24).fill(0), proj: [0,0,0]
+      };
+    }
+    const a = byArt[r.articulo];
+    a.hist_q3_2025 += Number(r.hist_q3_2025) || 0;
+    a.hist_q3_2024 += Number(r.hist_q3_2024) || 0;
+    for (let i = 0; i < 24; i++) a.m[i] += Number(r['m'+i]) || 0;
+  });
+
+  // Filtrar por artículo si hay selección
+  let rows = Object.values(byArt).sort((a,b) => b.hist_q3_2025 - a.hist_q3_2025);
+  if (artFiltro) rows = rows.filter(r => r.articulo === artFiltro);
+
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="15" style="text-align:center;color:var(--text3);padding:28px">Sin datos para el artículo seleccionado</td></tr>`;
+    foot.innerHTML = '';
+    return;
+  }
+
+  // Estimación de proyección: proporcional al peso del artículo en el total de la marca
+  const marcaProj = computeMarcaProjections();
+  const marcaTotalProj = marcaProj[marca]?.proj || [0,0,0];
+  const totalHist25 = rows.reduce((s,r) => s + r.hist_q3_2025, 0) || 1;
+
+  const bw = getBudgetMonthlyWeights();
+
+  body.innerHTML = rows.map(r => {
+    const share = r.hist_q3_2025 / totalHist25;
+    const proj = marcaTotalProj.reduce((a,b)=>a+b,0) > 0
+      ? marcaTotalProj.map(p => p * share)
+      : bw.map(w => r.hist_q3_2025 * w);
+    const pc = PORT_COLORS[r.portafolio] || '#6b7280';
+    const portBadge = r.portafolio
+      ? `<span style="font-size:10px;font-weight:600;color:${pc};background:${pc}18;padding:2px 6px;border-radius:4px;border:1px solid ${pc}40">${r.portafolio}</span>`
+      : '';
+    const hist9 = HIST_IDX.map(i => r.m[i]);
+    return `<tr>
+      <td style="font-family:monospace;font-size:11px;white-space:nowrap">${r.articulo}</td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(r.descripcion||'').replace(/"/g,'&quot;')}">${r.descripcion || ''}</td>
+      <td>${portBadge}</td>
+      ${hist9.map(x => `<td class="num">${fmt(x)}</td>`).join('')}
+      ${proj.map(x => `<td class="num" style="color:var(--gold);font-weight:600">${fmt(x)}</td>`).join('')}
+      <td class="num" style="font-weight:600">${fmt(r.hist_q3_2025)}</td>
+    </tr>`;
+  }).join('');
+
+  const totH9 = HIST_IDX.map(i => rows.reduce((s,r) => s + r.m[i], 0));
+  const totH25 = rows.reduce((s,r) => s + r.hist_q3_2025, 0);
+  const totProj = marcaTotalProj.reduce((a,b)=>a+b,0) > 0
+    ? marcaTotalProj : bw.map(w => totH25 * w);
+  foot.innerHTML = `<tr class="total-row">
+    <td colspan="3"><strong>TOTAL — ${rows.length} artículo(s) · ${marca}</strong></td>
+    ${totH9.map(x => `<td class="num"><strong>${fmt(x)}</strong></td>`).join('')}
+    ${totProj.map(x => `<td class="num" style="color:var(--gold)"><strong>${fmt(x)}</strong></td>`).join('')}
+    <td class="num"><strong>${fmt(totH25)}</strong></td>
+  </tr>`;
+}
 
 function renderMarkdown(text) {
   return text
