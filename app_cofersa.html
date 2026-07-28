@@ -1214,7 +1214,17 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       </div>
     </div>
     <div class="table-wrap" style="max-height:700px">
-      <table class="data-table" id="vcmTable">
+      <table class="data-table" id="vcmTable" style="table-layout:fixed;width:100%">
+        <colgroup>
+          <col style="min-width:300px">
+          <col style="width:130px">
+          <col style="width:130px">
+          <col style="width:130px">
+          <col style="width:130px">
+          <col style="width:130px">
+          <col style="width:130px">
+          <col style="width:90px">
+        </colgroup>
         <thead>
           <tr>
             <th style="min-width:300px">Zona / Cliente / Marca</th>
@@ -2567,9 +2577,9 @@ function renderVCMTable(vendProj) {
           <td class="num ${cVar>=0?'pos':'neg'}">${fmtPct(cVar)}</td>
         </tr>
         <tr class="vp-port-row hidden" data-vcm-vend="${vidx}" data-vcm-marca-row="${rowId}" style="display:none !important">
-          <td colspan="8" style="padding:0">
-            <div id="${rowId}_content" style="padding:6px 28px 6px 52px;background:var(--bg3)">
-              <span style="color:var(--text3);font-size:12px">↑ Clic en el cliente para cargar sus marcas</span>
+          <td colspan="8" style="padding:0;border-top:none">
+            <div id="${rowId}_content" style="overflow-x:auto">
+              <span style="color:var(--text3);font-size:12px;padding:8px 72px;display:block">↑ Clic en el cliente para cargar sus marcas</span>
             </div>
           </td>
         </tr>`;
@@ -2654,30 +2664,55 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
     return;
   }
 
-  const table = marcas.map(m => {
+  // Distribuir meta_q3 en Jul/Ago/Sep usando los pesos históricos 2025 de la marca
+  const rows = marcas.map(m => {
     const h25  = Number(m.hist_q3_2025)||0;
     const h24  = Number(m.hist_q3_2024)||0;
     const tot  = Number(m.meta_q3)||0;
     const varP = h25>0?((tot-h25)/h25*100):0;
     const pColor = PORT_COLORS_MAP[m.portafolio] || 'var(--text3)';
-    return `<tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:5px 8px;font-size:12px">
+    // Distribuir tot en Jul/Ago/Sep proporcional al historial 2025 de cada mes
+    const wJul = Number(m.m_jul25)||0;
+    const wAgo = Number(m.m_ago25)||0;
+    const wSep = Number(m.m_sep25)||0;
+    const wSum = wJul + wAgo + wSep;
+    const mJul = wSum > 0 ? tot * wJul / wSum : tot / 3;
+    const mAgo = wSum > 0 ? tot * wAgo / wSum : tot / 3;
+    const mSep = wSum > 0 ? tot - mJul - mAgo    : tot / 3;
+    return `<tr class="vp-port-row hidden" data-vcm-vend="${marcas._vidx||''}" style="background:var(--bg3)">
+      <td style="padding:4px 8px 4px 72px;font-size:12px;min-width:300px">
         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${pColor};margin-right:6px"></span>
         🏷️ ${m.marca}
         <span style="font-size:10px;color:var(--text3);margin-left:4px">${m.portafolio}</span>
       </td>
-      <td style="text-align:right;padding:5px 8px;font-size:12px">${fmt(h24)}</td>
-      <td style="text-align:right;padding:5px 8px;font-size:12px">${fmt(h25)}</td>
-      <td style="text-align:right;padding:5px 8px;font-size:12px">${fmt(Number(m.m_jul25)||0)}</td>
-      <td style="text-align:right;padding:5px 8px;font-size:12px">${fmt(Number(m.m_ago25)||0)}</td>
-      <td style="text-align:right;padding:5px 8px;font-size:12px">${fmt(Number(m.m_sep25)||0)}</td>
-      <td style="text-align:right;padding:5px 8px;font-size:12px;font-weight:600">${fmt(tot)}</td>
-      <td style="text-align:right;padding:5px 8px;font-size:12px" class="${varP>=0?'pos':'neg'}">${fmtPct(varP)}</td>
+      <td class="num" style="font-size:12px">${fmt(h24)}</td>
+      <td class="num" style="font-size:12px">${fmt(h25)}</td>
+      <td class="num" style="font-size:12px;color:var(--gold)">${fmt(mJul)}</td>
+      <td class="num" style="font-size:12px;color:var(--gold)">${fmt(mAgo)}</td>
+      <td class="num" style="font-size:12px;color:var(--gold)">${fmt(mSep)}</td>
+      <td class="num" style="font-size:12px;font-weight:600">${fmt(tot)}</td>
+      <td class="num" style="font-size:12px" class="${varP>=0?'pos':'neg'}">${fmtPct(varP)}</td>
     </tr>`;
   }).join('');
 
-  document.getElementById(`${rowId}_content`).innerHTML =
-    `<table style="width:100%;border-collapse:collapse"><tbody>${table}</tbody></table>`;
+  // Insertar como <tr> reales en el tbody principal — alineación perfecta con las columnas del header
+  const marcaContainer = document.getElementById(`${rowId}_content`);
+  if (marcaContainer) {
+    // Modo fallback: tabla interior en el div (para compatibilidad)
+    // Limpiar atributos de la fila que son solo para tbody principal y renderizar
+    const cleanRows = rows
+      .replace(/class="vp-port-row hidden" [^>]*>/g, 'style="background:var(--bg3);">')
+      .replace(/\bdata-vcm-vend="[^"]*"/g, '');
+    marcaContainer.innerHTML = `<table style="width:100%;table-layout:fixed;border-collapse:collapse">
+      <colgroup>
+        <col style="min-width:300px">
+        <col style="width:130px"><col style="width:130px">
+        <col style="width:130px"><col style="width:130px"><col style="width:130px">
+        <col style="width:130px"><col style="width:90px">
+      </colgroup>
+      <tbody>${cleanRows}</tbody>
+    </table>`;
+  }
 }
 
 
