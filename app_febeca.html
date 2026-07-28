@@ -4726,7 +4726,7 @@ const SUPA_MONTH_LABELS = [
   'ene-26','feb-26','mar-26','abr-26','may-26','jun-26'
 ];
 
-async function supaRPC(fn) {
+async function supaRPC(fn, params = {}) {
   const res = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
     method: 'POST',
     headers: {
@@ -4734,7 +4734,7 @@ async function supaRPC(fn) {
       'apikey': SUPA_KEY,
       'Authorization': `Bearer ${SUPA_KEY}`
     },
-    body: '{}'
+    body: JSON.stringify(params)
   });
   if (!res.ok) throw new Error(`RPC ${fn} failed: ${res.status} ${await res.text()}`);
   return res.json();
@@ -4764,14 +4764,25 @@ async function loadFromSupabase() {
 
   try {
     // Fetch all 6 RPCs in parallel
-    const [vendRows, marcaRows, clienteRows, portReglas, vendMarcaRows, vcmRows] = await Promise.all([
+    const [vendRows, marcaRows, clienteRows, portReglas, vendMarcaRows, vcmRows, cfgRows] = await Promise.all([
       supaRPC('get_vendedores_hist_febeca'),
       supaRPC('get_marcas_hist_febeca'),
       supaRPC('get_clientes_hist_febeca'),
       supaRPC('get_vendor_portafolio'),
       supaRPC('get_vend_marca_hist_febeca'),
-      supaRPC('get_vcm_export_febeca')
+      supaRPC('get_vcm_export_febeca'),
+      supaRPC('get_config_empresa', {p_empresa: 'febeca'})
     ]);
+
+    // ── Aplicar configuración de empresa desde Supabase ──
+    if (cfgRows && cfgRows.length > 0) {
+      const cfg = cfgRows[0];
+      if (cfg.presupuesto_q3 && parseFloat(cfg.presupuesto_q3) > 0) {
+        state.budgetTarget = parseFloat(cfg.presupuesto_q3);
+        const bi = document.getElementById('budgetInput');
+        if (bi) bi.value = Math.round(state.budgetTarget / 1e6);
+      }
+    }
 
     // ── Build RAW_DATA.vendMarcaHist: { marca: { vendedor: {w, h25, h24} } } ──
     // Real vendor×brand participation (same vendedor_secundario join as
