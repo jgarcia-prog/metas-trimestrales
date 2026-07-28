@@ -1948,7 +1948,8 @@ function scheduleAutoSave() {
 }
 
 function render() {
-  invalidateProjCache();
+  // _projCache se invalida en cada mutación de estado (updateAdj, editMarcaCell, etc.)
+  // NO se invalida aquí — así el caché persiste entre renders si el estado no cambió
   scheduleAutoSave();
   const vendProj = computeVendProjections();
   const marcaProj = computeMarcaProjections();
@@ -2061,6 +2062,8 @@ function fmtPct(v) {
 }
 
 function renderKPIs(q2Hist, totalProj, budget, monthlyProj, monthlyHist25) {
+  // Skip chart rebuild when Resumen tab is not active — avoids 7x WebGL destroy/create
+  const _skipCharts = (window._activeTabIdx !== undefined && window._activeTabIdx !== 0);
   document.getElementById('kpi_hist').textContent = '¢' + fmt(q2Hist);
   document.getElementById('kpi_budget').textContent = '¢' + fmt(budget);
   document.getElementById('kpi_proj').textContent = '¢' + fmt(totalProj);
@@ -3269,6 +3272,7 @@ function updateAdj(type, key, input) {
   if (guardLocked()) { render(); return; }
   const val = parseFloat(input.value);
   state.adjustments[type][key] = val;
+  invalidateProjCache(); // estado cambió → proyección debe recalcularse
   const pct = (val + 50) / 100 * 100;
   input.style.setProperty('--val', pct + '%');
   const lblId = input.id + '_lbl';
@@ -3277,7 +3281,9 @@ function updateAdj(type, key, input) {
     lbl.textContent = (val >= 0 ? '+' : '') + val.toFixed(0) + '%';
     lbl.style.color = val > 0 ? 'var(--teal)' : val < 0 ? 'var(--red)' : 'var(--text2)';
   }
-  render();
+  // Debounce 120ms — slider oninput puede disparar 30+ veces/seg
+  clearTimeout(window._adjDebounce);
+  window._adjDebounce = setTimeout(render, 120);
 }
 
 // ==================== FILTERS ====================
