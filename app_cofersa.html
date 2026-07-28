@@ -1279,28 +1279,42 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   </div>
 </div>
 
-<!-- TAB 12: VEND-MARCA-ARTICULO -->
+<!-- TAB 12: VEND-MARCA-ARTICULO (árbol jerárquico) -->
 <div class="panel-section" id="tab12">
   <div class="card">
     <div class="card-header">
       <div>
-        <div class="card-title">📦 Vend · Marca · Artículo — Tendencia histórica + Proyección</div>
+        <div class="card-title">📦 Zona · Marca · Artículo — Historial + Proyección</div>
+        <div class="card-sub">Expandí un vendedor → una marca → ver artículos con historial y meta</div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <span class="filter-label">Vendedor:</span>
-        <select id="artVendSel" class="filter-select" onchange="onArtVendChange()"><option value="">Todos</option></select>
-        <span class="filter-label">Marca:</span>
-        <select id="artMarcaSel" class="filter-select" onchange="onArtMarcaChange()"><option value="">— elegí marca —</option></select>
-        <input type="text" class="search-input" placeholder="🔍 Buscar artículo..." id="searchArt" oninput="filterTable('artTable',this.value,2)">
-        <button class="btn btn-primary" onclick="loadArticulos()" id="artLoadBtn" style="font-size:12px;padding:6px 14px">⚡ Cargar artículos</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-outline" onclick="expandAll('artBody')" style="font-size:12px;padding:5px 12px">↕ Expandir todo</button>
+        <button class="btn btn-outline" onclick="collapseAll('artBody')" style="font-size:12px;padding:5px 12px">↕ Colapsar todo</button>
+        <input type="text" class="search-input" placeholder="🔍 Buscar..." id="searchArt" oninput="filterTable('artBody',this.value,0)">
       </div>
     </div>
-    <div id="artStatus" style="font-size:12px;color:var(--text3);padding:4px 0 0 2px"></div>
-    <div class="table-wrap" style="max-height:60vh">
-      <table class="data-table" id="artTable">
-        <thead><tr id="artTableHead"></tr></thead>
-        <tbody id="artTableBody"></tbody>
-        <tfoot id="artTableFoot"></tfoot>
+    <div class="table-wrap" style="max-height:70vh">
+      <table class="data-table" id="artTable" style="table-layout:fixed;width:100%">
+        <colgroup>
+          <col style="min-width:300px">
+          <col style="width:120px"><col style="width:120px">
+          <col style="width:120px"><col style="width:120px"><col style="width:120px">
+          <col style="width:120px"><col style="width:90px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th style="min-width:300px">Zona / Marca / Artículo</th>
+            <th class="num">Hist Q3 2024</th>
+            <th class="num">Hist Q3 2025</th>
+            <th class="num">Meta Jul 2026</th>
+            <th class="num">Meta Ago 2026</th>
+            <th class="num">Meta Sep 2026</th>
+            <th class="num">Total Meta Q3</th>
+            <th class="num">Var % vs 2025</th>
+          </tr>
+        </thead>
+        <tbody id="artBody"></tbody>
+        <tfoot id="artFoot"></tfoot>
       </table>
     </div>
   </div>
@@ -6437,144 +6451,219 @@ function renderMarkdown(text) {
 // ==================== VEND-MARCA-ARTÍCULO (TAB 12) ====================
 let _artData = [];
 
-function populateArtFilters() {
-  const vs = document.getElementById('artVendSel');
-  const ms = document.getElementById('artMarcaSel');
-  if (!vs || !ms) return;
-  vs.length = 1;
-  Object.keys(RAW_DATA.vendedores || {})
-    .sort((a,b) => a.replace(/^\d+-/,'').trim().localeCompare(b.replace(/^\d+-/,'').trim(),'es'))
-    .forEach(v => {
-      const o = document.createElement('option');
-      o.value = v;
-      o.text = v.replace(/^\d+-/,'').trim();
-      vs.add(o);
-    });
-  ms.length = 1;
-  Object.keys(RAW_DATA.marcas || {})
-    .sort((a,b) => a.localeCompare(b,'es'))
-    .forEach(m => {
-      const o = document.createElement('option');
-      o.value = m; o.text = m; ms.add(o);
-    });
-}
 
-function onArtVendChange() {
-  _artData = [];
-  renderArtTable();
-}
+// ==================== TAB 12: ZONA × MARCA × ARTÍCULO (árbol jerárquico) ====================
+let _artCache = {}; // cache: "vend|marca" → array de artículos
 
-function onArtMarcaChange() {
-  _artData = [];
-  renderArtTable();
-}
+function renderArtTab(vendProj) {
+  const body = document.getElementById('artBody');
+  const foot = document.getElementById('artFoot');
+  if (!body) return;
 
-async function loadArticulos() {
-  const marca = document.getElementById('artMarcaSel')?.value;
-  const vend  = document.getElementById('artVendSel')?.value || null;
-  if (!marca) { alert('Seleccioná una marca para cargar artículos.'); return; }
-  const btn = document.getElementById('artLoadBtn');
-  const st  = document.getElementById('artStatus');
-  btn.textContent = '⏳ Cargando...'; btn.disabled = true;
-  st.textContent  = 'Consultando Supabase...';
-  try {
-    const fn = `get_articulos_hist_${CO_PARAM}`;
-    const res = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}` },
-      body: JSON.stringify({ p_vendedor: vend || null, p_marca: marca })
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    _artData = await res.json();
-    st.textContent = `${_artData.length} artículos cargados — ${marca}${vend ? ' · '+vend.replace(/^\d+-/,'').trim() : ''}`;
-    renderArtTable();
-  } catch(e) {
-    st.textContent = '❌ Error: ' + e.message;
-    console.error('[art tab]', e);
-  } finally {
-    btn.textContent = '⚡ Cargar artículos'; btn.disabled = false;
-  }
-}
+  const hasSupa = RAW_DATA.vendMarcaHist && Object.keys(RAW_DATA.vendMarcaHist).length > 0;
+  const sorted  = Object.entries(vendProj || {})
+    .map(([v, d]) => ({ v, ...d, total: d.proj.reduce((a,b)=>a+b,0) }))
+    .sort((a,b) => a.v.replace(/^\d+-/,'').trim().localeCompare(b.v.replace(/^\d+-/,'').trim(),'es'));
 
-function renderArtTable() {
-  const head = document.getElementById('artTableHead');
-  const body = document.getElementById('artTableBody');
-  const foot = document.getElementById('artTableFoot');
-  if (!head) return;
+  const grandH24  = sorted.reduce((s,x)=>s+(x.histQ2_2024||0),0);
+  const grandH25  = sorted.reduce((s,x)=>s+(x.histQ2_2025||0),0);
+  const grandTot  = sorted.reduce((s,x)=>s+x.total,0);
+  const grandVar  = grandH25>0?((grandTot-grandH25)/grandH25*100):0;
 
-  const allMonths = RAW_DATA.months || [];
-  // Últimos 9 meses históricos
-  const histLabels = allMonths.slice(-9).map(m => {
-    if (/^[a-z]{3}-\d{2}$/i.test(m)) return m;
-    const p = m.split(' de ');
-    return p.length === 2 ? p[0].slice(0,3)+'-'+p[1].slice(-2) : m;
-  });
-  const projLabels = ['Jul-26','Ago-26','Sep-26'];
+  let html = '';
+  sorted.forEach((x, vidx) => {
+    const label  = x.v.replace(/^\d+-/,'').replace(/\.\./g,'.').trim();
+    const varPct = x.histQ2_2025>0?((x.total-x.histQ2_2025)/x.histQ2_2025*100):0;
 
-  head.innerHTML = '<th>Artículo</th><th>Descripción</th><th>Marca</th><th>Portafolio</th><th>Vendedor</th>' +
-    histLabels.map(m => `<th class="num">${m}</th>`).join('') +
-    projLabels.map(m => `<th class="num" style="color:var(--gold)">${m}</th>`).join('') +
-    '<th class="num">Hist Q3 2025</th>';
-
-  if (!_artData.length) {
-    body.innerHTML = `<tr><td colspan="17" style="text-align:center;color:var(--text3);padding:32px">
-      Seleccioná una marca y presioná <strong>⚡ Cargar artículos</strong>
-    </td></tr>`;
-    foot.innerHTML = '';
-    return;
-  }
-
-  const PORT_COLORS = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
-  const bw = getBudgetMonthlyWeights();
-  const vendProj = computeVendProjections();
-
-  // m0-m23 from RPC: index 6-14 = últimos 9 meses históricos (oct-25 a jun-26)
-  const HIST_IDX = [6,7,8,9,10,11,12,13,14];
-
-  const rows = _artData.map(r => {
-    const hist9 = HIST_IDX.map(i => Number(r[`m${i}`]) || 0);
-    const artHist25 = Number(r.hist_q3_2025) || 0;
-
-    // Proyección: proporción del artículo sobre el total del vendedor en Q3 2025
-    const vendKey = r.vendedor;
-    const vp = vendProj[vendKey] || Object.values(vendProj).find(
-      (_,i) => Object.keys(vendProj)[i] &&
-        Object.keys(vendProj)[i].replace(/^\d+-/,'').trim().toLowerCase() ===
-        (vendKey||'').replace(/^\d+-/,'').trim().toLowerCase()
-    );
-    const vHistTotal = Object.values(RAW_DATA.vendedores[vendKey]?.historico || []).slice(-3).reduce((a,b)=>a+b,0);
-    const share = vHistTotal > 0 ? artHist25 / vHistTotal : 0;
-    const proj3 = vp ? vp.proj.map(p => p * share) : bw.map(w => artHist25 * w);
-
-    const pc = PORT_COLORS[r.portafolio] || 'var(--text3)';
-    const portBadge = r.portafolio
-      ? `<span style="font-size:10px;font-weight:600;color:${pc};background:${pc}18;padding:2px 6px;border-radius:4px;border:1px solid ${pc}40">${r.portafolio}</span>`
-      : '';
-
-    return `<tr>
-      <td style="font-family:monospace;font-size:11px;white-space:nowrap">${r.articulo || ''}</td>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(r.descripcion||'').replace(/"/g,'&quot;')}">${r.descripcion || ''}</td>
-      <td style="font-size:12px">${r.marca || ''}</td>
-      <td>${portBadge}</td>
-      <td style="font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(r.vendedor||'').replace(/^\d+-/,'').trim()}</td>
-      ${hist9.map(x => `<td class="num">${fmt(x)}</td>`).join('')}
-      ${proj3.map(x => `<td class="num" style="color:var(--gold);font-weight:600">${fmt(x)}</td>`).join('')}
-      <td class="num" style="font-weight:600">${fmt(artHist25)}</td>
+    html += `<tr class="vp-vendor-row" onclick="toggleArtVend(${vidx})">
+      <td><span class="vp-toggle" id="artvtog_${vidx}">+</span><strong>${label}</strong></td>
+      <td class="num">${fmt(x.histQ2_2024||0)}</td>
+      <td class="num">${fmt(x.histQ2_2025||0)}</td>
+      <td class="num">${fmt(x.proj[0])}</td>
+      <td class="num">${fmt(x.proj[1])}</td>
+      <td class="num">${fmt(x.proj[2])}</td>
+      <td class="num" style="color:var(--teal);font-weight:700">${fmt(x.total)}</td>
+      <td class="num ${varPct>=0?'pos':'neg'}">${fmtPct(varPct)}</td>
     </tr>`;
+
+    if (!hasSupa) {
+      html += `<tr class="vp-port-row p2 hidden" data-art-vend="${vidx}">
+        <td colspan="8" style="padding-left:28px;color:var(--text3);font-style:italic">
+          Cargá datos desde ⚡ Supabase para ver las marcas
+        </td></tr>`;
+    } else {
+      // Marcas que vende este vendedor (desde vendMarcaHist)
+      const vendMarcas = Object.entries(RAW_DATA.vendMarcaHist || {})
+        .filter(([,vm]) => vm[x.v] && (vm[x.v].w||0) > 0)
+        .sort((a,b) => (b[1][x.v]?.h25||0)-(a[1][x.v]?.h25||0));
+
+      if (vendMarcas.length === 0) {
+        html += `<tr class="vp-port-row p2 hidden" data-art-vend="${vidx}">
+          <td colspan="8" style="padding-left:28px;color:var(--text3);font-style:italic">Sin marcas registradas</td></tr>`;
+      } else {
+        const PORT_COLORS = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
+        const mProj = computeMarcaProjections();
+
+        vendMarcas.forEach(([marca, vm], midx) => {
+          const md    = vm[x.v] || {};
+          const mH25  = md.h25 || 0;
+          const mH24  = md.h24 || 0;
+          const mPort = RAW_DATA.marcas[marca]?.portafolio || '';
+          const pc    = PORT_COLORS[mPort] || '#6b7280';
+          const portBadge = mPort
+            ? `<span style="font-size:10px;font-weight:600;color:${pc};background:${pc}18;padding:2px 6px;border-radius:4px;border:1px solid ${pc}40">${mPort}</span>`
+            : '';
+
+          // Proyección de la marca para este vendedor = proporción del vendedor en la marca
+          const mp    = mProj[marca];
+          const mTotal = mp ? mp.proj.reduce((a,b)=>a+b,0) : 0;
+          const marcaVendSum = Object.values(vm).reduce((s,d)=>s+(d.h25||0),0)||1;
+          const share = mH25 / marcaVendSum;
+          const mJul  = mp ? mp.proj[0]*share : 0;
+          const mAgo  = mp ? mp.proj[1]*share : 0;
+          const mSep  = mp ? mp.proj[2]*share : 0;
+          const mTot  = mJul+mAgo+mSep;
+          const mVar  = mH25>0?((mTot-mH25)/mH25*100):0;
+          const rowId = `art_${vidx}_${midx}`;
+
+          html += `<tr class="vp-port-row p2 hidden" data-art-vend="${vidx}"
+              onclick="toggleArtMarca('${rowId}','${x.v.replace(/'/g,"\\'")}',' ${marca.replace(/'/g,"\\'")}')"
+              style="cursor:pointer">
+            <td style="padding-left:28px">
+              <span class="vp-toggle" id="${rowId}_tog">+</span>
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${pc};margin-right:5px"></span>
+              🏷️ ${marca} ${portBadge}
+            </td>
+            <td class="num">${fmt(mH24)}</td>
+            <td class="num">${fmt(mH25)}</td>
+            <td class="num">${fmt(mJul)}</td>
+            <td class="num">${fmt(mAgo)}</td>
+            <td class="num">${fmt(mSep)}</td>
+            <td class="num" style="font-weight:600">${fmt(mTot)}</td>
+            <td class="num ${mVar>=0?'pos':'neg'}">${fmtPct(mVar)}</td>
+          </tr>
+          <tr class="vp-port-row hidden" data-art-vend="${vidx}" data-art-marca-row="${rowId}" style="display:none !important">
+            <td colspan="8" style="padding:0;border-top:none">
+              <div id="${rowId}_content" style="overflow-x:auto">
+                <span style="color:var(--text3);font-size:12px;padding:8px 72px;display:block">↑ Clic en la marca para cargar artículos</span>
+              </div>
+            </td>
+          </tr>`;
+        });
+      }
+    }
   });
 
-  body.innerHTML = rows.join('');
-
-  // Totals footer
-  const grandHist9 = HIST_IDX.map(i => _artData.reduce((s,r) => s+(Number(r[`m${i}`])||0), 0));
-  const grandHist25 = _artData.reduce((s,r) => s+(Number(r.hist_q3_2025)||0), 0);
+  body.innerHTML = html;
   foot.innerHTML = `<tr class="total-row">
-    <td colspan="5"><strong>TOTAL — ${_artData.length} artículos</strong></td>
-    ${grandHist9.map(x => `<td class="num"><strong>${fmt(x)}</strong></td>`).join('')}
-    <td class="num" style="color:var(--gold)" colspan="3"><strong>—</strong></td>
-    <td class="num"><strong>${fmt(grandHist25)}</strong></td>
+    <td><strong>TOTAL GENERAL</strong></td>
+    <td class="num"><strong>${fmt(grandH24)}</strong></td>
+    <td class="num"><strong>${fmt(grandH25)}</strong></td>
+    <td class="num"><strong>${fmt(sorted.reduce((s,x)=>s+x.proj[0],0))}</strong></td>
+    <td class="num"><strong>${fmt(sorted.reduce((s,x)=>s+x.proj[1],0))}</strong></td>
+    <td class="num"><strong>${fmt(sorted.reduce((s,x)=>s+x.proj[2],0))}</strong></td>
+    <td class="num" style="color:var(--teal)"><strong>${fmt(grandTot)}</strong></td>
+    <td class="num ${grandVar>=0?'pos':'neg'}"><strong>${fmtPct(grandVar)}</strong></td>
   </tr>`;
 }
 
-</script>
+function toggleArtVend(vidx) {
+  const rows = document.querySelectorAll(`#artBody tr[data-art-vend="${vidx}"]`);
+  const tog  = document.getElementById(`artvtog_${vidx}`);
+  const isOpen = tog && tog.textContent === '−';
+  rows.forEach(r => {
+    if (isOpen) { r.classList.add('hidden'); r.style.display = ''; }
+    else        { r.classList.remove('hidden'); }
+  });
+  if (tog) tog.textContent = isOpen ? '+' : '−';
+}
+
+async function toggleArtMarca(rowId, vendedor, marca) {
+  const marcaRow = document.querySelector(`tr[data-art-marca-row="${rowId}"]`);
+  const tog      = document.getElementById(`${rowId}_tog`);
+  if (!marcaRow) return;
+
+  const isOpen = marcaRow.style.display !== 'none' && marcaRow.style.display !== '';
+  if (isOpen) {
+    marcaRow.style.display = 'none';
+    if (tog) tog.textContent = '+';
+    return;
+  }
+  marcaRow.style.display = 'table-row';
+  if (tog) tog.textContent = '−';
+
+  const cacheKey = `${vendedor.trim()}|${marca.trim()}`;
+  if (!_artCache[cacheKey]) {
+    const content = document.getElementById(`${rowId}_content`);
+    if (content) content.innerHTML = '<span style="color:var(--text3);font-size:12px;padding:8px 72px;display:block">⏳ Cargando artículos...</span>';
+    try {
+      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`},
+        body: JSON.stringify({ p_vendedor: vendedor.trim(), p_marca: marca.trim() })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      _artCache[cacheKey] = await res.json();
+    } catch(e) {
+      const c = document.getElementById(`${rowId}_content`);
+      if (c) c.innerHTML = `<span style="color:var(--red);padding:8px 72px;display:block">❌ Error: ${e.message}</span>`;
+      return;
+    }
+  }
+
+  const arts = _artCache[cacheKey];
+  const PORT_COLORS = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
+  const mProj = computeMarcaProjections();
+  const mp    = mProj[marca.trim()];
+  const totH25 = arts.reduce((s,r)=>s+(Number(r.hist_q3_2025)||0),0)||1;
+
+  if (!arts.length) {
+    const c = document.getElementById(`${rowId}_content`);
+    if (c) c.innerHTML = '<span style="color:var(--text3);font-size:12px;padding:8px 72px;display:block;font-style:italic">Sin artículos con ventas en el período</span>';
+    return;
+  }
+
+  const rows = arts.map(r => {
+    const h25 = Number(r.hist_q3_2025)||0;
+    const h24 = Number(r.hist_q3_2024)||0;
+    const tot = mp ? mp.proj.reduce((a,b)=>a+b,0) * (h25/totH25) : h25;
+    const wJul = Number(r.m12)||0, wAgo = Number(r.m13)||0, wSep = Number(r.m14)||0;
+    const wSum = wJul+wAgo+wSep;
+    const mJul = wSum>0?tot*wJul/wSum:tot/3;
+    const mAgo = wSum>0?tot*wAgo/wSum:tot/3;
+    const mSep = wSum>0?tot-mJul-mAgo:tot/3;
+    const varP = h25>0?((tot-h25)/h25*100):0;
+    const pc   = PORT_COLORS[r.portafolio]||'#6b7280';
+    return `<tr style="background:var(--bg3);border-bottom:1px solid var(--border)">
+      <td style="padding:4px 8px 4px 72px;font-size:11px;min-width:300px">
+        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${pc};margin-right:5px"></span>
+        📦 <span style="font-family:monospace">${r.articulo||''}</span>
+        <span style="color:var(--text3);margin-left:6px;font-size:10px;overflow:hidden;text-overflow:ellipsis">${r.descripcion||''}</span>
+      </td>
+      <td class="num" style="font-size:11px">${fmt(h24)}</td>
+      <td class="num" style="font-size:11px">${fmt(h25)}</td>
+      <td class="num" style="font-size:11px;color:var(--gold)">${fmt(mJul)}</td>
+      <td class="num" style="font-size:11px;color:var(--gold)">${fmt(mAgo)}</td>
+      <td class="num" style="font-size:11px;color:var(--gold)">${fmt(mSep)}</td>
+      <td class="num" style="font-size:11px;font-weight:600">${fmt(tot)}</td>
+      <td class="num" style="font-size:11px" class="${varP>=0?'pos':'neg'}">${fmtPct(varP)}</td>
+    </tr>`;
+  }).join('');
+
+  const content = document.getElementById(`${rowId}_content`);
+  if (content) {
+    content.innerHTML = `<table style="width:100%;table-layout:fixed;border-collapse:collapse">
+      <colgroup>
+        <col style="min-width:300px">
+        <col style="width:120px"><col style="width:120px">
+        <col style="width:120px"><col style="width:120px"><col style="width:120px">
+        <col style="width:120px"><col style="width:90px">
+      </colgroup>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+}
+
+// Limpiar caché de artículos al resetear
+function clearArtCache() { _artCache = {}; }
 
