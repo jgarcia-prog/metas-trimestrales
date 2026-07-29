@@ -4966,9 +4966,11 @@ async function loadFromSupabase() {
     renderBudgetBreakdown();
     renderAdjPanels();
     renderReasigList();
+    // CRITICAL: invalidar caché de proyecciones — RAW_DATA fue reemplazado por Supabase
+    invalidateProjCache();
     render();
 
-    document.getElementById('dataStatus').textContent = `● Supabase · ${vendRows.length} zonas · ${Object.keys(newClientes).length} clientes · ${Object.keys(vendedorPortafolio).length} reglas portafolio`;
+    document.getElementById('dataStatus').textContent = `● Supabase · ${vendRows.length} zonas · ${marcaRows.length} marcas · ${Object.keys(newClientes).length} clientes`;
     document.getElementById('dataStatus').className = 'status-chip chip-ok';
     document.getElementById('supabaseBtnIcon').style.display = 'none';
     txt.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 0 3px rgba(34,197,94,0.25);margin-right:6px"></span>Supabase';
@@ -5597,6 +5599,7 @@ function loadSavedState() {
     if (snapshot.rawDataModified && snapshot.rawData) {
       Object.assign(RAW_DATA, snapshot.rawData);
       window._rawDataModified = true;
+      invalidateProjCache(); // RAW_DATA fue restaurado desde localStorage
       // CRITICAL: refresh ORIGINAL_RAW_DATA so "Cambios de Cartera" don't wipe restored data
       ORIGINAL_RAW_DATA = JSON.parse(JSON.stringify(RAW_DATA));
       window._originalVendedorClientes = JSON.parse(JSON.stringify(RAW_DATA.vendedorClientes || {}));
