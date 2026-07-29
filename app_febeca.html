@@ -2081,19 +2081,40 @@ function render() {
     vendKeys.reduce((s, v) => s + (RAW_DATA.vendedores[v]?.historico?.[i] || 0), 0)
   );
 
-  renderKPIs(q2Hist, totalProj, budget, monthlyProj, monthlyHist25);
-  renderAlerts(totalProj, budget);
-  renderVendTable(vendProj);
-  renderMarcaTable(marcaProj);
-  renderVendPortTable(vendProj, portProj);
-  renderVendMarcaTable(vendProj, vcmGrid);
-  renderVendClienteTable(vendProj, vcmSplit);
-  renderVCMTable(vendProj);
-  renderArtTab(vendProj);
-  renderClientTable(clientProj);
-  renderAdjPanels();
-  renderTendenciaTab(vendProj, marcaProj, vcmGrid);
+  // Guarda los datos calculados para que switchTab() pueda pintar cada
+  // pestaña bajo demanda sin recalcular ni re-renderizar las demás —
+  // evita reconstruir 8 tablas + 2 charts en cada click de tab.
+  _lastRenderData = { vendProj, marcaProj, portProj, vcmGrid, vcmSplit, clientProj,
+                       totalProj, q2Hist, budget, monthlyProj, monthlyHist25 };
+
+  renderTabContent(window._activeTabIdx ?? 0);
   if (typeof applyLockUI === 'function' && isLocked()) applyLockUI();
+}
+
+// Pinta únicamente el contenido de la pestaña activa usando los datos ya
+// calculados en el último render(). Las demás pestañas quedan con su HTML
+// previo (invisible por .panel-section{display:none}) y se actualizan
+// recién cuando el usuario entra a ellas vía switchTab().
+let _lastRenderData = null;
+function renderTabContent(idx) {
+  const d = _lastRenderData;
+  if (!d) return;
+  switch (idx) {
+    case 0:
+      renderKPIs(d.q2Hist, d.totalProj, d.budget, d.monthlyProj, d.monthlyHist25);
+      renderAlerts(d.totalProj, d.budget);
+      break;
+    case 1: renderVendTable(d.vendProj); break;
+    case 2: renderMarcaTable(d.marcaProj); break;
+    case 4: renderVendPortTable(d.vendProj, d.portProj); break;
+    case 5: renderClientTable(d.clientProj); break;
+    case 6: renderAdjPanels(); break;
+    case 8: renderVendMarcaTable(d.vendProj, d.vcmGrid); break;
+    case 9: renderVendClienteTable(d.vendProj, d.vcmSplit); break;
+    case 10: renderVCMTable(d.vendProj); break;
+    case 11: renderTendenciaTab(d.vendProj, d.marcaProj, d.vcmGrid); break;
+    case 12: renderArtTab(d.vendProj); break;
+  }
 }
 
 function fmt(v) {
@@ -3638,7 +3659,10 @@ function switchTab(idx) {
     const match = t.getAttribute('onclick')?.match(/switchTab\((\d+)\)/);
     t.classList.toggle('active', match && parseInt(match[1]) === idx);
   });
-  setTimeout(render, 50);
+  window._activeTabIdx = idx;
+  // Solo pinta la pestaña recién activada con los datos ya calculados —
+  // evita el lag de reconstruir las 12 pestañas en cada click.
+  requestAnimationFrame(() => renderTabContent(idx));
 }
 
 // ==================== EMAIL METAS ====================
