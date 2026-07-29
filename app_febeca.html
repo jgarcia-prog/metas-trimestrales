@@ -4848,17 +4848,26 @@ async function loadFromSupabase() {
   document.getElementById('dataStatus').textContent = '⏳ Conectando a Supabase...';
   document.getElementById('dataStatus').className = 'status-chip chip-warn';
 
+  const _ds = document.getElementById('dataStatus');
+  const _setStatus = (msg, cls='chip-warn') => { if(_ds){_ds.textContent=msg; _ds.className='status-chip '+cls;} };
+
   try {
-    // Fetch all 6 RPCs in parallel
-    const [vendRows, marcaRows, clienteRows, portReglas, vendMarcaRows, vcmRows, cfgRows] = await Promise.all([
-      supaRPC('get_vendedores_hist_febeca'),
-      supaRPC('get_marcas_hist_febeca'),
-      supaRPC('get_clientes_hist_febeca'),
-      supaRPC('get_vendor_portafolio'),
-      supaRPC('get_vend_marca_hist_febeca'),
-      supaRPC('get_vcm_export_febeca'),
-      supaRPC('get_config_empresa', {p_empresa: 'febeca'})
-    ]);
+    // Fetch RPCs secuencialmente para diagnóstico visual
+    _setStatus('⏳ 1/7 Cargando vendedores...');
+    const vendRows = await supaRPC('get_vendedores_hist_febeca');
+    _setStatus(`⏳ 2/7 Marcas... (${vendRows.length} zonas OK)`);
+    const marcaRows = await supaRPC('get_marcas_hist_febeca');
+    _setStatus(`⏳ 3/7 Clientes... (${marcaRows.length} marcas OK)`);
+    const clienteRows = await supaRPC('get_clientes_hist_febeca');
+    _setStatus(`⏳ 4/7 Portafolio... (${clienteRows.length} clientes OK)`);
+    const portReglas = await supaRPC('get_vendor_portafolio');
+    _setStatus(`⏳ 5/7 Vend×Marca... (${portReglas.length} reglas OK)`);
+    const vendMarcaRows = await supaRPC('get_vend_marca_hist_febeca');
+    _setStatus(`⏳ 6/7 VCM export... (${vendMarcaRows.length} filas OK)`);
+    const vcmRows = await supaRPC('get_vcm_export_febeca');
+    _setStatus(`⏳ 7/7 Config... (${vcmRows.length} VCM OK)`);
+    const cfgRows = await supaRPC('get_config_empresa', {p_empresa: 'febeca'});
+    _setStatus(`⏳ Procesando datos...`);
 
     // ── Aplicar configuración de empresa desde Supabase ──
     if (cfgRows && cfgRows.length > 0) {
@@ -5015,15 +5024,19 @@ async function loadFromSupabase() {
     btn.style.border = '1px solid #86efac';
 
   } catch(err) {
-    console.error('Supabase error:', err);
-    document.getElementById('dataStatus').textContent = '⚠ Error Supabase: ' + err.message;
-    document.getElementById('dataStatus').className = 'status-chip chip-warn';
+    console.error('[Supabase ERROR]', err);
+    const errMsg = (err && err.message) ? err.message : String(err);
+    if (_ds) { _ds.textContent = '❌ ' + errMsg.substring(0, 80); _ds.className = 'status-chip chip-warn'; }
     txt.textContent = 'Supabase';
-    btn.style.background = '#0f172a';
-    btn.style.color = '#e2e8f0';
-    btn.style.border = 'none';
+    btn.style.background = '#0f172a'; btn.style.color = '#e2e8f0'; btn.style.border = 'none';
     document.getElementById('supabaseBtnIcon').style.display = 'inline';
-    alert('Error al conectar con Supabase:\n' + err.message);
+    // Mostrar error en lugar de alert (alerts pueden estar bloqueados)
+    const errDiv = document.getElementById('_supaDebug') || document.createElement('div');
+    errDiv.id = '_supaDebug';
+    errDiv.style.cssText = 'position:fixed;top:60px;right:16px;max-width:500px;background:#fee2e2;border:1px solid #ef4444;border-radius:8px;padding:12px 16px;font-size:12px;font-family:monospace;z-index:9999;white-space:pre-wrap;word-break:break-all';
+    errDiv.textContent = '❌ Error Supabase:\n' + errMsg;
+    document.body.appendChild(errDiv);
+    setTimeout(() => errDiv.remove(), 30000);
   } finally {
     btn.disabled = false;
   }
