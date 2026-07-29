@@ -6497,8 +6497,9 @@ async function toggleTendMarcaArt(rowId, marca) {
     const share = r.hist_q3_2025 / totH25;
     const proj = mTotal > 0 ? mp.proj.map(p => p * share) : [0,0,0];
     const hist9 = HIST_IDX.map(i => r.m[i]);
+    const fullLabel = `${r.articulo||''} ${r.descripcion||''}`.replace(/"/g,'&quot;');
     return `<tr style="background:var(--bg3);border-bottom:1px solid var(--border)">
-      <td colspan="2" style="padding:4px 8px 4px 40px;font-size:11px;min-width:260px">
+      <td colspan="2" title="${fullLabel}" style="padding:4px 8px 4px 40px;font-size:11px;width:260px;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         <span style="font-family:monospace">${r.articulo||''}</span>
         <span style="color:var(--text3);margin-left:6px;font-size:10px">${r.descripcion||''}</span>
       </td>
