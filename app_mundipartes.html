@@ -6491,21 +6491,17 @@ async function toggleTendMarcaArt(rowId, marca) {
   const mProj = computeMarcaProjections();
   const mp = mProj[marca.trim()];
   const mTotal = mp ? mp.proj.reduce((a,b)=>a+b,0) : 0;
-  const PORT_COLORS_MA = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
   const HIST_IDX = [6,7,8,9,10,11,12,13,14];
 
   const rowsHtml = rows.map(r => {
     const share = r.hist_q3_2025 / totH25;
     const proj = mTotal > 0 ? mp.proj.map(p => p * share) : [0,0,0];
     const hist9 = HIST_IDX.map(i => r.m[i]);
-    const pc = PORT_COLORS_MA[r.portafolio] || '#6b7280';
     return `<tr style="background:var(--bg3);border-bottom:1px solid var(--border)">
-      <td style="padding:4px 8px 4px 40px;font-size:11px;min-width:260px">
-        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${pc};margin-right:5px"></span>
-        📦 <span style="font-family:monospace">${r.articulo||''}</span>
+      <td colspan="2" style="padding:4px 8px 4px 40px;font-size:11px;min-width:260px">
+        <span style="font-family:monospace">${r.articulo||''}</span>
         <span style="color:var(--text3);margin-left:6px;font-size:10px">${r.descripcion||''}</span>
       </td>
-      <td>${r.portafolio ? `<span style="font-size:10px;color:${pc}">${r.portafolio}</span>` : ''}</td>
       ${hist9.map(x => `<td class="num" style="font-size:11px">${fmt(x)}</td>`).join('')}
       ${proj.map(x => `<td class="num" style="font-size:11px;color:var(--gold)">${fmt(x)}</td>`).join('')}
     </tr>`;
