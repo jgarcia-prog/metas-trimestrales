@@ -1431,6 +1431,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
 const CO_PARAM = 'febeca';
 const CO_VENDEDORES_TABLE = 'Febeca Vendedores';
 const CO_NAME  = 'Febeca';
+const CO_CFG   = { quarter: 'Q3 2026', mes_inicio: 'julio de 2026', mes_fin: 'septiembre de 2026' };
 const CO_COLOR = '#009ee3';
 const STORAGE_KEY  = 'forecast_febeca_state_v1';
 const VERSIONS_KEY = 'forecast_febeca_versions_v1';
@@ -1467,9 +1468,9 @@ let ORIGINAL_RAW_DATA = JSON.parse(JSON.stringify(RAW_DATA));
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
   // ── Aplicar identidad de la empresa seleccionada ──
-  document.getElementById('pageTitle').textContent = CO_NAME + ' · Metas ' + CO_CFG.quarter;
+  const _pt = document.getElementById('pageTitle'); if (_pt) _pt.textContent = CO_NAME + ' · Metas ' + CO_CFG.quarter;
   const headerLogo = document.getElementById('headerLogo');
-  if (headerLogo) { headerLogo.src = COMPANY_LOGOS[CO_PARAM] || ''; headerLogo.style.display = COMPANY_LOGOS[CO_PARAM] ? '' : 'none'; }
+  if (headerLogo) { /* logo ya está en el src del <img> */ }
   const coNameEl = document.getElementById('coName');
   if (coNameEl) coNameEl.textContent = CO_NAME;
   // Tint the primary accent color with the company color
