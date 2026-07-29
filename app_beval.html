@@ -1512,7 +1512,6 @@ function initAdjustments() {
 }
 
 function populateFilters() {
-  populateArtFilters();
   const selV = document.getElementById('filterVendedor');
   const selM = document.getElementById('filterMarca');
   Object.keys(RAW_DATA.vendedores).sort().forEach(v => {
@@ -2068,6 +2067,7 @@ function render() {
   renderVendMarcaTable(vendProj, vcmGrid);
   renderVendClienteTable(vendProj, vcmSplit);
   renderVCMTable(vendProj);
+  renderArtTab(vendProj);
   renderClientTable(clientProj);
   renderAdjPanels();
   renderTendenciaTab(vendProj, marcaProj, vcmGrid);
@@ -6470,6 +6470,10 @@ function renderArtTab(vendProj) {
   const grandTot  = sorted.reduce((s,x)=>s+x.total,0);
   const grandVar  = grandH25>0?((grandTot-grandH25)/grandH25*100):0;
 
+  // Calcular proyecciones UNA SOLA VEZ fuera del loop — evita 82 × IPF
+  const mProj = hasSupa ? computeMarcaProjections() : {};
+  const PORT_COLORS_ART = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
+
   let html = '';
   sorted.forEach((x, vidx) => {
     const label  = x.v.replace(/^\d+-/,'').replace(/\.\./g,'.').trim();
@@ -6492,7 +6496,6 @@ function renderArtTab(vendProj) {
           Cargá datos desde ⚡ Supabase para ver las marcas
         </td></tr>`;
     } else {
-      // Marcas que vende este vendedor (desde vendMarcaHist)
       const vendMarcas = Object.entries(RAW_DATA.vendMarcaHist || {})
         .filter(([,vm]) => vm[x.v] && (vm[x.v].w||0) > 0)
         .sort((a,b) => (b[1][x.v]?.h25||0)-(a[1][x.v]?.h25||0));
@@ -6501,9 +6504,6 @@ function renderArtTab(vendProj) {
         html += `<tr class="vp-port-row p2 hidden" data-art-vend="${vidx}">
           <td colspan="8" style="padding-left:28px;color:var(--text3);font-style:italic">Sin marcas registradas</td></tr>`;
       } else {
-        const PORT_COLORS = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
-        const mProj = computeMarcaProjections();
-
         vendMarcas.forEach(([marca, vm], midx) => {
           const md    = vm[x.v] || {};
           const mH25  = md.h25 || 0;
