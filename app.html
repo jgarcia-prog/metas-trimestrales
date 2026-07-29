@@ -5378,6 +5378,7 @@ async function callAI(prompt) {
   } catch(e) {
     clearInterval(interval);
     if (e.name !== 'AbortError') {
+      const cfg = AI_PROVIDERS[aiProvider];
       document.getElementById('aiLoader').style.display = 'none';
       document.getElementById('aiResponse').style.display = 'block';
 

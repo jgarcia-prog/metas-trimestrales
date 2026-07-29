@@ -3490,6 +3490,28 @@ function updateBlendWeight(val) {
   render();
 }
 
+function updateSmoothing() {
+  if (guardLocked()) return;
+  const smoothToggle = document.getElementById('smoothToggle');
+  state.smoothOutliers = !!(smoothToggle && smoothToggle.checked);
+  const smoothControls = document.getElementById('smoothControls');
+  if (smoothControls) {
+    smoothControls.style.opacity = state.smoothOutliers ? '1' : '0.4';
+    smoothControls.style.pointerEvents = state.smoothOutliers ? 'auto' : 'none';
+  }
+  invalidateProjCache();
+  render();
+}
+
+function updateSmoothSlider(val) {
+  if (guardLocked()) return;
+  state.smoothSigma = parseFloat(val);
+  const label = document.getElementById('smoothSigmaLabel');
+  if (label) label.textContent = state.smoothSigma.toFixed(1);
+  invalidateProjCache();
+  render();
+}
+
 function updateBudget(val) {
   state.budgetTarget = parseFloat(val) * 1e6;
   renderBudgetBreakdown();
@@ -5417,6 +5439,7 @@ async function callAI(prompt) {
   } catch(e) {
     clearInterval(interval);
     if (e.name !== 'AbortError') {
+      const cfg = AI_PROVIDERS[aiProvider];
       document.getElementById('aiLoader').style.display = 'none';
       document.getElementById('aiResponse').style.display = 'block';
 
@@ -6720,3 +6743,7 @@ async function toggleArtMarca(rowId, vendedor, marca) {
 // Limpiar caché de artículos al resetear
 function clearArtCache() { _artCache = {}; }
 
+
+</script>
+</body>
+</html>
