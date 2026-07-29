@@ -1198,6 +1198,27 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       </table>
     </div>
   </div>
+
+  <!-- Charts del Resumen -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+    <div class="card" style="padding:16px">
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Tendencia de Ventas</div>
+      <div class="chart-wrap"><canvas id="trendChart" height="200"></canvas></div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Distribución por Portafolio</div>
+      <div class="chart-wrap"><canvas id="donutChart" height="200"></canvas></div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Zonas de Venta</div>
+      <div class="chart-wrap"><canvas id="vendChart" height="200"></canvas></div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Marcas</div>
+      <div class="chart-wrap"><canvas id="marcaChart" height="200"></canvas></div>
+    </div>
+  </div>
+
 </div>
 <!-- TAB 10: VENDEDOR × CLIENTE × MARCA -->
 <div class="panel-section" id="tab10">
@@ -2205,7 +2226,8 @@ function renderTrendChart(filtVendProj) {
   const histPadded = [...hist, null, null, null];
   const projPadded = [...Array(hist.length).fill(null), ...projTotals];
 
-  const ctx = document.getElementById('trendChart').getContext('2d');
+  const _el_trendChart = document.getElementById('trendChart'); if (!_el_trendChart) return;
+  const ctx = _el_trendChart.getContext('2d');
   state.charts['trendChart'] = new Chart(ctx, {
     type: 'line',
     data: {
@@ -2237,7 +2259,8 @@ function renderDonut(filtPortProj) {
   const colors = labels.map(l => PORT_COLORS[l] || '#aaa');
   const total = vals.reduce((a,b)=>a+b,0);
 
-  const ctx = document.getElementById('donutChart').getContext('2d');
+  const _el_donutChart = document.getElementById('donutChart'); if (!_el_donutChart) return;
+  const ctx = _el_donutChart.getContext('2d');
   state.charts['donutChart'] = new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -2260,7 +2283,8 @@ function renderVendChart(filtVendProj) {
     .map(([v, d]) => ({ v, total: d.proj.reduce((a, b) => a + b, 0) }))
     .sort((a, b) => b.total - a.total).slice(0, 10);
 
-  const ctx = document.getElementById('vendChart').getContext('2d');
+  const _el_vendChart = document.getElementById('vendChart'); if (!_el_vendChart) return;
+  const ctx = _el_vendChart.getContext('2d');
   state.charts['vendChart'] = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -2280,7 +2304,8 @@ function renderMarcaChart(filtMarcaProj) {
     .map(([m, d]) => ({ m, total: d.proj.reduce((a, b) => a + b, 0) }))
     .sort((a, b) => b.total - a.total).slice(0, 10);
 
-  const ctx = document.getElementById('marcaChart').getContext('2d');
+  const _el_marcaChart = document.getElementById('marcaChart'); if (!_el_marcaChart) return;
+  const ctx = _el_marcaChart.getContext('2d');
   state.charts['marcaChart'] = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -2500,7 +2525,8 @@ function renderPortChart(portProj) {
   const portKeys = Object.keys(portProj);
   const colors = portKeys.map(p => PORT_COLORS[p] || '#aaa');
 
-  const ctx = document.getElementById('portChart').getContext('2d');
+  const _el_portChart = document.getElementById('portChart'); if (!_el_portChart) return;
+  const ctx = _el_portChart.getContext('2d');
   state.charts['portChart'] = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -2933,13 +2959,7 @@ function collapseAll(bodyId) {
   document.querySelectorAll(`#${bodyId} .vp-toggle`).forEach(t => t.textContent = '+');
 }
 
-function filterTable(bodyId, q) {
-  const lower = q.toLowerCase();
-  document.querySelectorAll(`#${bodyId} tr.vp-vendor-row`).forEach(row => {
-    const txt = row.textContent.toLowerCase();
-    row.style.display = txt.includes(lower) ? '' : 'none';
-  });
-}
+
 
 function renderVendPortTable(vendProj, portProj) {
   // Alphabetical sort
@@ -3433,12 +3453,25 @@ function resetFilters() {
   render();
 }
 
-function filterTable(tableId, search, colIdx) {
-  const tbody = document.getElementById(tableId).querySelector('tbody');
-  Array.from(tbody.rows).forEach(row => {
-    const cell = row.cells[colIdx];
-    row.style.display = cell && cell.textContent.toLowerCase().includes(search.toLowerCase()) ? '' : 'none';
-  });
+function filterTable(id, q, colIdx) {
+  // Función unificada: maneja tablas planas (colIdx definido) y tablas árbol (sin colIdx)
+  const lower = (q || '').toLowerCase();
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (colIdx !== undefined) {
+    // Modo tabla plana: filtrar por columna
+    const tbody = el.tagName === 'TBODY' ? el : el.querySelector('tbody');
+    if (!tbody) return;
+    Array.from(tbody.rows || []).forEach(row => {
+      const cell = row.cells[colIdx];
+      row.style.display = (!cell || cell.textContent.toLowerCase().includes(lower)) ? '' : 'none';
+    });
+  } else {
+    // Modo árbol: filtrar filas de vendedor por texto
+    el.querySelectorAll('tr.vp-vendor-row').forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(lower) ? '' : 'none';
+    });
+  }
 }
 
 // ==================== AUTO-ADJUST ====================
@@ -3780,7 +3813,10 @@ function buildSupervisorEmailHTML(supervisor, vendedoresData) {
       Quedo atento ante cualquier consulta y apoyo.<br>Saludos cordiales,<br><strong>Jorge García</strong>
     </div>
   </td></tr>
-</table></body></html>`;
+</table><!-- Toast notification -->
+<div id="toastMsg" style="display:none;position:fixed;bottom:24px;right:24px;background:#1e293b;color:#f1f5f9;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)"></div>
+
+</body></html>`;
 }
 
 function closeEmailModal() { document.getElementById('emailModal').style.display = 'none'; }
