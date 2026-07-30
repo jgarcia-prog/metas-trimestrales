@@ -2733,8 +2733,9 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
     const mJul = wSum > 0 ? tot * wJul / wSum : tot / 3;
     const mAgo = wSum > 0 ? tot * wAgo / wSum : tot / 3;
     const mSep = wSum > 0 ? tot - mJul - mAgo    : tot / 3;
+    const marcaLabel = `${m.marca} ${m.portafolio||''}`.replace(/"/g,'&quot;');
     return `<tr class="vp-port-row hidden" data-vcm-vend="${marcas._vidx||''}" style="background:var(--bg3)">
-      <td style="padding:4px 8px 4px 72px;font-size:12px;min-width:300px">
+      <td title="${marcaLabel}" style="padding:4px 8px 4px 72px;font-size:12px;width:300px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${pColor};margin-right:6px"></span>
         🏷️ ${m.marca}
         <span style="font-size:10px;color:var(--text3);margin-left:4px">${m.portafolio}</span>
@@ -2745,7 +2746,7 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
       <td class="num" style="font-size:12px;color:var(--gold)">${fmt(mAgo)}</td>
       <td class="num" style="font-size:12px;color:var(--gold)">${fmt(mSep)}</td>
       <td class="num" style="font-size:12px;font-weight:600">${fmt(tot)}</td>
-      <td class="num" style="font-size:12px" class="${varP>=0?'pos':'neg'}">${fmtPct(varP)}</td>
+      <td class="num ${varP>=0?'pos':'neg'}" style="font-size:12px">${fmtPct(varP)}</td>
     </tr>`;
   }).join('');
 
@@ -2759,7 +2760,7 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
       .replace(/\bdata-vcm-vend="[^"]*"/g, '');
     marcaContainer.innerHTML = `<table style="width:100%;table-layout:fixed;border-collapse:collapse">
       <colgroup>
-        <col style="min-width:300px">
+        <col style="width:300px">
         <col style="width:130px"><col style="width:130px">
         <col style="width:130px"><col style="width:130px"><col style="width:130px">
         <col style="width:130px"><col style="width:90px">
@@ -6714,11 +6715,12 @@ async function toggleArtMarca(rowId, vendedor, marca) {
     const mSep = wSum>0?tot-mJul-mAgo:tot/3;
     const varP = h25>0?((tot-h25)/h25*100):0;
     const pc   = PORT_COLORS[r.portafolio]||'#6b7280';
+    const artLabel = `${r.articulo||''} ${r.descripcion||''}`.replace(/"/g,'&quot;');
     return `<tr style="background:var(--bg3);border-bottom:1px solid var(--border)">
-      <td style="padding:4px 8px 4px 72px;font-size:11px;min-width:300px">
+      <td title="${artLabel}" style="padding:4px 8px 4px 72px;font-size:11px;width:300px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${pc};margin-right:5px"></span>
         📦 <span style="font-family:monospace">${r.articulo||''}</span>
-        <span style="color:var(--text3);margin-left:6px;font-size:10px;overflow:hidden;text-overflow:ellipsis">${r.descripcion||''}</span>
+        <span style="color:var(--text3);margin-left:6px;font-size:10px">${r.descripcion||''}</span>
       </td>
       <td class="num" style="font-size:11px">${fmt(h24)}</td>
       <td class="num" style="font-size:11px">${fmt(h25)}</td>
@@ -6726,7 +6728,7 @@ async function toggleArtMarca(rowId, vendedor, marca) {
       <td class="num" style="font-size:11px;color:var(--gold)">${fmt(mAgo)}</td>
       <td class="num" style="font-size:11px;color:var(--gold)">${fmt(mSep)}</td>
       <td class="num" style="font-size:11px;font-weight:600">${fmt(tot)}</td>
-      <td class="num" style="font-size:11px" class="${varP>=0?'pos':'neg'}">${fmtPct(varP)}</td>
+      <td class="num ${varP>=0?'pos':'neg'}" style="font-size:11px">${fmtPct(varP)}</td>
     </tr>`;
   }).join('');
 
@@ -6734,7 +6736,7 @@ async function toggleArtMarca(rowId, vendedor, marca) {
   if (content) {
     content.innerHTML = `<table style="width:100%;table-layout:fixed;border-collapse:collapse">
       <colgroup>
-        <col style="min-width:300px">
+        <col style="width:300px">
         <col style="width:120px"><col style="width:120px">
         <col style="width:120px"><col style="width:120px"><col style="width:120px">
         <col style="width:120px"><col style="width:90px">
