@@ -4941,7 +4941,6 @@ async function loadFromSupabase() {
     clienteRows.forEach(r => {
       if (!r.alias) return;
       const hist = rowToHist(r);
-      const h25  = Number(r.hist_q2_2025) || 0;
 
       // Aggregate by alias across multiple vendors
       if (!newClientes[r.alias]) {
@@ -4958,8 +4957,19 @@ async function loadFromSupabase() {
           newVendCli[r.vendedor][r.alias] = { historico: Array(30).fill(0), histQ2_2025: 0, histQ2_2024: 0 };
         }
         hist.forEach((v, i) => { newVendCli[r.vendedor][r.alias].historico[i] += v; });
-        newVendCli[r.vendedor][r.alias].histQ2_2025 += h25;
       }
+    });
+    // histQ2_2025/histQ2_2024 = histórico real Q3 (Jul-Sep), mismo criterio que
+    // vendedores/marcas/portafolios (getHistQ2). Antes se tomaba el campo
+    // hist_q2_2025 del RPC (que es Abr-Jun real) y hist Q3 2024 nunca se
+    // calculaba (quedaba en 0) — el nivel Cliente de VCM mostraba así datos de
+    // otro trimestre bajo las columnas "Hist Q3 2024/2025", inconsistentes con
+    // el total del vendedor y con las marcas del cliente.
+    Object.values(newVendCli).forEach(clientMap => {
+      Object.values(clientMap).forEach(cd => {
+        cd.histQ2_2025 = getHistQ2(cd.historico, 2025);
+        cd.histQ2_2024 = getHistQ2(cd.historico, 2024);
+      });
     });
     // Compute proyeccion for clientes
     Object.values(newClientes).forEach(c => { c.proyeccion = projectQ2JS(c.historico); });
