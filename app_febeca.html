@@ -34,7 +34,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 16px;
   min-height: 100vh;
   background-image: 
     radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,122,101,0.04) 0%, transparent 60%),
@@ -54,8 +54,8 @@ body {
 }
 .header-left { display: flex; align-items: center; gap: 16px; }
 .logo-img { height: 44px; width: auto; }
-.header-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: 0.5px; color: var(--text); }
-.header-sub { font-size: 11px; color: var(--text2); margin-top: 1px; letter-spacing: 1.5px; text-transform: uppercase; }
+.header-title { font-family: var(--font-display); font-size: 36px; font-weight: 700; letter-spacing: 0.5px; color: var(--text); }
+.header-sub { font-size: 14px; color: var(--text2); margin-top: 1px; letter-spacing: 1.5px; }
 .header-right { display: flex; align-items: center; gap: 10px; }
 
 /* TABS */
@@ -72,10 +72,9 @@ body {
 .tab {
   padding: 8px 16px;
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.6px;
-  text-transform: uppercase;
   cursor: pointer;
   color: var(--text2);
   border: 1px solid rgba(255,255,255,0.0);
@@ -119,7 +118,7 @@ body {
   margin-bottom: 20px;
   box-shadow: var(--shadow);
 }
-.filter-label { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); margin-right: 4px; }
+.filter-label { font-size: 14px; font-weight: 600; letter-spacing: 1.2px; color: var(--text2); margin-right: 4px; }
 .filter-select {
   background: var(--bg3);
   border: 1px solid var(--border);
@@ -127,7 +126,7 @@ body {
   padding: 6px 28px 6px 10px;
   border-radius: 6px;
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 16px;
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a6080'/%3E%3C/svg%3E");
@@ -138,7 +137,7 @@ body {
 .filter-select:focus { outline: none; border-color: var(--teal); }
 .pill-group { display: flex; gap: 4px; }
 .pill {
-  padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  padding: 5px 12px; border-radius: 20px; font-size: 16px; font-weight: 600;
   cursor: pointer; border: 1px solid var(--border); color: var(--text2);
   transition: all 0.2s; background: var(--bg3);
 }
@@ -147,7 +146,7 @@ body {
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 7px 16px; border-radius: 6px; font-family: var(--font-body);
-  font-size: 13px; font-weight: 500; cursor: pointer; border: none;
+  font-size: 16px; font-weight: 500; cursor: pointer; border: none;
   transition: all 0.2s; white-space: nowrap;
 }
 .btn-primary { background: var(--teal); color: #fff; }
@@ -183,12 +182,12 @@ body {
 .kpi-card.gold::before { --accent: var(--gold); }
 .kpi-card.blue::before { --accent: var(--blue); }
 .kpi-card.red::before { --accent: var(--red); }
-.kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2); margin-bottom: 10px; }
-.kpi-value { font-family: var(--font-display); font-size: 22px; font-weight: 700; line-height: 1; word-break: break-all; }
-.kpi-sub { font-size: 12px; color: var(--text2); margin-top: 6px; }
+.kpi-label { font-size: 14px; font-weight: 600; letter-spacing: 1.5px; color: var(--text2); margin-bottom: 10px; }
+.kpi-value { font-family: var(--font-display); font-size: 28px; font-weight: 700; line-height: 1; word-break: break-all; }
+.kpi-sub { font-size: 14px; color: var(--text2); margin-top: 6px; }
 .kpi-badge {
   display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px; font-size: 14px; font-weight: 600;
   margin-top: 8px;
 }
 .badge-up { background: rgba(0,122,101,0.12); color: var(--teal); }
@@ -213,16 +212,16 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 16px;
 }
-.card-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: 0.5px; color: var(--text); }
-.card-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.card-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: 0.5px; color: var(--text); }
+.card-sub { font-size: 14px; color: var(--text2); margin-top: 2px; }
 .chart-wrap { position: relative; }
 .chart-wrap canvas { display: block; }
 
 /* TABLE */
-.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 16px; }
 .data-table th {
   padding: 8px 12px; text-align: left;
-  font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+  font-size: 14px; font-weight: 600; letter-spacing: 1.2px;
   color: var(--text2); border-bottom: 2px solid var(--border);
   white-space: nowrap; background: var(--bg3);
 }
@@ -231,7 +230,7 @@ body {
   padding: 8px 12px; border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
-.data-table td.num { text-align: right; font-family: var(--font-mono); font-size: 12px; }
+.data-table td.num { text-align: right; font-family: var(--font-mono); font-size: 16px; }
 .data-table tr:hover td { background: rgba(0,122,101,0.04); }
 .data-table tr:last-child td { border-bottom: none; }
 .data-table tr.total-row td { background: var(--bg3); font-weight: 700; border-top: 2px solid var(--border); }
@@ -249,9 +248,9 @@ body {
   padding: 12px 16px;
 }
 .adj-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.adj-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.adj-name { font-size: 16px; font-weight: 500; color: var(--text); }
 .adj-pct {
-  font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+  font-family: var(--font-mono); font-size: 16px; font-weight: 600;
   color: var(--teal); min-width: 48px; text-align: right;
 }
 .adj-controls { display: flex; align-items: center; gap: 6px; }
@@ -279,14 +278,14 @@ body {
 
 /* PRESUPUESTO BAR */
 .budget-bar-wrap { margin-top: 10px; }
-.budget-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+.budget-bar-label { display: flex; justify-content: space-between; font-size: 14px; color: var(--text2); margin-bottom: 6px; }
 .budget-bar-track { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
 .budget-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
 
 /* METHODOLOGY BOX */
 .method-box {
   background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
-  padding: 16px; font-size: 12px; line-height: 1.7; color: var(--text2);
+  padding: 16px; font-size: 16px; line-height: 1.7; color: var(--text2);
 }
 .method-box strong { color: var(--teal); }
 
@@ -294,7 +293,7 @@ body {
 .formula-box {
   background: rgba(0,122,101,0.06); border: 1px solid rgba(0,122,101,0.2);
   border-radius: 6px; padding: 10px 14px;
-  font-family: var(--font-mono); font-size: 12px; color: var(--teal);
+  font-family: var(--font-mono); font-size: 16px; color: var(--teal);
   margin: 8px 0;
 }
 
@@ -310,7 +309,7 @@ body {
 /* STATUS BADGE */
 .status-chip {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 20px; font-size: 14px; font-weight: 600;
 }
 .chip-ok { background: rgba(0,122,101,0.1); color: var(--teal); border: 1px solid rgba(0,122,101,0.25); }
 .chip-warn { background: rgba(196,122,0,0.1); color: var(--gold); border: 1px solid rgba(196,122,0,0.25); }
@@ -321,7 +320,7 @@ body {
 /* SEARCH */
 .search-input {
   background: var(--bg3); border: 1px solid var(--border); color: var(--text);
-  padding: 7px 12px; border-radius: 6px; font-family: var(--font-body); font-size: 13px;
+  padding: 7px 12px; border-radius: 6px; font-family: var(--font-body); font-size: 16px;
   width: 220px; transition: border-color 0.2s;
 }
 .search-input:focus { outline: none; border-color: var(--teal); }
@@ -329,7 +328,7 @@ body {
 /* ALERT */
 .alert-box {
   display: flex; align-items: flex-start; gap: 10px;
-  padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px;
+  padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 16px;
 }
 .alert-warn { background: rgba(196,122,0,0.08); border: 1px solid rgba(196,122,0,0.25); color: var(--gold); }
 .alert-ok { background: rgba(0,122,101,0.08); border: 1px solid rgba(0,122,101,0.25); color: var(--teal); }
@@ -338,7 +337,7 @@ body {
 .budget-input {
   background: var(--bg3); border: 1px solid var(--border); color: var(--text);
   padding: 8px 12px; border-radius: 6px; font-family: var(--font-mono);
-  font-size: 14px; width: 200px; transition: border-color 0.2s;
+  font-size: 16px; width: 200px; transition: border-color 0.2s;
 }
 .budget-input:focus { outline: none; border-color: var(--gold); }
 
@@ -350,7 +349,7 @@ body {
 .adj-marca-search { 
   width: 100%; padding: 7px 12px; margin-bottom: 12px;
   background: var(--bg3); border: 1px solid var(--border); color: var(--text);
-  border-radius: 6px; font-family: var(--font-body); font-size: 13px;
+  border-radius: 6px; font-family: var(--font-body); font-size: 16px;
 }
 .adj-marca-search:focus { outline: none; border-color: var(--teal); }
 
@@ -365,8 +364,8 @@ body {
   vertical-align:middle; }
 .vp-vendor-row.expanded .vp-toggle { background:var(--teal); color:#fff; }
 .vp-port-row { background: rgba(0,122,101,0.03); }
-.vp-port-row td:first-child { padding-left: 42px; color:var(--text2); font-size:12px; }
-.vp-port-row td { font-size:12px; }
+.vp-port-row td:first-child { padding-left: 42px; color:var(--text2); font-size:16px; }
+.vp-port-row td { font-size:16px; }
 .vp-port-row.p1 td:first-child::before { content:''; display:inline-block; width:8px; height:8px; border-radius:50%; background:#dc2626; margin-right:8px; }
 .vp-port-row.p2 td:first-child::before { content:''; display:inline-block; width:8px; height:8px; border-radius:50%; background:#06b6d4; margin-right:8px; }
 .vp-port-row.p3 td:first-child::before { content:''; display:inline-block; width:8px; height:8px; border-radius:50%; background:#1e3a8a; margin-right:8px; }
@@ -394,15 +393,15 @@ body {
 /* AI PROVIDER BUTTONS */
 .ai-provider-btn {
   display: flex; align-items: center; gap: 5px;
-  padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  padding: 6px 12px; border-radius: 8px; font-size: 16px; font-weight: 600;
   cursor: pointer; border: 1.5px solid var(--border); color: var(--text2);
   background: var(--bg3); transition: all 0.2s; white-space: nowrap;
 }
 .ai-provider-btn:hover { border-color: #667eea; color: var(--text); }
 .ai-provider-btn.active { border-color: #667eea; color: var(--text); background: rgba(102,126,234,0.1); }
 .ai-provider-badge {
-  font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px;
-  background: rgba(0,122,101,0.15); color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px;
+  font-size: 14px; font-weight: 700; padding: 1px 5px; border-radius: 3px;
+  background: rgba(0,122,101,0.15); color: var(--teal); letter-spacing: 0.5px;
 }
 .ai-provider-badge.pago { background: rgba(196,122,0,0.15); color: var(--gold); }
 
@@ -417,7 +416,7 @@ body {
 
 /* AI PILLS */
 .ai-pill {
-  padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  padding: 5px 12px; border-radius: 20px; font-size: 16px; font-weight: 600;
   cursor: pointer; border: 1px solid var(--border); color: var(--text2);
   background: var(--bg3); transition: all 0.2s; white-space: nowrap;
 }
@@ -437,7 +436,7 @@ body {
 /* AI RESPONSE */
 .ai-section { margin-bottom: 24px; }
 .ai-section-title {
-  font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  font-family: var(--font-display); font-size: 20px; font-weight: 700;
   color: var(--text); margin-bottom: 10px; padding-bottom: 6px;
   border-bottom: 2px solid var(--border);
   display: flex; align-items: center; gap: 8px;
@@ -445,7 +444,7 @@ body {
 .ai-card {
   background: var(--bg3); border: 1px solid var(--border);
   border-radius: 8px; padding: 14px 16px; margin-bottom: 8px;
-  font-size: 13px; line-height: 1.7; color: var(--text);
+  font-size: 16px; line-height: 1.7; color: var(--text);
 }
 .ai-card.strength { border-left: 3px solid var(--teal); }
 .ai-card.opportunity { border-left: 3px solid var(--blue); }
@@ -453,8 +452,8 @@ body {
 .ai-card.insight { border-left: 3px solid #764ba2; }
 .ai-card strong { color: var(--teal); }
 .ai-card .ai-label {
-  display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+  display: inline-block; font-size: 14px; font-weight: 700; letter-spacing: 1px;
+  padding: 2px 7px; border-radius: 4px;
   background: rgba(0,122,101,0.1); color: var(--teal); margin-bottom: 6px;
 }
 .ai-card.opportunity .ai-label { background: rgba(26,115,232,0.1); color: var(--blue); }
@@ -462,11 +461,11 @@ body {
 .ai-card.insight .ai-label { background: rgba(118,75,162,0.1); color: #764ba2; }
 .ai-metric-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
 .ai-metric { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
-.ai-metric-val { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--teal); }
-.ai-metric-lbl { font-size: 10px; color: var(--text2); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
-.ai-streaming { font-size: 13px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
-.ai-streaming h3 { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--text); margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
-.ai-streaming h4 { font-size: 13px; font-weight: 700; color: #764ba2; margin: 12px 0 6px; }
+.ai-metric-val { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--teal); }
+.ai-metric-lbl { font-size: 14px; color: var(--text2); margin-top: 4px; letter-spacing: 0.8px; }
+.ai-streaming { font-size: 16px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
+.ai-streaming h3 { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text); margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.ai-streaming h4 { font-size: 16px; font-weight: 700; color: #764ba2; margin: 12px 0 6px; }
 .ai-streaming ul { margin: 6px 0 6px 20px; }
 .ai-streaming li { margin-bottom: 4px; }
 .ai-streaming strong { color: var(--teal); }
@@ -523,57 +522,57 @@ body {
 
 
 
-    <button id="supabaseBtn" onclick="loadFromSupabase()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#0f172a;color:#e2e8f0;border:none;white-space:nowrap">
+    <button id="supabaseBtn" onclick="loadFromSupabase()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;background:#0f172a;color:#e2e8f0;border:none;white-space:nowrap">
       <svg id="supabaseBtnIcon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
       <span id="supabaseBtnText">Supabase</span>
     </button>
 
     <div style="width:0.5px;height:26px;background:var(--border);margin:0 2px;flex-shrink:0"></div>
 
-    <button onclick="resetData()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#fff7ed;color:#c2410c;border:none;white-space:nowrap">
+    <button onclick="resetData()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;background:#fff7ed;color:#c2410c;border:none;white-space:nowrap">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
       Depurar ajustes
     </button>
 
-    <button onclick="clearSupabaseData()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#fef2f2;color:#b91c1c;border:none;white-space:nowrap">
+    <button onclick="clearSupabaseData()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;background:#fef2f2;color:#b91c1c;border:none;white-space:nowrap">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
       Limpiar datos
     </button>
 
     <div style="width:0.5px;height:26px;background:var(--border);margin:0 2px;flex-shrink:0"></div>
 
-    <button onclick="openAIAnalysis()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#f5f3ff;color:#6d28d9;border:none;white-space:nowrap">
+    <button onclick="openAIAnalysis()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;background:#f5f3ff;color:#6d28d9;border:none;white-space:nowrap">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg>
       Análisis IA
     </button>
 
-    <button onclick="exportExcel()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#f0fdf4;color:#15803d;border:none;white-space:nowrap">
+    <button onclick="exportExcel()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;background:#f0fdf4;color:#15803d;border:none;white-space:nowrap">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Exportar Excel
     </button>
 
     <div style="width:0.5px;height:26px;background:var(--border);margin:0 2px;flex-shrink:0"></div>
 
-    <button id="saveBtn" onclick="saveState()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#eff6ff;color:#1d4ed8;border:none;white-space:nowrap">
+    <button id="saveBtn" onclick="saveState()" style="display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;background:#eff6ff;color:#1d4ed8;border:none;white-space:nowrap">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
       Guardar
     </button>
 
-    <button onclick="openVersionsModal()" title="Historial de versiones guardadas" style="display:inline-flex;align-items:center;gap:6px;padding:0 11px;height:32px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#f5f3ff;color:#6d28d9;border:none;white-space:nowrap">
+    <button onclick="openVersionsModal()" title="Historial de versiones guardadas" style="display:inline-flex;align-items:center;gap:6px;padding:0 11px;height:32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;background:#f5f3ff;color:#6d28d9;border:none;white-space:nowrap">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
       Versiones
     </button>
 
-    <button id="lockBtn" onclick="toggleLock()" title="Bloquear/desbloquear edición" style="display:inline-flex;align-items:center;gap:6px;padding:0 11px;height:32px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#f0fdf4;color:#059669;border:none;white-space:nowrap">
+    <button id="lockBtn" onclick="toggleLock()" title="Bloquear/desbloquear edición" style="display:inline-flex;align-items:center;gap:6px;padding:0 11px;height:32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;background:#f0fdf4;color:#059669;border:none;white-space:nowrap">
       <span id="lockIcon">🔓</span><span id="lockLabel">Abierto</span>
     </button>
 
-    <button onclick="openEmailModal()" style="display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:32px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:#009ee3;color:#fff;border:none;white-space:nowrap">
+    <button onclick="openEmailModal()" style="display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:32px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;background:#009ee3;color:#fff;border:none;white-space:nowrap">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       Enviar Metas
     </button>
 
-    <span id="saveIndicator" style="display:none;font-size:11px;color:var(--text3);margin-left:2px"></span>
+    <span id="saveIndicator" style="display:none;font-size:14px;color:var(--text3);margin-left:2px"></span>
   </div>
 </div>
 
@@ -585,7 +584,7 @@ body {
       <button onclick="closeVersionsModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2)">✕</button>
     </div>
     <div id="versionsList" style="padding:16px 24px;overflow-y:auto;flex:1"></div>
-    <div style="padding:14px 24px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)">
+    <div style="padding:14px 24px;border-top:1px solid var(--border);font-size:14px;color:var(--text3)">
       Se guardan las últimas 8 versiones. Cada "Guardar" manual crea una nueva versión con nombre opcional.
     </div>
   </div>
@@ -595,10 +594,10 @@ body {
 <div id="confirmModal">
   <div id="confirmBox">
     <div style="font-size:36px;margin-bottom:12px">🔄</div>
-    <div style="font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:8px">Depurar ajustes</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px">
+    <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:8px">Depurar ajustes</div>
+    <div style="font-size:16px;color:var(--text2);line-height:1.6;margin-bottom:20px">
       Esto va a <strong>eliminar todos los ajustes manuales</strong> y resetear sliders, filtros y reasignaciones.<br><br>
-      <span style="font-size:12px;color:var(--text3)">Los datos cargados desde Supabase se conservan.</span>
+      <span style="font-size:16px;color:var(--text3)">Los datos cargados desde Supabase se conservan.</span>
     </div>
     <div style="display:flex;gap:10px;justify-content:center">
       <button class="btn btn-outline" onclick="closeConfirm()" style="flex:1;max-width:140px">Cancelar</button>
@@ -612,10 +611,10 @@ body {
     <div style="width:56px;height:56px;border-radius:14px;background:#fef2f2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
       <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
     </div>
-    <div style="font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text)">Limpiar datos cargados</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px">
+    <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:8px;color:var(--text)">Limpiar datos cargados</div>
+    <div style="font-size:16px;color:var(--text2);line-height:1.6;margin-bottom:20px">
       Esto va a <strong>eliminar todos los datos cargados</strong> (Supabase o Excel) y dejar el dashboard vacío.<br><br>
-      <span style="font-size:12px;color:var(--text3)">Los ajustes manuales se conservan. Deberás volver a cargar desde ⚡ Supabase.</span>
+      <span style="font-size:16px;color:var(--text3)">Los ajustes manuales se conservan. Deberás volver a cargar desde ⚡ Supabase.</span>
     </div>
     <div style="display:flex;gap:10px;justify-content:center">
       <button class="btn btn-outline" onclick="document.getElementById('limpiarModal').style.display='none'" style="flex:1;max-width:140px">Cancelar</button>
@@ -630,15 +629,15 @@ body {
       <div style="width:36px;height:36px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
       </div>
-      <div style="font-size:17px;font-weight:700;color:var(--text)">Carga Masiva — Meta por Marca</div>
+      <div style="font-size:20px;font-weight:700;color:var(--text)">Carga Masiva — Meta por Marca</div>
     </div>
-    <div style="font-size:12px;color:var(--text2);line-height:1.6;margin:8px 0 14px">
+    <div style="font-size:16px;color:var(--text2);line-height:1.6;margin:8px 0 14px">
       Pegá los datos copiados de Excel (3 columnas: <strong>Marca, Meta Jul, Meta Ago, Meta Sep</strong>, separadas por tabulación o coma). Cada marca encontrada actualiza su meta exactamente como si la editaras manualmente — el resto del modelo (Vendedores, Portafolio, Clientes) se recalcula automáticamente.
     </div>
     <textarea id="marcaBulkTextarea" placeholder="3M&#9;12500000&#9;13200000&#9;11800000
 Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
-..." style="width:100%;min-height:200px;font-family:var(--font-mono);font-size:12px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);resize:vertical"></textarea>
-    <div id="marcaBulkPreview" style="margin-top:10px;font-size:12px;color:var(--text2);min-height:18px"></div>
+..." style="width:100%;min-height:200px;font-family:var(--font-mono);font-size:16px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);resize:vertical"></textarea>
+    <div id="marcaBulkPreview" style="margin-top:10px;font-size:16px;color:var(--text2);min-height:18px"></div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
       <button class="btn btn-outline" onclick="closeMarcaBulkLoad()">Cancelar</button>
       <button class="btn" onclick="applyMarcaBulkLoad()" style="background:#1d4ed8;color:#fff">Aplicar carga masiva</button>
@@ -653,10 +652,10 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:12px">
-          <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🤖</div>
+          <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🤖</div>
           <div>
-            <div style="font-family:var(--font-display);font-size:17px;font-weight:700">Análisis Inteligente de Ventas</div>
-            <div style="font-size:11px;color:var(--text2);margin-top:2px">Impulsado por Claude · COFERSA</div>
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:700">Análisis Inteligente de Ventas</div>
+            <div style="font-size:14px;color:var(--text2);margin-top:2px">Impulsado por Claude · COFERSA</div>
           </div>
         </div>
         <button onclick="closeAIAnalysis()" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;padding:4px 8px;border-radius:6px;line-height:1" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text2)'">✕</button>
@@ -665,7 +664,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <!-- No API key needed — uses Supabase proxy -->
       <div style="margin-top:10px;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)">
         <div style="width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0"></div>
-        <div style="font-size:12px;color:var(--text2)">Análisis con <strong style="color:var(--text)">Claude</strong> · Sin configuración requerida · Listo para usar</div>
+        <div style="font-size:16px;color:var(--text2)">Análisis con <strong style="color:var(--text)">Claude</strong> · Sin configuración requerida · Listo para usar</div>
       </div>
 
       <!-- Quick filter pills -->
@@ -687,8 +686,8 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div id="aiWelcome" style="text-align:center;padding:40px 20px;color:var(--text2)">
         <div style="font-size:48px;margin-bottom:16px">🤖</div>
         <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Análisis en tiempo real con IA</div>
-        <div style="font-size:13px;line-height:1.7">Seleccioná uno de los análisis disponibles arriba para que Claude analice los datos históricos, tendencias, fortalezas y oportunidades de tu negocio.</div>
-        <div style="margin-top:20px;padding:14px 18px;background:var(--bg3);border-radius:10px;font-size:12px;color:var(--text2);border:1px solid var(--border);text-align:left">
+        <div style="font-size:16px;line-height:1.7">Seleccioná uno de los análisis disponibles arriba para que Claude analice los datos históricos, tendencias, fortalezas y oportunidades de tu negocio.</div>
+        <div style="margin-top:20px;padding:14px 18px;background:var(--bg3);border-radius:10px;font-size:16px;color:var(--text2);border:1px solid var(--border);text-align:left">
           <div style="font-weight:600;color:var(--teal);margin-bottom:6px">📊 Datos disponibles para análisis:</div>
           <div id="aiDataSummary"></div>
         </div>
@@ -696,7 +695,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div id="aiResponse" style="display:none"></div>
       <div id="aiLoader" style="display:none;text-align:center;padding:40px 20px">
         <div class="ai-spinner"></div>
-        <div style="margin-top:16px;font-size:13px;color:var(--text2)" id="aiLoaderMsg">Analizando datos...</div>
+        <div style="margin-top:16px;font-size:16px;color:var(--text2)" id="aiLoaderMsg">Analizando datos...</div>
       </div>
     </div>
 
@@ -751,7 +750,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div class="kpi-value" id="kpi_hist">—</div>
       <div class="kpi-sub">Jul + Ago + Sep 2025</div>
       <div style="margin-top:10px;height:38px;display:flex;align-items:center">
-        <span style="font-size:11px;color:var(--text3);opacity:0.7">Histórico real — sin redistribución</span>
+        <span style="font-size:14px;color:var(--text3);opacity:0.7">Histórico real — sin redistribución</span>
       </div>
       <div id="histMonthlyBreakdown" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px"></div>
     </div>
@@ -760,8 +759,8 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div class="kpi-value" id="kpi_budget">—</div>
       <div class="kpi-sub">Meta estratégica</div>
       <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
-        <input type="number" class="budget-input" id="budgetInput" placeholder="0" style="width:160px;font-size:13px;padding:6px 10px" onchange="updateBudget(this.value)">
-        <span style="font-size:11px;color:var(--text3)">millones $</span>
+        <input type="number" class="budget-input" id="budgetInput" placeholder="0" style="width:160px;font-size:16px;padding:6px 10px" onchange="updateBudget(this.value)">
+        <span style="font-size:14px;color:var(--text3)">millones $</span>
       </div>
       <div id="budgetMonthlyBreakdown" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px"></div>
     </div>
@@ -825,9 +824,9 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     <div class="card-header">
       <div>
         <div class="card-title">Meta por Marca
-          <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:10px">✏️ Clic en Meta Jul/Ago/Sep/Total Q3 para editar directamente</span>
-          <button onclick="clearAllMarcaOverrides()" style="margin-left:12px;padding:3px 10px;font-size:11px;border:1px solid #fca5a5;background:#fef2f2;color:#dc2626;border-radius:6px;cursor:pointer">✕ Limpiar ajustes de metas</button>
-          <button onclick="openMarcaBulkLoad()" style="margin-left:6px;padding:3px 10px;font-size:11px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;cursor:pointer">📋 Carga Masiva</button>
+          <span style="font-size:14px;font-weight:400;color:var(--text3);margin-left:10px">✏️ Clic en Meta Jul/Ago/Sep/Total Q3 para editar directamente</span>
+          <button onclick="clearAllMarcaOverrides()" style="margin-left:12px;padding:3px 10px;font-size:14px;border:1px solid #fca5a5;background:#fef2f2;color:#dc2626;border-radius:6px;cursor:pointer">✕ Limpiar ajustes de metas</button>
+          <button onclick="openMarcaBulkLoad()" style="margin-left:6px;padding:3px 10px;font-size:14px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;cursor:pointer">📋 Carga Masiva</button>
         </div>
         <div class="card-sub">109 marcas · Con factores de ajuste</div>
       </div>
@@ -866,8 +865,8 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <div class="card-sub">Distribución por Vendedor · $ Colones · Haga clic en un vendedor para expandir</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-outline" onclick="expandAllVP()" style="font-size:12px;padding:5px 12px">↕ Expandir todo</button>
-        <button class="btn btn-outline" onclick="collapseAllVP()" style="font-size:12px;padding:5px 12px">↕ Colapsar todo</button>
+        <button class="btn btn-outline" onclick="expandAllVP()" style="font-size:16px;padding:5px 12px">↕ Expandir todo</button>
+        <button class="btn btn-outline" onclick="collapseAllVP()" style="font-size:16px;padding:5px 12px">↕ Colapsar todo</button>
         <input type="text" class="search-input" placeholder="🔍 Buscar vendedor..." id="searchVendPort" oninput="filterVendPort(this.value)">
       </div>
     </div>
@@ -945,10 +944,10 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     <div class="card-header">
       <div class="card-title">🎯 Auto-Ajuste a Presupuesto</div>
     </div>
-    <p style="color:var(--text2);font-size:13px;margin-bottom:12px">Si la proyección total está por debajo del presupuesto, aplicar ajuste proporcional automático sobre todos los vendedores para alcanzar la meta.</p>
+    <p style="color:var(--text2);font-size:16px;margin-bottom:12px">Si la proyección total está por debajo del presupuesto, aplicar ajuste proporcional automático sobre todos los vendedores para alcanzar la meta.</p>
     <button class="btn btn-gold" onclick="autoAdjust()">⚡ Aplicar Auto-Ajuste Proporcional</button>
     <button class="btn btn-outline" style="margin-left:8px" onclick="resetAllAdj()">↺ Resetear todos los ajustes</button>
-    <div id="autoAdjResult" style="margin-top:12px;font-size:13px;color:var(--text2)"></div>
+    <div id="autoAdjResult" style="margin-top:12px;font-size:16px;color:var(--text2)"></div>
   </div>
 
   <!-- CAMBIOS DE CARTERA -->
@@ -958,43 +957,43 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <div class="card-title">🔄 Cambios de Cartera</div>
         <div class="card-sub">Reasignaciones de clientes o reemplazos de vendedores — el historial se redistribuye automáticamente al calcular metas</div>
       </div>
-      <button class="btn btn-outline" onclick="addReasignacion()" style="font-size:12px;padding:5px 14px">+ Agregar cambio</button>
-      <button class="btn btn-outline" onclick="loadFromSupabase()" title="Si los cambios no se reflejan, refrescá los datos antes de reintentar" style="font-size:11px;padding:5px 12px;margin-left:6px;color:#0369a1;border-color:#7dd3fc">🔄 Refrescar datos</button>
+      <button class="btn btn-outline" onclick="addReasignacion()" style="font-size:16px;padding:5px 14px">+ Agregar cambio</button>
+      <button class="btn btn-outline" onclick="loadFromSupabase()" title="Si los cambios no se reflejan, refrescá los datos antes de reintentar" style="font-size:14px;padding:5px 12px;margin-left:6px;color:#0369a1;border-color:#7dd3fc">🔄 Refrescar datos</button>
     </div>
 
     <div id="reasigSuccessBanner" style="display:none;margin:0 0 14px;padding:12px 16px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;align-items:center;gap:10px">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2.5" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="9 12 12 15 16 10"/></svg>
-      <div style="font-size:13px;color:#15803d;font-weight:600" id="reasigSuccessText"></div>
+      <div style="font-size:16px;color:#15803d;font-weight:600" id="reasigSuccessText"></div>
     </div>
 
     <!-- Form nueva reasignación -->
     <div id="reasigForm" style="display:none;background:var(--bg3);border-radius:10px;padding:14px 16px;margin-bottom:14px;border:1px solid var(--border)">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div>
-          <label style="font-size:11px;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">TIPO DE CAMBIO</label>
-          <select id="reasigTipo" onchange="toggleReasigForm()" style="width:100%;font-size:13px;padding:6px 10px">
+          <label style="font-size:14px;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">TIPO DE CAMBIO</label>
+          <select id="reasigTipo" onchange="toggleReasigForm()" style="width:100%;font-size:16px;padding:6px 10px">
             <option value="cliente">Clientes específicos cambian de zona</option>
             <option value="vendedor">Reemplazo de vendedor (cartera completa)</option>
           </select>
         </div>
         <div>
-          <label style="font-size:11px;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">FECHA EFECTIVA</label>
-          <input type="month" id="reasigFecha" style="width:100%;font-size:13px;padding:6px 10px">
+          <label style="font-size:14px;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">FECHA EFECTIVA</label>
+          <input type="month" id="reasigFecha" style="width:100%;font-size:16px;padding:6px 10px">
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
         <div>
-          <label style="font-size:11px;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">ZONA ANTERIOR (DE)</label>
-          <select id="reasigDe" onchange="filterClientesByZona()" style="width:100%;font-size:13px;padding:6px 10px">
+          <label style="font-size:14px;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">ZONA ANTERIOR (DE)</label>
+          <select id="reasigDe" onchange="filterClientesByZona()" style="width:100%;font-size:16px;padding:6px 10px">
             <option value="">— Zona origen —</option>
           </select>
         </div>
         <div>
-          <label style="font-size:11px;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">ZONA NUEVA (A)</label>
+          <label style="font-size:14px;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">ZONA NUEVA (A)</label>
           <input type="text" id="reasigA" list="reasigAList" placeholder="Nombre o seleccioná zona existente..."
-            style="width:100%;font-size:13px;padding:6px 10px" oninput="checkNuevoVendedor()">
+            style="width:100%;font-size:16px;padding:6px 10px" oninput="checkNuevoVendedor()">
           <datalist id="reasigAList"></datalist>
-          <div id="nuevoVendedorBadge" style="display:none;margin-top:4px;font-size:11px;color:var(--teal)">
+          <div id="nuevoVendedorBadge" style="display:none;margin-top:4px;font-size:14px;color:var(--teal)">
             ✨ Se creará como nueva zona de venta
           </div>
         </div>
@@ -1003,27 +1002,27 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <!-- Multi-select de clientes -->
       <div id="reasigClienteWrap">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <label style="font-size:11px;color:var(--text2);font-weight:600">CLIENTES A MOVER <span id="reasigCount" style="color:var(--teal)"></span></label>
+          <label style="font-size:14px;color:var(--text2);font-weight:600">CLIENTES A MOVER <span id="reasigCount" style="color:var(--teal)"></span></label>
           <div style="display:flex;gap:8px;align-items:center">
-            <input type="text" id="reasigSearch" placeholder="🔍 Filtrar clientes..." oninput="filterClientesList(this.value)" style="font-size:12px;padding:4px 8px;width:200px">
-            <button class="btn btn-outline" onclick="selectAllClientes(true)"  style="font-size:11px;padding:3px 10px">Todos</button>
-            <button class="btn btn-outline" onclick="selectAllClientes(false)" style="font-size:11px;padding:3px 10px">Ninguno</button>
+            <input type="text" id="reasigSearch" placeholder="🔍 Filtrar clientes..." oninput="filterClientesList(this.value)" style="font-size:16px;padding:4px 8px;width:200px">
+            <button class="btn btn-outline" onclick="selectAllClientes(true)"  style="font-size:14px;padding:3px 10px">Todos</button>
+            <button class="btn btn-outline" onclick="selectAllClientes(false)" style="font-size:14px;padding:3px 10px">Ninguno</button>
           </div>
         </div>
         <div id="reasigClienteList" style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg2)">
-          <div style="padding:12px;color:var(--text3);font-size:13px;text-align:center">Seleccioná una zona origen primero</div>
+          <div style="padding:12px;color:var(--text3);font-size:16px;text-align:center">Seleccioná una zona origen primero</div>
         </div>
       </div>
 
       <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn btn-gold" onclick="saveReasignacion()" style="font-size:12px;padding:5px 14px">✓ Aplicar cambio</button>
-        <button class="btn btn-outline" onclick="document.getElementById('reasigForm').style.display='none'" style="font-size:12px;padding:5px 14px">Cancelar</button>
+        <button class="btn btn-gold" onclick="saveReasignacion()" style="font-size:16px;padding:5px 14px">✓ Aplicar cambio</button>
+        <button class="btn btn-outline" onclick="document.getElementById('reasigForm').style.display='none'" style="font-size:16px;padding:5px 14px">Cancelar</button>
       </div>
     </div>
 
     <!-- Lista de reasignaciones activas -->
     <div id="reasigList">
-      <div style="text-align:center;padding:20px;font-size:13px;color:var(--text3)">No hay cambios de cartera registrados</div>
+      <div style="text-align:center;padding:20px;font-size:16px;color:var(--text3)">No hay cambios de cartera registrados</div>
     </div>
   </div>
 </div>
@@ -1048,18 +1047,18 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
 
         <!-- Blend weight control -->
         <div style="margin-top:18px;padding:14px 16px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
-          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">⚖️ Ajustar pesos del modelo</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px">⚖️ Ajustar pesos del modelo</div>
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-            <span style="font-size:12px;color:var(--text2);width:80px">Tendencia</span>
+            <span style="font-size:16px;color:var(--text2);width:80px">Tendencia</span>
             <input type="range" id="blendSlider" min="0" max="100" step="5" value="60"
               style="flex:1;accent-color:var(--teal)" oninput="updateBlendWeight(this.value)">
-            <span style="font-size:12px;color:var(--text2);width:80px;text-align:right">Estacional</span>
+            <span style="font-size:16px;color:var(--text2);width:80px;text-align:right">Estacional</span>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700">
+          <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700">
             <span style="color:var(--teal)"><span id="blendTrendVal">60</span>% Tendencia</span>
             <span style="color:var(--blue)"><span id="blendSeasVal">40</span>% Estacional</span>
           </div>
-          <div style="margin-top:8px;font-size:11px;color:var(--text3)">
+          <div style="margin-top:8px;font-size:14px;color:var(--text3)">
             Mayor tendencia → más peso al comportamiento reciente · Mayor estacional → más peso a los Q2 anteriores
           </div>
         </div>
@@ -1092,12 +1091,12 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     <div class="card-header"><div class="card-title">📊 Suavizar Picos Históricos (Winsorización)</div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:4px 0">
       <div>
-        <p style="font-size:13px;color:var(--text2);margin-bottom:14px">
+        <p style="font-size:16px;color:var(--text2);margin-bottom:14px">
           Detecta y amortigua meses atípicos en el historial de cada entidad (vendedores, marcas, portafolios).
           Un mes se considera <strong>pico</strong> si supera la media en más de <strong>N desviaciones estándar</strong>.
           El valor atípico se reemplaza por la media del período, evitando que distorsione la proyección.
         </p>
-        <div style="background:var(--bg3);border-radius:8px;padding:12px 14px;border:1px solid var(--border);font-size:12px;color:var(--text2)">
+        <div style="background:var(--bg3);border-radius:8px;padding:12px 14px;border:1px solid var(--border);font-size:16px;color:var(--text2)">
           <strong style="color:var(--teal)">Ejemplo:</strong> Si Carlos Mora tuvo una venta especial de $215M en un mes donde su promedio es $45M,
           ese mes se considera pico (4.7σ) y se suaviza al promedio, mejorando la proyección base.
         </div>
@@ -1105,21 +1104,21 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div>
         <div style="margin-bottom:16px">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:16px;font-weight:600">
               <input type="checkbox" id="smoothToggle" onchange="updateSmoothing()" style="width:16px;height:16px;accent-color:var(--teal)">
               Activar suavizado de picos
             </label>
           </div>
           <div id="smoothControls" style="opacity:0.4;pointer-events:none;transition:opacity 0.2s">
-            <div style="font-size:12px;color:var(--text2);margin-bottom:6px">
+            <div style="font-size:16px;color:var(--text2);margin-bottom:6px">
               Sensibilidad: valores que superan la media en más de <strong id="smoothSigmaLabel">2.0</strong>σ son suavizados
             </div>
             <input type="range" id="smoothSlider" min="1" max="4" step="0.5" value="2"
               style="width:100%;accent-color:var(--teal)" oninput="updateSmoothSlider(this.value)">
-            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px">
+            <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--text3);margin-top:2px">
               <span>1σ — Agresivo</span><span>2σ — Moderado</span><span>3σ — Conservador</span><span>4σ — Mínimo</span>
             </div>
-            <div id="smoothStats" style="margin-top:12px;font-size:12px;color:var(--text2)"></div>
+            <div id="smoothStats" style="margin-top:12px;font-size:16px;color:var(--text2)"></div>
           </div>
         </div>
       </div>
@@ -1137,8 +1136,8 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <div class="card-sub">Distribución proporcional por marca · $ Colones · Haga clic en un vendedor para expandir</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-outline" onclick="expandAll('vendMarcaBody')" style="font-size:12px;padding:5px 12px">↕ Expandir todo</button>
-        <button class="btn btn-outline" onclick="collapseAll('vendMarcaBody')" style="font-size:12px;padding:5px 12px">↕ Colapsar todo</button>
+        <button class="btn btn-outline" onclick="expandAll('vendMarcaBody')" style="font-size:16px;padding:5px 12px">↕ Expandir todo</button>
+        <button class="btn btn-outline" onclick="collapseAll('vendMarcaBody')" style="font-size:16px;padding:5px 12px">↕ Colapsar todo</button>
         <input type="text" class="search-input" placeholder="🔍 Buscar..." id="searchVendMarca" oninput="filterTable('vendMarcaBody', this.value)">
       </div>
     </div>
@@ -1173,8 +1172,8 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <div class="card-sub">Cuánto debe vender cada vendedor a cada cliente para construir su meta · Haga clic en un vendedor para expandir</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-outline" onclick="expandAll('vendClienteBody')" style="font-size:12px;padding:5px 12px">↕ Expandir todo</button>
-        <button class="btn btn-outline" onclick="collapseAll('vendClienteBody')" style="font-size:12px;padding:5px 12px">↕ Colapsar todo</button>
+        <button class="btn btn-outline" onclick="expandAll('vendClienteBody')" style="font-size:16px;padding:5px 12px">↕ Expandir todo</button>
+        <button class="btn btn-outline" onclick="collapseAll('vendClienteBody')" style="font-size:16px;padding:5px 12px">↕ Colapsar todo</button>
         <input type="text" class="search-input" placeholder="🔍 Buscar..." id="searchVendCliente" oninput="filterTable('vendClienteBody', this.value)">
       </div>
     </div>
@@ -1202,19 +1201,19 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <!-- Charts del Resumen -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
     <div class="card" style="padding:16px">
-      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Tendencia de Ventas</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Tendencia de Ventas</div>
       <div class="chart-wrap"><canvas id="trendChart" height="200"></canvas></div>
     </div>
     <div class="card" style="padding:16px">
-      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Distribución por Portafolio</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Distribución por Portafolio</div>
       <div class="chart-wrap"><canvas id="donutChart" height="200"></canvas></div>
     </div>
     <div class="card" style="padding:16px">
-      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Zonas de Venta</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Zonas de Venta</div>
       <div class="chart-wrap"><canvas id="vendChart" height="200"></canvas></div>
     </div>
     <div class="card" style="padding:16px">
-      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Marcas</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Marcas</div>
       <div class="chart-wrap"><canvas id="marcaChart" height="200"></canvas></div>
     </div>
   </div>
@@ -1229,26 +1228,26 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <div class="card-sub">Expandí un vendedor → expandí un cliente → ver marcas con historial y meta · Requiere datos Supabase</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-outline" onclick="expandAll('vcmBody')" style="font-size:12px;padding:5px 12px">↕ Expandir todo</button>
-        <button class="btn btn-outline" onclick="collapseAll('vcmBody')" style="font-size:12px;padding:5px 12px">↕ Colapsar todo</button>
+        <button class="btn btn-outline" onclick="expandAll('vcmBody')" style="font-size:16px;padding:5px 12px">↕ Expandir todo</button>
+        <button class="btn btn-outline" onclick="collapseAll('vcmBody')" style="font-size:16px;padding:5px 12px">↕ Colapsar todo</button>
         <input type="text" class="search-input" placeholder="🔍 Buscar..." id="searchVCM" oninput="filterTable('vcmBody', this.value)">
       </div>
     </div>
     <div class="table-wrap" style="max-height:700px">
       <table class="data-table" id="vcmTable" style="table-layout:fixed;width:100%">
         <colgroup>
-          <col style="width:300px">
-          <col style="width:130px">
-          <col style="width:130px">
-          <col style="width:130px">
-          <col style="width:130px">
-          <col style="width:130px">
-          <col style="width:130px">
-          <col style="width:90px">
+          <col style="width:320px">
+          <col style="width:160px">
+          <col style="width:160px">
+          <col style="width:160px">
+          <col style="width:160px">
+          <col style="width:160px">
+          <col style="width:160px">
+          <col style="width:110px">
         </colgroup>
         <thead>
           <tr>
-            <th style="min-width:300px">Zona / Cliente / Marca</th>
+            <th style="min-width:320px">Zona / Cliente / Marca</th>
             <th class="num">Hist Q3 2024 ($)</th>
             <th class="num">Hist Q3 2025 ($)</th>
             <th class="num">Meta Jul 2026 ($)</th>
@@ -1301,22 +1300,22 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <div class="card-sub">Expandí un vendedor → una marca → ver artículos con historial y meta</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-outline" onclick="expandAll('artBody')" style="font-size:12px;padding:5px 12px">↕ Expandir todo</button>
-        <button class="btn btn-outline" onclick="collapseAll('artBody')" style="font-size:12px;padding:5px 12px">↕ Colapsar todo</button>
+        <button class="btn btn-outline" onclick="expandAll('artBody')" style="font-size:16px;padding:5px 12px">↕ Expandir todo</button>
+        <button class="btn btn-outline" onclick="collapseAll('artBody')" style="font-size:16px;padding:5px 12px">↕ Colapsar todo</button>
         <input type="text" class="search-input" placeholder="🔍 Buscar..." id="searchArt" oninput="filterTable('artBody',this.value,0)">
       </div>
     </div>
     <div class="table-wrap" style="max-height:70vh">
       <table class="data-table" id="artTable" style="table-layout:fixed;width:100%">
         <colgroup>
-          <col style="width:300px">
-          <col style="width:120px"><col style="width:120px">
-          <col style="width:120px"><col style="width:120px"><col style="width:120px">
-          <col style="width:120px"><col style="width:90px">
+          <col style="width:320px">
+          <col style="width:150px"><col style="width:150px">
+          <col style="width:150px"><col style="width:150px"><col style="width:150px">
+          <col style="width:150px"><col style="width:110px">
         </colgroup>
         <thead>
           <tr>
-            <th style="min-width:300px">Zona / Marca / Artículo</th>
+            <th style="min-width:320px">Zona / Marca / Artículo</th>
             <th class="num">Hist Q3 2024</th>
             <th class="num">Hist Q3 2025</th>
             <th class="num">Meta Jul 2026</th>
@@ -1342,37 +1341,37 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </div>
         <div>
-          <div style="font-size:17px;font-weight:700;color:var(--text)">Enviar Metas Trimestrales</div>
-          <div id="emailModalSub" style="font-size:12px;color:var(--text3);margin-top:2px">Correo individual a cada vendedor con copia al supervisor</div>
+          <div style="font-size:20px;font-weight:700;color:var(--text)">Enviar Metas Trimestrales</div>
+          <div id="emailModalSub" style="font-size:16px;color:var(--text3);margin-top:2px">Correo individual a cada vendedor con copia al supervisor</div>
         </div>
       </div>
       <button onclick="closeEmailModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2)">✕</button>
     </div>
     <!-- Mode selector + Controls -->
     <div style="padding:12px 24px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--bg3)">
-      <span style="font-size:12px;font-weight:600;color:var(--text2)">Enviar a:</span>
+      <span style="font-size:16px;font-weight:600;color:var(--text2)">Enviar a:</span>
       <div style="display:flex;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;background:var(--bg)">
-        <button id="modeVendBtn" onclick="setEmailMode('vendedores')" style="display:flex;align-items:center;gap:6px;padding:7px 16px;border:none;background:#009ee3;color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s">
+        <button id="modeVendBtn" onclick="setEmailMode('vendedores')" style="display:flex;align-items:center;gap:6px;padding:7px 16px;border:none;background:#009ee3;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.15s">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           Vendedores
         </button>
-        <button id="modeSuperBtn" onclick="setEmailMode('supervisores')" style="display:flex;align-items:center;gap:6px;padding:7px 16px;border:none;border-left:1px solid #e5e7eb;background:transparent;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s">
+        <button id="modeSuperBtn" onclick="setEmailMode('supervisores')" style="display:flex;align-items:center;gap:6px;padding:7px 16px;border:none;border-left:1px solid #e5e7eb;background:transparent;color:var(--text2);font-size:16px;font-weight:600;cursor:pointer;transition:all 0.15s">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Supervisores
         </button>
       </div>
     </div>
     <div style="padding:12px 24px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <button class="btn btn-outline" onclick="selectAllEmails(true)" style="font-size:12px;padding:5px 12px">☑ Todos</button>
-      <button class="btn btn-outline" onclick="selectAllEmails(false)" style="font-size:12px;padding:5px 12px">☐ Ninguno</button>
-      <input type="text" id="emailSearch" placeholder="🔍 Filtrar..." oninput="filterEmailList(this.value)" style="font-size:12px;padding:5px 10px;width:200px">
-      <span id="emailSelectedCount" style="font-size:12px;color:var(--text3)"></span>
+      <button class="btn btn-outline" onclick="selectAllEmails(true)" style="font-size:16px;padding:5px 12px">☑ Todos</button>
+      <button class="btn btn-outline" onclick="selectAllEmails(false)" style="font-size:16px;padding:5px 12px">☐ Ninguno</button>
+      <input type="text" id="emailSearch" placeholder="🔍 Filtrar..." oninput="filterEmailList(this.value)" style="font-size:16px;padding:5px 10px;width:200px">
+      <span id="emailSelectedCount" style="font-size:16px;color:var(--text3)"></span>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-        <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:4px 10px;border-radius:6px;border:1px solid #f59e0b;color:#b45309;background:#fffbeb">
+        <label style="display:flex;align-items:center;gap:6px;font-size:16px;cursor:pointer;padding:4px 10px;border-radius:6px;border:1px solid #f59e0b;color:#b45309;background:#fffbeb">
           <input type="checkbox" id="testModeToggle" style="accent-color:#f59e0b"> 🧪 Modo prueba — solo a <strong>jgarcia@cofersa.cr</strong>
         </label>
-        <button class="btn btn-outline" onclick="previewEmail()" style="font-size:12px;padding:5px 14px;border-color:#7c3aed;color:#7c3aed">👁 Vista previa</button>
-        <button class="btn btn-save" id="sendEmailBtn" onclick="sendEmails()" style="display:inline-flex;align-items:center;gap:8px;font-size:12px;padding:6px 16px;background:#009ee3!important;border-color:#009ee3!important;border-radius:8px">
+        <button class="btn btn-outline" onclick="previewEmail()" style="font-size:16px;padding:5px 14px;border-color:#7c3aed;color:#7c3aed">👁 Vista previa</button>
+        <button class="btn btn-save" id="sendEmailBtn" onclick="sendEmails()" style="display:inline-flex;align-items:center;gap:8px;font-size:16px;padding:6px 16px;background:#009ee3!important;border-color:#009ee3!important;border-radius:8px">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           Enviar correos
         </button>
@@ -1383,7 +1382,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div id="emailVendorList" style="display:grid;gap:8px"></div>
     </div>
     <!-- Status -->
-    <div id="emailStatus" style="padding:12px 24px;border-top:1px solid var(--border);font-size:13px;color:var(--text3);min-height:42px"></div>
+    <div id="emailStatus" style="padding:12px 24px;border-top:1px solid var(--border);font-size:16px;color:var(--text3);min-height:42px"></div>
   </div>
 </div>
 
@@ -1391,15 +1390,15 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
 <div id="emailPreviewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:10000;align-items:center;justify-content:center">
   <div style="background:#fff;border-radius:12px;width:740px;max-width:95vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column">
     <div style="padding:14px 20px;background:#1e3a8a;display:flex;align-items:center;justify-content:space-between">
-      <span style="color:#fff;font-weight:600;font-size:14px">Vista previa del correo</span>
+      <span style="color:#fff;font-weight:600;font-size:16px">Vista previa del correo</span>
       <div style="display:flex;gap:8px">
         <button id="prevVendBtn" onclick="changePreview(-1)" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:4px 10px;border-radius:6px;cursor:pointer">◀</button>
-        <span id="previewVendIdx" style="color:#bfdbfe;font-size:12px;align-self:center"></span>
+        <span id="previewVendIdx" style="color:#bfdbfe;font-size:16px;align-self:center"></span>
         <button id="nextVendBtn" onclick="changePreview(1)" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:4px 10px;border-radius:6px;cursor:pointer">▶</button>
-        <button onclick="closePreview()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;margin-left:8px">✕</button>
+        <button onclick="closePreview()" style="background:none;border:none;color:#fff;font-size:28px;cursor:pointer;margin-left:8px">✕</button>
       </div>
     </div>
-    <div style="padding:10px 20px;background:#f3f4f6;font-size:12px;color:#374151;border-bottom:1px solid #e5e7eb" id="previewEmailHeader"></div>
+    <div style="padding:10px 20px;background:#f3f4f6;font-size:16px;color:#374151;border-bottom:1px solid #e5e7eb" id="previewEmailHeader"></div>
     <div style="overflow-y:auto;flex:1">
       <iframe id="emailPreviewFrame" style="width:100%;height:600px;border:none"></iframe>
     </div>
@@ -1413,10 +1412,10 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="pdf-header" style="display:none;margin-bottom:20px;padding-bottom:14px;border-bottom:3px solid var(--teal)">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
-        <div style="font-size:22px;font-weight:800;color:var(--teal);letter-spacing:-0.5px">COFERSA</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text)">Resumen Ejecutivo — Cálculo de Metas Trimestrales</div>
+        <div style="font-size:28px;font-weight:800;color:var(--teal);letter-spacing:-0.5px">COFERSA</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text)">Resumen Ejecutivo — Cálculo de Metas Trimestrales</div>
       </div>
-      <div style="text-align:right;font-size:11px;color:var(--text2)">
+      <div style="text-align:right;font-size:14px;color:var(--text2)">
         <div id="pdfDate"></div>
         <div id="pdfModelInfo"></div>
       </div>
@@ -1432,7 +1431,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     <div id="pdfTopVendedores"></div>
   </div>
   <div id="pdfTopMarcas" style="margin-bottom:16px"></div>
-  <div class="pdf-footer" style="display:none;margin-top:20px;padding-top:10px;border-top:1px solid #dde3ee;font-size:10px;color:var(--text3);display:flex;justify-content:space-between">
+  <div class="pdf-footer" style="display:none;margin-top:20px;padding-top:10px;border-top:1px solid #dde3ee;font-size:14px;color:var(--text3);display:flex;justify-content:space-between">
     <span>COFERSA — Confidencial</span>
     <span id="pdfFooterDate"></span>
   </div>
@@ -1492,7 +1491,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const backBtn = document.createElement('a');
   backBtn.href = 'index.html';
   backBtn.title = 'Volver al portal de empresas';
-  backBtn.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:0 11px;height:32px;border-radius:8px;font-size:12px;font-weight:500;color:#6b7280;background:#f3f4f6;border:none;text-decoration:none;margin-right:4px';
+  backBtn.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:0 11px;height:32px;border-radius:8px;font-size:16px;font-weight:500;color:#6b7280;background:#f3f4f6;border:none;text-decoration:none;margin-right:4px';
   backBtn.innerHTML = '← Portal';
   const saveBtn = document.getElementById('saveBtn');
   if (saveBtn && saveBtn.parentNode) saveBtn.parentNode.insertBefore(backBtn, saveBtn);
@@ -2143,9 +2142,9 @@ function renderKPIs(q2Hist, totalProj, budget, monthlyProj, monthlyHist25) {
       ['Jul 2025','Ago 2025','Sep 2025'].map((lbl, i) => {
         const pct = (monthlyHist25[i] / histTotal * 100).toFixed(1);
         return `<div style="background:rgba(255,255,255,0.15);border-radius:6px;padding:5px 6px;text-align:center">
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;opacity:0.8">${lbl}</div>
-          <div style="font-size:11px;font-weight:700">$${(monthlyHist25[i]/1e6).toFixed(0)}M</div>
-          <div style="font-size:9px;opacity:0.7">${pct}%</div>
+          <div style="font-size:14px;font-weight:700;letter-spacing:0.5px;opacity:0.8">${lbl}</div>
+          <div style="font-size:14px;font-weight:700">$${(monthlyHist25[i]/1e6).toFixed(0)}M</div>
+          <div style="font-size:14px;opacity:0.7">${pct}%</div>
         </div>`;
       }).join('');
   }
@@ -2162,14 +2161,14 @@ function renderKPIs(q2Hist, totalProj, budget, monthlyProj, monthlyHist25) {
     document.getElementById('projMonthlyBreakdown').innerHTML = labels.map((lbl, i) => {
       const pct = totalProj > 0 ? (monthlyProj[i] / totalProj * 100).toFixed(1) : '0.0';
       return `<div style="background:rgba(255,255,255,0.15);border-radius:8px;padding:6px 7px;text-align:center">
-        <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;opacity:0.85;margin-bottom:3px">${lbl}</div>
-        <div style="font-size:11px;font-weight:700;margin-bottom:3px">$${(monthlyProj[i]/1e6).toFixed(0)}M</div>
+        <div style="font-size:14px;font-weight:700;letter-spacing:0.5px;opacity:0.85;margin-bottom:3px">${lbl}</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">$${(monthlyProj[i]/1e6).toFixed(0)}M</div>
         <div style="display:flex;align-items:center;gap:2px;justify-content:center">
           <input type="number" id="${ids[i]}" value="${pct}"
             min="0" max="100" step="0.1"
-            style="width:44px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);border-radius:4px;padding:2px 4px;color:inherit;text-align:center"
+            style="width:60px;font-size:14px;font-weight:700;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);border-radius:4px;padding:2px 4px;color:inherit;text-align:center"
             oninput="updateProjWeight(${i}, this.value)">
-          <span style="font-size:10px;opacity:0.7">%</span>
+          <span style="font-size:14px;opacity:0.7">%</span>
         </div>
       </div>`;
     }).join('');
@@ -2388,8 +2387,8 @@ function renderVendTable(vendProj) {
     const port = vendPort[x.v] || '';
     const portColor = PORT_COLORS_VT[port] || 'var(--text3)';
     const portBadge = port
-      ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:${portColor};background:${portColor}18;padding:2px 7px;border-radius:4px;border:1px solid ${portColor}40">${port}</span>`
-      : `<span style="display:inline-flex;align-items:center;font-size:10px;font-weight:600;color:#1a1a1a;background:#fff;padding:2px 7px;border-radius:4px;border:1px solid #ccc">Portafolio 0</span>`;
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:600;color:${portColor};background:${portColor}18;padding:2px 7px;border-radius:4px;border:1px solid ${portColor}40">${port}</span>`
+      : `<span style="display:inline-flex;align-items:center;font-size:14px;font-weight:600;color:#1a1a1a;background:#fff;padding:2px 7px;border-radius:4px;border:1px solid #ccc">Portafolio 0</span>`;
     return `<tr>
       <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${x.v.replace(/^\d+-/,'').trim()}</td>
       <td>${portBadge}</td>
@@ -2466,7 +2465,7 @@ function renderMarcaTable(marcaProj) {
       </td>`;
     const totalOvStyle = hasOv ? 'background:#eff6ff;' : '';
     return `<tr>
-      <td>${x.m}${hasOv?` <span style="font-size:10px;color:#009ee3;font-weight:600">AJUSTADO</span>`:''}</td>
+      <td>${x.m}${hasOv?` <span style="font-size:14px;color:#009ee3;font-weight:600">AJUSTADO</span>`:''}</td>
       <td class="num">${fmt(x.histQ2_2024)}</td>
       <td class="num">${fmt(x.histQ2_2025)}</td>
       ${editCell(x.proj[0], 0)}
@@ -2478,7 +2477,7 @@ function renderMarcaTable(marcaProj) {
         ${ovIcon}${fmt(x.total)}
       </td>
       <td class="num ${varPct>=0?'pos':'neg'}">${fmtPct(varPct)}</td>
-      <td class="num" style="color:${adj>=0?'var(--teal)':'var(--red)'}">${adjStr}${hasOv?` <button onclick="clearMarcaOverride('${x.m.replace(/'/g,"\\'")}',event)" style="border:none;background:#fee2e2;color:#dc2626;border-radius:4px;padding:1px 5px;font-size:10px;cursor:pointer;margin-left:4px">✕</button>`:''}</td>
+      <td class="num" style="color:${adj>=0?'var(--teal)':'var(--red)'}">${adjStr}${hasOv?` <button onclick="clearMarcaOverride('${x.m.replace(/'/g,"\\'")}',event)" style="border:none;background:#fee2e2;color:#dc2626;border-radius:4px;padding:1px 5px;font-size:14px;cursor:pointer;margin-left:4px">✕</button>`:''}</td>
     </tr>`;
   }).join('');
 
@@ -2494,7 +2493,7 @@ function renderMarcaTable(marcaProj) {
 
   const tfoot = document.getElementById('marcaTableFoot');
   if (tfoot) tfoot.innerHTML = `<tr class="total-row">
-    <td><strong>TOTAL</strong>${ovCount>0?` <span style="font-size:10px;color:#009ee3;font-weight:600">(${ovCount} marca${ovCount>1?'s':''} ajustada${ovCount>1?'s':''})</span>`:''}</td>
+    <td><strong>TOTAL</strong>${ovCount>0?` <span style="font-size:14px;color:#009ee3;font-weight:600">(${ovCount} marca${ovCount>1?'s':''} ajustada${ovCount>1?'s':''})</span>`:''}</td>
     <td class="num"><strong>${fmt(totHist24)}</strong></td>
     <td class="num"><strong>${fmt(totHist25)}</strong></td>
     <td class="num"><strong>${fmt(totAbr)}</strong></td>
@@ -2521,13 +2520,13 @@ function renderPortCards(portProj) {
         <span class="kpi-badge ${varPct>=0?'badge-up':'badge-down'}">${fmtPct(varPct)} vs Q3 2025</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px">
-        <div><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase">Jul 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[0])}</div></div>
-        <div><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase">Ago 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[1])}</div></div>
-        <div><div style="font-size:10px;color:var(--text2);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase">Sep 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[2])}</div></div>
+        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Jul 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[0])}</div></div>
+        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Ago 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[1])}</div></div>
+        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Sep 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[2])}</div></div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)">
-        <div><span style="font-size:11px;color:var(--text2)">Total Trimestre</span><div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:${color}">${fmt(total)}</div></div>
-        <div style="text-align:right"><span style="font-size:11px;color:var(--text2)">Hist Q3 2025</span><div style="font-family:var(--font-display);font-size:16px;color:var(--text2)">${fmt(d.histQ2_2025)}</div></div>
+        <div><span style="font-size:14px;color:var(--text2)">Total Trimestre</span><div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:${color}">${fmt(total)}</div></div>
+        <div style="text-align:right"><span style="font-size:14px;color:var(--text2)">Hist Q3 2025</span><div style="font-family:var(--font-display);font-size:16px;color:var(--text2)">${fmt(d.histQ2_2025)}</div></div>
       </div>`;
   });
 }
@@ -2633,7 +2632,7 @@ function renderVCMTable(vendProj) {
         <tr class="vp-port-row hidden" data-vcm-vend="${vidx}" data-vcm-marca-row="${rowId}" style="display:none !important">
           <td colspan="8" style="padding:0;border-top:none">
             <div id="${rowId}_content" style="overflow-x:auto">
-              <span style="color:var(--text3);font-size:12px;padding:8px 72px;display:block">↑ Clic en el cliente para cargar sus marcas</span>
+              <span style="color:var(--text3);font-size:16px;padding:8px 72px;display:block">↑ Clic en el cliente para cargar sus marcas</span>
             </div>
           </td>
         </tr>`;
@@ -2695,7 +2694,7 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
   const cacheKey = `${vendedor}|${alias}`;
   if (!_vcmCache[cacheKey]) {
     const content = document.getElementById(`${rowId}_content`);
-    if (content) content.innerHTML = '<span style="color:var(--text3);font-size:12px">⏳ Cargando marcas...</span>';
+    if (content) content.innerHTML = '<span style="color:var(--text3);font-size:16px">⏳ Cargando marcas...</span>';
     try {
       const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_cliente_marcas_febeca`, {
         method: 'POST',
@@ -2714,7 +2713,7 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
 
   if (!marcas || marcas.length === 0) {
     document.getElementById(`${rowId}_content`).innerHTML =
-      '<span style="color:var(--text3);font-size:12px;font-style:italic">Sin marcas con ventas en el período</span>';
+      '<span style="color:var(--text3);font-size:16px;font-style:italic">Sin marcas con ventas en el período</span>';
     return;
   }
 
@@ -2735,18 +2734,18 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
     const mSep = wSum > 0 ? tot - mJul - mAgo    : tot / 3;
     const marcaLabel = `${m.marca} ${m.portafolio||''}`.replace(/"/g,'&quot;');
     return `<tr class="vp-port-row hidden" data-vcm-vend="${marcas._vidx||''}" style="background:var(--bg3)">
-      <td title="${marcaLabel}" style="padding:4px 8px 4px 72px;font-size:12px;width:300px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+      <td title="${marcaLabel}" style="padding:4px 8px 4px 72px;font-size:16px;width:320px;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${pColor};margin-right:6px"></span>
         🏷️ ${m.marca}
-        <span style="font-size:10px;color:var(--text3);margin-left:4px">${m.portafolio}</span>
+        <span style="font-size:14px;color:var(--text3);margin-left:4px">${m.portafolio}</span>
       </td>
-      <td class="num" style="font-size:12px">${fmt(h24)}</td>
-      <td class="num" style="font-size:12px">${fmt(h25)}</td>
-      <td class="num" style="font-size:12px;color:var(--gold)">${fmt(mJul)}</td>
-      <td class="num" style="font-size:12px;color:var(--gold)">${fmt(mAgo)}</td>
-      <td class="num" style="font-size:12px;color:var(--gold)">${fmt(mSep)}</td>
-      <td class="num" style="font-size:12px;font-weight:600">${fmt(tot)}</td>
-      <td class="num ${varP>=0?'pos':'neg'}" style="font-size:12px">${fmtPct(varP)}</td>
+      <td class="num" style="font-size:16px">${fmt(h24)}</td>
+      <td class="num" style="font-size:16px">${fmt(h25)}</td>
+      <td class="num" style="font-size:16px;color:var(--gold)">${fmt(mJul)}</td>
+      <td class="num" style="font-size:16px;color:var(--gold)">${fmt(mAgo)}</td>
+      <td class="num" style="font-size:16px;color:var(--gold)">${fmt(mSep)}</td>
+      <td class="num" style="font-size:16px;font-weight:600">${fmt(tot)}</td>
+      <td class="num ${varP>=0?'pos':'neg'}" style="font-size:16px">${fmtPct(varP)}</td>
     </tr>`;
   }).join('');
 
@@ -2760,10 +2759,10 @@ async function toggleVCMCliente(rowId, vendedor, alias) {
       .replace(/\bdata-vcm-vend="[^"]*"/g, '');
     marcaContainer.innerHTML = `<table style="width:100%;table-layout:fixed;border-collapse:collapse">
       <colgroup>
-        <col style="width:300px">
-        <col style="width:130px"><col style="width:130px">
-        <col style="width:130px"><col style="width:130px"><col style="width:130px">
-        <col style="width:130px"><col style="width:90px">
+        <col style="width:320px">
+        <col style="width:160px"><col style="width:160px">
+        <col style="width:160px"><col style="width:160px"><col style="width:160px">
+        <col style="width:160px"><col style="width:110px">
       </colgroup>
       <tbody>${cleanRows}</tbody>
     </table>`;
@@ -2814,7 +2813,7 @@ function renderVendMarcaTable(vendProj, grid) {
       const mVar  = mH25 > 0 ? ((tot - mH25)/mH25*100) : 0;
       const mPart = grandTotal > 0 ? (tot/grandTotal*100) : 0;
       const portBadge = RAW_DATA.marcas[marca]?.portafolio
-        ? `<span style="font-size:9px;background:var(--bg3);color:var(--text2);padding:1px 5px;border-radius:4px;margin-left:5px">${RAW_DATA.marcas[marca].portafolio}</span>`
+        ? `<span style="font-size:14px;background:var(--bg3);color:var(--text2);padding:1px 5px;border-radius:4px;margin-left:5px">${RAW_DATA.marcas[marca].portafolio}</span>`
         : '';
       html += `<tr class="vp-port-row p1 hidden" data-parent-vm="${idx}">
         <td style="padding-left:28px">🏷️ ${marca}${portBadge}</td>
@@ -3129,7 +3128,7 @@ function renderClientTable(clientProj) {
     // Show legal name on top, alias below — always when we have nombre from Supabase
     const clientCell = nombre
       ? `<div style="font-weight:500;line-height:1.3">${nombre}</div>
-         <div style="font-size:10px;color:var(--text3);margin-top:1px">↳ ${x.cl}</div>`
+         <div style="font-size:14px;color:var(--text3);margin-top:1px">↳ ${x.cl}</div>`
       : `<div style="font-weight:500">${x.cl}</div>`;
     return `<tr>
       <td style="color:var(--text2)">${idx+1}</td>
@@ -3198,8 +3197,8 @@ function renderTendenciaTab(vendProj, marcaProj) {
   const vendPort = RAW_DATA.vendedorPortafolio || {};
 
   const portBadgeFor = port => port
-    ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:${PORT_COLORS_T[port]||'var(--text3)'};background:${(PORT_COLORS_T[port]||'#8fa3c0')}18;padding:2px 7px;border-radius:4px;border:1px solid ${(PORT_COLORS_T[port]||'#8fa3c0')}40">${port}</span>`
-    : `<span style="display:inline-flex;align-items:center;font-size:10px;font-weight:600;color:#1a1a1a;background:#fff;padding:2px 7px;border-radius:4px;border:1px solid #ccc">Portafolio 0</span>`;
+    ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:600;color:${PORT_COLORS_T[port]||'var(--text3)'};background:${(PORT_COLORS_T[port]||'#8fa3c0')}18;padding:2px 7px;border-radius:4px;border:1px solid ${(PORT_COLORS_T[port]||'#8fa3c0')}40">${port}</span>`
+    : `<span style="display:inline-flex;align-items:center;font-size:14px;font-weight:600;color:#1a1a1a;background:#fff;padding:2px 7px;border-radius:4px;border:1px solid #ccc">Portafolio 0</span>`;
 
   let rows;
   if (byMarca) {
@@ -3296,23 +3295,23 @@ function makeVendAdjItem(v, vp) {
   return `<div class="adj-item">
     <div class="adj-item-header">
       <div class="adj-name" title="${v}">${label}</div>
-      <div style="font-size:11px;color:var(--text2)">Q2 2025: $${(hist25/1e6).toFixed(1)}M</div>
+      <div style="font-size:14px;color:var(--text2)">Q2 2025: $${(hist25/1e6).toFixed(1)}M</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
-      <span style="font-size:11px;color:var(--text2);flex-shrink:0">Var Q2 2025:</span>
+      <span style="font-size:14px;color:var(--text2);flex-shrink:0">Var Q2 2025:</span>
       <div style="display:flex;align-items:center;gap:4px;flex:1">
         <button class="adj-btn adj-btn-minus" onclick="stepVendQ22025('${escQ(v)}','${id}',-1)">−</button>
         <input type="number" id="${id}" value="${varPct.toFixed(1)}" step="0.5"
-          style="width:60px;font-size:13px;font-weight:700;text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px 4px;background:var(--bg3);color:${color}"
+          style="width:60px;font-size:16px;font-weight:700;text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px 4px;background:var(--bg3);color:${color}"
           oninput="setVendQ22025('${escQ(v)}','${id}',this.value)">
         <button class="adj-btn adj-btn-plus" onclick="stepVendQ22025('${escQ(v)}','${id}',1)">+</button>
-        <span style="font-size:12px;font-weight:700;color:${color}">${varPct >= 0 ? '+' : ''}${varPct.toFixed(1)}%</span>
+        <span style="font-size:16px;font-weight:700;color:${color}">${varPct >= 0 ? '+' : ''}${varPct.toFixed(1)}%</span>
       </div>
-      ${hasTarget ? `<button onclick="clearVendQ22025('${escQ(v)}')" style="font-size:10px;background:none;border:none;cursor:pointer;color:var(--text3);padding:0" title="Volver a proyección del modelo">✕ modelo</button>` : ''}
+      ${hasTarget ? `<button onclick="clearVendQ22025('${escQ(v)}')" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--text3);padding:0" title="Volver a proyección del modelo">✕ modelo</button>` : ''}
     </div>
-    <div style="font-size:11px;color:var(--text2);margin-top:3px">
+    <div style="font-size:14px;color:var(--text2);margin-top:3px">
       Meta Trimestral: <strong style="color:var(--teal)">$${(metaVal/1e6).toFixed(1)}M</strong>
-      ${hasTarget ? '<span style="color:var(--gold);font-size:10px"> · ajuste manual</span>' : '<span style="color:var(--text3);font-size:10px"> · proyección modelo</span>'}
+      ${hasTarget ? '<span style="color:var(--gold);font-size:14px"> · ajuste manual</span>' : '<span style="color:var(--text3);font-size:14px"> · proyección modelo</span>'}
     </div>
   </div>`;
 }
@@ -3505,18 +3504,18 @@ function renderBudgetBreakdown() {
     <div style="grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
       ${labels.map((lbl, i) => `
         <div style="background:rgba(255,255,255,0.15);border-radius:8px;padding:6px 7px;text-align:center">
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;opacity:0.85;margin-bottom:3px">${lbl} 2026</div>
-          <div style="font-size:11px;font-weight:700;margin-bottom:3px">$${((b * weights[i]) / 1e6).toFixed(0)}M</div>
+          <div style="font-size:14px;font-weight:700;letter-spacing:0.5px;opacity:0.85;margin-bottom:3px">${lbl} 2026</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:3px">$${((b * weights[i]) / 1e6).toFixed(0)}M</div>
           <div style="display:flex;align-items:center;gap:2px;justify-content:center">
             <input type="number" id="${ids[i]}" value="${(weights[i] * 100).toFixed(1)}"
               min="0" max="100" step="0.1"
-              style="width:44px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);border-radius:4px;padding:2px 4px;color:inherit;text-align:center"
+              style="width:60px;font-size:14px;font-weight:700;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);border-radius:4px;padding:2px 4px;color:inherit;text-align:center"
               oninput="updateBudgetWeight(${i}, this.value)">
-            <span style="font-size:10px;opacity:0.7">%</span>
+            <span style="font-size:14px;opacity:0.7">%</span>
           </div>
         </div>`).join('')}
     </div>
-    <div style="grid-column:1/-1;margin-top:4px;text-align:center;font-size:10px;font-weight:600;
+    <div style="grid-column:1/-1;margin-top:4px;text-align:center;font-size:14px;font-weight:600;
       color:${sumOk ? 'rgba(255,255,255,0.7)' : '#ffd580'}">
       ${sumOk ? `✓ Suma: 100%` : `⚠ Suma: ${total.toFixed(1)}% — debe ser 100%`}
     </div>`;
@@ -3669,8 +3668,8 @@ function renderSupervisorList(list) {
     return `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg)">
       <input type="checkbox" class="email-cb" data-idx="${i}" data-mode="supervisores" checked style="width:15px;height:15px;accent-color:#009ee3;flex-shrink:0" onchange="updateEmailCount()">
       <div style="flex:1;cursor:pointer" onclick="this.closest('div').querySelector('input').click()">
-        <div style="font-size:13px;font-weight:600;color:var(--text)">👥 ${s.label}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px">
+        <div style="font-size:16px;font-weight:600;color:var(--text)">👥 ${s.label}</div>
+        <div style="font-size:14px;color:var(--text3);margin-top:2px">
           ✉️ ${s.correo} &nbsp;·&nbsp;
           ${s.vendedores.length} vendedor${s.vendedores.length !== 1 ? 'es' : ''}: <span style="color:var(--text2)">${s.vendedores.map(v=>v.label).join(', ')}</span>
         </div>
@@ -3810,8 +3809,8 @@ function renderEmailList(list) {
     return `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg)">
       <input type="checkbox" class="email-cb" data-idx="${i}" checked style="width:15px;height:15px;accent-color:#009ee3;flex-shrink:0" onchange="updateEmailCount()">
       <div style="flex:1;cursor:pointer" onclick="this.closest('div').querySelector('input').click()">
-        <div style="font-size:13px;font-weight:600;color:var(--text)">${v.label} <span style="font-size:10px;font-weight:600;color:${pc};background:${pc}18;padding:1px 6px;border-radius:4px;border:1px solid ${pc}40">${v.portafolio}</span></div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px">✉️ ${v.correo} &nbsp;·&nbsp; 👤 ${v.supervisor} (${v.correo_supervisor})</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text)">${v.label} <span style="font-size:14px;font-weight:600;color:${pc};background:${pc}18;padding:1px 6px;border-radius:4px;border:1px solid ${pc}40">${v.portafolio}</span></div>
+        <div style="font-size:14px;color:var(--text3);margin-top:2px">✉️ ${v.correo} &nbsp;·&nbsp; 👤 ${v.supervisor} (${v.correo_supervisor})</div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
         <button onclick="previewEmailSingle('vendedores',${i})" title="Vista previa" style="width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2)">
@@ -4169,22 +4168,22 @@ function exportPDF() {
     { label:'Cumplimiento', val:cumpl.toFixed(1)+'%', sub:cumpl>=100?'✓ Meta alcanzada':'Brecha: $'+fmt(budget-totalProj), color:kpiColor }
   ].map(k=>`
     <div style="border:1px solid #dde3ee;border-radius:10px;padding:14px;background:#f8fafd">
-      <div style="font-size:10px;font-weight:600;color:#6b7fa3;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">${k.label}</div>
-      <div style="font-size:17px;font-weight:800;color:${k.color};margin-bottom:4px;letter-spacing:-0.3px">${k.val}</div>
-      <div style="font-size:10px;color:#6b7fa3">${k.sub}</div>
+      <div style="font-size:14px;font-weight:600;color:#6b7fa3;letter-spacing:0.5px;margin-bottom:6px">${k.label}</div>
+      <div style="font-size:20px;font-weight:800;color:${k.color};margin-bottom:4px;letter-spacing:-0.3px">${k.val}</div>
+      <div style="font-size:14px;color:#6b7fa3">${k.sub}</div>
     </div>`).join('');
 
   // Monthly projection breakdown
   const [wa,wm,wj] = getBudgetMonthlyWeights();
   document.getElementById('pdfProjBreakdown').innerHTML = `
     <div style="border:1px solid #dde3ee;border-radius:10px;padding:14px;background:#f8fafd">
-      <div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:10px">📅 Distribución Mensual Meta</div>
+      <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:10px">📅 Distribución Mensual Meta</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
         ${['Jul 2026','Ago 2026','Sep 2026'].map((m,i)=>`
           <div style="text-align:center;background:#fff;border-radius:8px;padding:8px;border:1px solid #eaedf4">
-            <div style="font-size:9px;font-weight:700;color:#6b7fa3">${m}</div>
-            <div style="font-size:13px;font-weight:700;color:var(--blue)">$${(monthlyP[i]/1e6).toFixed(0)}M</div>
-            <div style="font-size:9px;color:#6b7fa3">${(monthlyP[i]/totalProj*100).toFixed(1)}%</div>
+            <div style="font-size:14px;font-weight:700;color:#6b7fa3">${m}</div>
+            <div style="font-size:16px;font-weight:700;color:var(--blue)">$${(monthlyP[i]/1e6).toFixed(0)}M</div>
+            <div style="font-size:14px;color:#6b7fa3">${(monthlyP[i]/totalProj*100).toFixed(1)}%</div>
           </div>`).join('')}
       </div>
     </div>`;
@@ -4193,13 +4192,13 @@ function exportPDF() {
   const bw = getBudgetMonthlyWeights();
   document.getElementById('pdfBudgetBreakdown').innerHTML = `
     <div style="border:1px solid #f0c040;border-radius:10px;padding:14px;background:#fffbf0">
-      <div style="font-size:11px;font-weight:700;color:#c47a00;margin-bottom:10px">💰 Distribución Mensual Presupuesto</div>
+      <div style="font-size:14px;font-weight:700;color:#c47a00;margin-bottom:10px">💰 Distribución Mensual Presupuesto</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
         ${['Jul 2026','Ago 2026','Sep 2026'].map((m,i)=>`
           <div style="text-align:center;background:#fff;border-radius:8px;padding:8px;border:1px solid #f0c040">
-            <div style="font-size:9px;font-weight:700;color:#6b7fa3">${m}</div>
-            <div style="font-size:13px;font-weight:700;color:#c47a00">$${(budget*bw[i]/1e6).toFixed(0)}M</div>
-            <div style="font-size:9px;color:#6b7fa3">${(bw[i]*100).toFixed(1)}%</div>
+            <div style="font-size:14px;font-weight:700;color:#6b7fa3">${m}</div>
+            <div style="font-size:16px;font-weight:700;color:#c47a00">$${(budget*bw[i]/1e6).toFixed(0)}M</div>
+            <div style="font-size:14px;color:#6b7fa3">${(bw[i]*100).toFixed(1)}%</div>
           </div>`).join('')}
       </div>
     </div>`;
@@ -4208,7 +4207,7 @@ function exportPDF() {
   const portColors2 = ['#dc2626','#06b6d4','#1e3a8a'];
   document.getElementById('pdfPortafolios').innerHTML = `
     <div style="border:1px solid #dde3ee;border-radius:10px;padding:14px;background:#f8fafd">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px">📁 Por Portafolio</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">📁 Por Portafolio</div>
       ${['Portafolio 1','Portafolio 2','Portafolio 3'].map((p,i)=>{
         const d=portProj[p]; if(!d) return '';
         const tot=d.proj.reduce((a,b)=>a+b,0);
@@ -4216,11 +4215,11 @@ function exportPDF() {
         return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eaedf4">
           <div style="display:flex;align-items:center;gap:8px">
             <div style="width:10px;height:10px;border-radius:50%;background:${portColors2[i]}"></div>
-            <span style="font-size:11px;font-weight:600">${p}</span>
+            <span style="font-size:14px;font-weight:600">${p}</span>
           </div>
           <div style="text-align:right">
-            <div style="font-size:11px;font-weight:700;color:${portColors2[i]}">$${fmt(tot)}</div>
-            <div style="font-size:9px;color:${v>=0?'#007a65':'#dc2626'}">${v>=0?'▲':'▼'} ${fmtPct(Math.abs(v))}</div>
+            <div style="font-size:14px;font-weight:700;color:${portColors2[i]}">$${fmt(tot)}</div>
+            <div style="font-size:14px;color:${v>=0?'#007a65':'#dc2626'}">${v>=0?'▲':'▼'} ${fmtPct(Math.abs(v))}</div>
           </div>
         </div>`;
       }).join('')}
@@ -4232,17 +4231,17 @@ function exportPDF() {
     .sort((a,b)=>b.tot-a.tot).slice(0,10);
   document.getElementById('pdfTopVendedores').innerHTML = `
     <div style="border:1px solid #dde3ee;border-radius:10px;padding:14px;background:#f8fafd">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px">👤 Top 10 Zonas de Venta</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">👤 Top 10 Zonas de Venta</div>
       ${topV.map((x,i)=>{
         const v=x.h25>0?((x.tot-x.h25)/x.h25*100):0;
         const pct=totalProj>0?(x.tot/totalProj*100):0;
         return `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #eaedf4">
-          <div style="font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">
+          <div style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">
             <span style="color:#9aafc8;margin-right:4px">${i+1}.</span>${x.v}
           </div>
           <div style="text-align:right;flex-shrink:0">
-            <span style="font-size:10px;font-weight:700">$${(x.tot/1e6).toFixed(1)}M</span>
-            <span style="font-size:9px;color:${v>=0?'#007a65':'#dc2626'};margin-left:4px">${v>=0?'+':''}${v.toFixed(1)}%</span>
+            <span style="font-size:14px;font-weight:700">$${(x.tot/1e6).toFixed(1)}M</span>
+            <span style="font-size:14px;color:${v>=0?'#007a65':'#dc2626'};margin-left:4px">${v>=0?'+':''}${v.toFixed(1)}%</span>
           </div>
         </div>`;
       }).join('')}
@@ -4254,17 +4253,17 @@ function exportPDF() {
     .sort((a,b)=>b.tot-a.tot).slice(0,10);
   document.getElementById('pdfTopMarcas').innerHTML = `
     <div style="border:1px solid #dde3ee;border-radius:10px;padding:14px;background:#f8fafd">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px">🏷️ Top 10 Marcas</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px">🏷️ Top 10 Marcas</div>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px">
         ${topM.map((x,i)=>{
           const v=x.h25>0?((x.tot-x.h25)/x.h25*100):0;
           return `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 6px;border-radius:6px;background:#fff;border:1px solid #eaedf4">
-            <div style="font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px">
+            <div style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px">
               <span style="color:#9aafc8;margin-right:4px">${i+1}.</span>${x.m}
             </div>
             <div style="flex-shrink:0;margin-left:4px">
-              <span style="font-size:10px;font-weight:700">$${(x.tot/1e6).toFixed(1)}M</span>
-              <span style="font-size:9px;color:${v>=0?'#007a65':'#dc2626'};margin-left:4px">${v>=0?'+':''}${v.toFixed(1)}%</span>
+              <span style="font-size:14px;font-weight:700">$${(x.tot/1e6).toFixed(1)}M</span>
+              <span style="font-size:14px;color:${v>=0?'#007a65':'#dc2626'};margin-left:4px">${v>=0?'+':''}${v.toFixed(1)}%</span>
             </div>
           </div>`;
         }).join('')}
@@ -5025,7 +5024,7 @@ async function loadFromSupabase() {
     // Mostrar error en lugar de alert (alerts pueden estar bloqueados)
     const errDiv = document.getElementById('_supaDebug') || document.createElement('div');
     errDiv.id = '_supaDebug';
-    errDiv.style.cssText = 'position:fixed;top:60px;right:16px;max-width:500px;background:#fee2e2;border:1px solid #ef4444;border-radius:8px;padding:12px 16px;font-size:12px;font-family:monospace;z-index:9999;white-space:pre-wrap;word-break:break-all';
+    errDiv.style.cssText = 'position:fixed;top:60px;right:16px;max-width:500px;background:#fee2e2;border:1px solid #ef4444;border-radius:8px;padding:12px 16px;font-size:16px;font-family:monospace;z-index:9999;white-space:pre-wrap;word-break:break-all';
     errDiv.textContent = '❌ Error Supabase:\n' + errMsg;
     document.body.appendChild(errDiv);
     setTimeout(() => errDiv.remove(), 30000);
@@ -5059,7 +5058,7 @@ function openAIAnalysis() {
   const q2Hist = Object.values(vendProj).reduce((s,v)=>s+v.histQ2_2025,0);
   const varPct = q2Hist > 0 ? ((totalProj-q2Hist)/q2Hist*100) : 0;
   document.getElementById('aiDataSummary').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:16px">
       <div>📅 <strong>Período:</strong> Ene 2024 – Mar 2026 (27 meses)</div>
       <div>👥 <strong>Vendedores:</strong> ${Object.keys(RAW_DATA.vendedores).length}</div>
       <div>🏷️ <strong>Marcas:</strong> ${Object.keys(RAW_DATA.marcas).length}</div>
@@ -5238,7 +5237,7 @@ Sé concreto, usa los datos reales provistos, responde en español.`;
     document.getElementById('aiResponse').style.display = 'block';
     document.getElementById('aiResponse').innerHTML = `
       <div class="ai-streaming">${renderMarkdown(text)}</div>
-      <div style="margin-top:16px;padding:10px 14px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text2);border:1px solid var(--border)">
+      <div style="margin-top:16px;padding:10px 14px;background:var(--bg3);border-radius:8px;font-size:14px;color:var(--text2);border:1px solid var(--border)">
         📋 Resumen ejecutivo generado por Claude · ${new Date().toLocaleString('es-CR')}
       </div>`;
     document.getElementById('aiContent').scrollTop = 0;
@@ -5402,7 +5401,7 @@ async function callAI(prompt) {
     const el = document.getElementById('aiResponse');
     el.style.display = 'block';
     el.innerHTML = `<div class="ai-streaming">${renderMarkdown(text)}</div>
-      <div style="margin-top:16px;padding:10px 14px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text2);border:1px solid var(--border)">
+      <div style="margin-top:16px;padding:10px 14px;background:var(--bg3);border-radius:8px;font-size:14px;color:var(--text2);border:1px solid var(--border)">
         🤖 Análisis generado por Claude · ${new Date().toLocaleString('es-CR')}
       </div>`;
     document.getElementById('aiContent').scrollTop = 0;
@@ -5423,7 +5422,7 @@ async function callAI(prompt) {
             <div class="ai-label">Cuota agotada — ${cfg.name}</div><br>
             Tu cuenta superó el límite gratuito de ${cfg.name}.<br><br>
             <strong>👉 Solución inmediata: usá Groq (gratis sin límites)</strong><br><br>
-            <span style="font-size:12px;color:var(--text2)">
+            <span style="font-size:16px;color:var(--text2)">
               1. Entrá a <a href="https://console.groq.com/keys" target="_blank" style="color:var(--blue);font-weight:600">console.groq.com/keys</a><br>
               2. Login con tu cuenta Google<br>
               3. Clic en <strong>Create API Key</strong><br>
@@ -5432,13 +5431,13 @@ async function callAI(prompt) {
             </span>
           </div>`;
       } else if (isNotFound) {
-        msg = `<div class="ai-card risk"><div class="ai-label">Modelo no disponible</div><br>${e.message}<br><br><span style="font-size:12px;color:var(--text2)">Intentá con otro proveedor — <strong>⚡ Groq</strong> es gratuito y no tiene estos problemas.</span></div>`;
+        msg = `<div class="ai-card risk"><div class="ai-label">Modelo no disponible</div><br>${e.message}<br><br><span style="font-size:16px;color:var(--text2)">Intentá con otro proveedor — <strong>⚡ Groq</strong> es gratuito y no tiene estos problemas.</span></div>`;
       } else {
         msg = `
           <div class="ai-card risk">
             <div class="ai-label">Error de conexión</div><br>
             <strong>${e.message}</strong><br><br>
-            <span style="font-size:12px;color:var(--text2)">
+            <span style="font-size:16px;color:var(--text2)">
               Verificá tu API Key o probá con <strong>⚡ Groq</strong> que es gratis y se conecta directo.<br>
               Key en: <a href="https://console.groq.com/keys" target="_blank" style="color:var(--blue)">console.groq.com/keys</a>
             </span>
@@ -5538,7 +5537,7 @@ function openVersionsModal() {
   try { versions = JSON.parse(localStorage.getItem(VERSIONS_KEY) || '[]'); } catch(e) {}
 
   if (versions.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:30px 0;font-size:13px">Aún no hay versiones guardadas.<br>Presioná "Guardar" para crear la primera.</div>';
+    list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:30px 0;font-size:16px">Aún no hay versiones guardadas.<br>Presioná "Guardar" para crear la primera.</div>';
   } else {
     list.innerHTML = versions.map((v, i) => {
       const d = new Date(v.savedAt);
@@ -5549,10 +5548,10 @@ function openVersionsModal() {
       const nombre = v.nombre ? `<span style="font-weight:700;color:var(--text)">${v.nombre}</span> · ` : '';
       return `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--bg3)">
         <div style="flex:1;min-width:0">
-          <div style="font-size:13px">${nombre}<span style="color:var(--text2)">${fecha}</span></div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px">${nAdj} ajuste(s) activos${v.rawDataModified ? ' · datos modificados' : ''}</div>
+          <div style="font-size:16px">${nombre}<span style="color:var(--text2)">${fecha}</span></div>
+          <div style="font-size:14px;color:var(--text3);margin-top:2px">${nAdj} ajuste(s) activos${v.rawDataModified ? ' · datos modificados' : ''}</div>
         </div>
-        <button onclick="restoreVersion(${i})" style="padding:6px 12px;font-size:11px;font-weight:600;border:1px solid var(--teal);background:rgba(0,122,101,0.08);color:var(--teal);border-radius:7px;cursor:pointer;white-space:nowrap">↩ Restaurar</button>
+        <button onclick="restoreVersion(${i})" style="padding:6px 12px;font-size:14px;font-weight:600;border:1px solid var(--teal);background:rgba(0,122,101,0.08);color:var(--teal);border-radius:7px;cursor:pointer;white-space:nowrap">↩ Restaurar</button>
       </div>`;
     }).join('');
   }
@@ -5699,7 +5698,7 @@ function addReasignacion() {
   document.getElementById('nuevoVendedorBadge').style.display = 'none';
 
   document.getElementById('reasigClienteList').innerHTML =
-    '<div style="padding:12px;color:var(--text3);font-size:13px;text-align:center">Seleccioná una zona origen primero</div>';
+    '<div style="padding:12px;color:var(--text3);font-size:16px;text-align:center">Seleccioná una zona origen primero</div>';
   document.getElementById('reasigCount').textContent = '';
   document.getElementById('reasigSearch').value = '';
   const now = new Date();
@@ -5769,13 +5768,13 @@ function renderClienteCheckboxes(clientes) {
   const el = document.getElementById('reasigClienteList');
 
   if (filtered.length === 0) {
-    el.innerHTML = '<div style="padding:12px;color:var(--text3);font-size:13px;text-align:center">Sin clientes para mostrar</div>';
+    el.innerHTML = '<div style="padding:12px;color:var(--text3);font-size:16px;text-align:center">Sin clientes para mostrar</div>';
     updateReasigCount();
     return;
   }
 
   el.innerHTML = filtered.map(c => `
-    <label style="display:flex;align-items:center;gap:10px;padding:7px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13px">
+    <label style="display:flex;align-items:center;gap:10px;padding:7px 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:16px">
       <input type="checkbox" class="reasig-cb" value="${c.replace(/"/g,'&quot;')}" onchange="updateReasigCount()" style="width:14px;height:14px;accent-color:var(--teal)">
       <span>${c}</span>
     </label>`).join('');
@@ -6014,7 +6013,7 @@ function renderReasigList() {
   const el = document.getElementById('reasigList');
   if (!el) return;
   if (state.reasignaciones.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:var(--text3)">No hay cambios de cartera registrados</div>';
+    el.innerHTML = '<div style="text-align:center;padding:20px;font-size:16px;color:var(--text3)">No hay cambios de cartera registrados</div>';
     return;
   }
   const vendProj = computeVendProjections();
@@ -6023,29 +6022,29 @@ function renderReasigList() {
     const isNew    = !ORIGINAL_RAW_DATA.vendedores[r.a];
     const aLabel   = r.a.replace(/^\d+-/,'').replace(/\.\./g,'.').trim();
     const aDisplay = isNew
-      ? `<em>${aLabel}</em> <span style="background:#E1F5EE;color:#085041;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600">NUEVA</span>`
+      ? `<em>${aLabel}</em> <span style="background:#E1F5EE;color:#085041;font-size:14px;padding:1px 6px;border-radius:4px;font-weight:600">NUEVA</span>`
       : `<em>${aLabel}</em>`;
     const lista    = r.clientes || (r.cliente ? [r.cliente] : []);
     const icon     = r.tipo === 'cliente' ? '👤' : '🔄';
     const desc     = r.tipo === 'cliente'
       ? `<strong>${lista.length} cliente${lista.length!==1?'s':''}</strong> — de <em>${deLabel}</em> → ${aDisplay}
-         <div style="font-size:11px;color:var(--text3);margin-top:2px">${lista.slice(0,3).join(', ')}${lista.length>3?' y '+(lista.length-3)+' más..':''}</div>`
+         <div style="font-size:14px;color:var(--text3);margin-top:2px">${lista.slice(0,3).join(', ')}${lista.length>3?' y '+(lista.length-3)+' más..':''}</div>`
       : `Cartera completa de <em>${deLabel}</em> → ${aDisplay}`;
 
     // Live confirmation of effect: how much is now projected for destination
     const destTotal = vendProj[r.a]?.proj?.reduce((x,y)=>x+y,0) || 0;
-    const statusBadge = `<span style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;color:#15803d;border:1px solid #86efac;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:4px">
+    const statusBadge = `<span style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;color:#15803d;border:1px solid #86efac;font-size:14px;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:4px">
         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
         EJECUTADO — Meta Q3 ${fmt(destTotal)}
       </span>`;
 
     return `<div style="padding:10px 14px;border-bottom:1px solid var(--border)">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-        <div style="font-size:13px">
-          ${icon} ${desc} <span style="color:var(--text3);font-size:11px;margin-left:6px">desde ${r.fecha}</span>
+        <div style="font-size:16px">
+          ${icon} ${desc} <span style="color:var(--text3);font-size:14px;margin-left:6px">desde ${r.fecha}</span>
           <div>${statusBadge}</div>
         </div>
-        <button class="btn btn-outline" onclick="removeReasignacion('${r.id}')" style="font-size:11px;padding:3px 10px;color:var(--red);border-color:var(--red);flex-shrink:0">✕</button>
+        <button class="btn btn-outline" onclick="removeReasignacion('${r.id}')" style="font-size:14px;padding:3px 10px;color:var(--red);border-color:var(--red);flex-shrink:0">✕</button>
       </div>
     </div>`;
   }).join('');
@@ -6092,7 +6091,7 @@ function showToast(msg) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'toastMsg';
-    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1e3a8a;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,0.25);transition:opacity 0.3s';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1e3a8a;color:#fff;padding:10px 18px;border-radius:8px;font-size:16px;font-weight:600;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,0.25);transition:opacity 0.3s';
     document.body.appendChild(t);
   }
   t.textContent = msg;
@@ -6115,7 +6114,7 @@ function editMarcaCell(td, marca, monthIdx) {
   const input = document.createElement('input');
   input.type = 'number';
   input.value = Math.round(currentVal);
-  input.style.cssText = 'width:110px;padding:3px 6px;border:2px solid #009ee3;border-radius:6px;font-size:12px;font-family:var(--font-mono);text-align:right;background:var(--bg)';
+  input.style.cssText = 'width:110px;padding:3px 6px;border:2px solid #009ee3;border-radius:6px;font-size:16px;font-family:var(--font-mono);text-align:right;background:var(--bg)';
 
   td.innerHTML = '';
   td.appendChild(input);
@@ -6403,8 +6402,8 @@ function renderTendenciaMarcaArt() {
 
   const PORT_COLORS_MA = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
   const portBadgeMA = port => port
-    ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:${PORT_COLORS_MA[port]||'var(--text3)'};background:${(PORT_COLORS_MA[port]||'#8fa3c0')}18;padding:2px 7px;border-radius:4px;border:1px solid ${(PORT_COLORS_MA[port]||'#8fa3c0')}40">${port}</span>`
-    : `<span style="display:inline-flex;align-items:center;font-size:10px;font-weight:600;color:#1a1a1a;background:#fff;padding:2px 7px;border-radius:4px;border:1px solid #ccc">Portafolio 0</span>`;
+    ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:600;color:${PORT_COLORS_MA[port]||'var(--text3)'};background:${(PORT_COLORS_MA[port]||'#8fa3c0')}18;padding:2px 7px;border-radius:4px;border:1px solid ${(PORT_COLORS_MA[port]||'#8fa3c0')}40">${port}</span>`
+    : `<span style="display:inline-flex;align-items:center;font-size:14px;font-weight:600;color:#1a1a1a;background:#fff;padding:2px 7px;border-radius:4px;border:1px solid #ccc">Portafolio 0</span>`;
 
   const marcaProj = computeMarcaProjections();
   const totHist9 = Array(9).fill(0);
@@ -6428,7 +6427,7 @@ function renderTendenciaMarcaArt() {
     <tr class="vp-port-row" data-tma-row="${rowId}" style="display:none">
       <td colspan="14" style="padding:0;border-top:none">
         <div id="${rowId}_content" style="overflow-x:auto">
-          <span style="color:var(--text3);font-size:12px;padding:8px 32px;display:block">↑ Clic en la marca para ver sus artículos</span>
+          <span style="color:var(--text3);font-size:16px;padding:8px 32px;display:block">↑ Clic en la marca para ver sus artículos</span>
         </div>
       </td>
     </tr>`;
@@ -6462,7 +6461,7 @@ async function toggleTendMarcaArt(rowId, marca) {
   const cacheKey = `__TEND__|${marca.trim()}`;
   if (!_artCache[cacheKey]) {
     const content = document.getElementById(`${rowId}_content`);
-    if (content) content.innerHTML = '<span style="color:var(--text3);font-size:12px;padding:8px 32px;display:block">⏳ Cargando artículos...</span>';
+    if (content) content.innerHTML = '<span style="color:var(--text3);font-size:16px;padding:8px 32px;display:block">⏳ Cargando artículos...</span>';
     try {
       const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
         method: 'POST',
@@ -6481,7 +6480,7 @@ async function toggleTendMarcaArt(rowId, marca) {
   const arts = _artCache[cacheKey];
   if (!arts.length) {
     const c = document.getElementById(`${rowId}_content`);
-    if (c) c.innerHTML = '<span style="color:var(--text3);font-size:12px;padding:8px 32px;display:block;font-style:italic">Sin artículos con ventas en el período</span>';
+    if (c) c.innerHTML = '<span style="color:var(--text3);font-size:16px;padding:8px 32px;display:block;font-style:italic">Sin artículos con ventas en el período</span>';
     return;
   }
 
@@ -6512,12 +6511,12 @@ async function toggleTendMarcaArt(rowId, marca) {
     const hist9 = HIST_IDX.map(i => r.m[i]);
     const fullLabel = `${r.articulo||''} ${r.descripcion||''}`.replace(/"/g,'&quot;');
     return `<tr style="background:var(--bg3);border-bottom:1px solid var(--border)">
-      <td colspan="2" title="${fullLabel}" style="padding:4px 8px 4px 40px;font-size:11px;width:260px;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+      <td colspan="2" title="${fullLabel}" style="padding:4px 8px 4px 40px;font-size:14px;width:300px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         <span style="font-family:monospace">${r.articulo||''}</span>
-        <span style="color:var(--text3);margin-left:6px;font-size:10px">${r.descripcion||''}</span>
+        <span style="color:var(--text3);margin-left:6px;font-size:14px">${r.descripcion||''}</span>
       </td>
-      ${hist9.map(x => `<td class="num" style="font-size:11px">${fmt(x)}</td>`).join('')}
-      ${proj.map(x => `<td class="num" style="font-size:11px;color:var(--gold)">${fmt(x)}</td>`).join('')}
+      ${hist9.map(x => `<td class="num" style="font-size:14px">${fmt(x)}</td>`).join('')}
+      ${proj.map(x => `<td class="num" style="font-size:14px;color:var(--gold)">${fmt(x)}</td>`).join('')}
     </tr>`;
   }).join('');
 
@@ -6604,7 +6603,7 @@ function renderArtTab(vendProj) {
           const mPort = RAW_DATA.marcas[marca]?.portafolio || '';
           const pc    = PORT_COLORS[mPort] || '#6b7280';
           const portBadge = mPort
-            ? `<span style="font-size:10px;font-weight:600;color:${pc};background:${pc}18;padding:2px 6px;border-radius:4px;border:1px solid ${pc}40">${mPort}</span>`
+            ? `<span style="font-size:14px;font-weight:600;color:${pc};background:${pc}18;padding:2px 6px;border-radius:4px;border:1px solid ${pc}40">${mPort}</span>`
             : '';
 
           // Proyección de la marca para este vendedor = proporción del vendedor en la marca
@@ -6638,7 +6637,7 @@ function renderArtTab(vendProj) {
           <tr class="vp-port-row hidden" data-art-vend="${vidx}" data-art-marca-row="${rowId}" style="display:none !important">
             <td colspan="8" style="padding:0;border-top:none">
               <div id="${rowId}_content" style="overflow-x:auto">
-                <span style="color:var(--text3);font-size:12px;padding:8px 72px;display:block">↑ Clic en la marca para cargar artículos</span>
+                <span style="color:var(--text3);font-size:16px;padding:8px 72px;display:block">↑ Clic en la marca para cargar artículos</span>
               </div>
             </td>
           </tr>`;
@@ -6688,7 +6687,7 @@ async function toggleArtMarca(rowId, vendedor, marca) {
   const cacheKey = `${vendedor.trim()}|${marca.trim()}`;
   if (!_artCache[cacheKey]) {
     const content = document.getElementById(`${rowId}_content`);
-    if (content) content.innerHTML = '<span style="color:var(--text3);font-size:12px;padding:8px 72px;display:block">⏳ Cargando artículos...</span>';
+    if (content) content.innerHTML = '<span style="color:var(--text3);font-size:16px;padding:8px 72px;display:block">⏳ Cargando artículos...</span>';
     try {
       const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
         method: 'POST',
@@ -6712,7 +6711,7 @@ async function toggleArtMarca(rowId, vendedor, marca) {
 
   if (!arts.length) {
     const c = document.getElementById(`${rowId}_content`);
-    if (c) c.innerHTML = '<span style="color:var(--text3);font-size:12px;padding:8px 72px;display:block;font-style:italic">Sin artículos con ventas en el período</span>';
+    if (c) c.innerHTML = '<span style="color:var(--text3);font-size:16px;padding:8px 72px;display:block;font-style:italic">Sin artículos con ventas en el período</span>';
     return;
   }
 
@@ -6729,18 +6728,18 @@ async function toggleArtMarca(rowId, vendedor, marca) {
     const pc   = PORT_COLORS[r.portafolio]||'#6b7280';
     const artLabel = `${r.articulo||''} ${r.descripcion||''}`.replace(/"/g,'&quot;');
     return `<tr style="background:var(--bg3);border-bottom:1px solid var(--border)">
-      <td title="${artLabel}" style="padding:4px 8px 4px 72px;font-size:11px;width:300px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+      <td title="${artLabel}" style="padding:4px 8px 4px 72px;font-size:14px;width:320px;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${pc};margin-right:5px"></span>
         📦 <span style="font-family:monospace">${r.articulo||''}</span>
-        <span style="color:var(--text3);margin-left:6px;font-size:10px">${r.descripcion||''}</span>
+        <span style="color:var(--text3);margin-left:6px;font-size:14px">${r.descripcion||''}</span>
       </td>
-      <td class="num" style="font-size:11px">${fmt(h24)}</td>
-      <td class="num" style="font-size:11px">${fmt(h25)}</td>
-      <td class="num" style="font-size:11px;color:var(--gold)">${fmt(mJul)}</td>
-      <td class="num" style="font-size:11px;color:var(--gold)">${fmt(mAgo)}</td>
-      <td class="num" style="font-size:11px;color:var(--gold)">${fmt(mSep)}</td>
-      <td class="num" style="font-size:11px;font-weight:600">${fmt(tot)}</td>
-      <td class="num ${varP>=0?'pos':'neg'}" style="font-size:11px">${fmtPct(varP)}</td>
+      <td class="num" style="font-size:14px">${fmt(h24)}</td>
+      <td class="num" style="font-size:14px">${fmt(h25)}</td>
+      <td class="num" style="font-size:14px;color:var(--gold)">${fmt(mJul)}</td>
+      <td class="num" style="font-size:14px;color:var(--gold)">${fmt(mAgo)}</td>
+      <td class="num" style="font-size:14px;color:var(--gold)">${fmt(mSep)}</td>
+      <td class="num" style="font-size:14px;font-weight:600">${fmt(tot)}</td>
+      <td class="num ${varP>=0?'pos':'neg'}" style="font-size:14px">${fmtPct(varP)}</td>
     </tr>`;
   }).join('');
 
@@ -6748,10 +6747,10 @@ async function toggleArtMarca(rowId, vendedor, marca) {
   if (content) {
     content.innerHTML = `<table style="width:100%;table-layout:fixed;border-collapse:collapse">
       <colgroup>
-        <col style="width:300px">
-        <col style="width:120px"><col style="width:120px">
-        <col style="width:120px"><col style="width:120px"><col style="width:120px">
-        <col style="width:120px"><col style="width:90px">
+        <col style="width:320px">
+        <col style="width:150px"><col style="width:150px">
+        <col style="width:150px"><col style="width:150px"><col style="width:150px">
+        <col style="width:150px"><col style="width:110px">
       </colgroup>
       <tbody>${rows}</tbody>
     </table>`;
