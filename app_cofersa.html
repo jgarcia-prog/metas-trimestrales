@@ -247,6 +247,19 @@ body {
   background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
   padding: 12px 16px;
 }
+.adj-row {
+  display: grid; grid-template-columns: 1fr 110px 300px 220px;
+  gap: 16px; align-items: center;
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+}
+.adj-row:first-child { border-radius: 8px 8px 0 0; }
+.adj-row:last-child { border-bottom: none; border-radius: 0 0 8px 8px; }
+.adj-row:not(.adj-row-head):hover { background: rgba(0,122,101,0.05); }
+.adj-row-head {
+  background: var(--bg3); font-size: 14px; font-weight: 600; color: var(--text2);
+  letter-spacing: 0.3px;
+}
+#adjVendedor { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .adj-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .adj-name { font-size: 16px; font-weight: 500; color: var(--text); }
 .adj-pct {
@@ -934,7 +947,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div class="card-title">⚙️ Ajuste por Vendedor</div>
       <input type="text" class="adj-marca-search" id="searchAdjVendedor" placeholder="🔍 Filtrar vendedor..." oninput="filterAdjVendedor(this.value)" style="width:240px;margin-bottom:0">
     </div>
-    <div class="adj-grid" id="adjVendedor"></div>
+    <div id="adjVendedor"></div>
   </div>
   <div class="card">
     <div class="card-header">
@@ -3268,10 +3281,18 @@ function makeAdjItem(type, key, label) {
 function renderAdjPanels() {
   // Vendedor adj — vs Q3 2025 mode
   const vendProj = computeVendProjections();
-  document.getElementById('adjVendedor').innerHTML = Object.keys(RAW_DATA.vendedores)
+  const vendRows = Object.keys(RAW_DATA.vendedores)
     .sort((a,b) => a.replace(/^\d+-/,'').trim().localeCompare(b.replace(/^\d+-/,'').trim(), 'es'))
-    .map(v => makeVendAdjItem(v, vendProj[v]))
+    .map(v => makeVendAdjRow(v, vendProj[v]))
     .join('');
+  document.getElementById('adjVendedor').innerHTML = `
+    <div class="adj-row adj-row-head">
+      <div>Vendedor</div>
+      <div style="text-align:right">Q2 2025</div>
+      <div>Var Q2 2025</div>
+      <div>Meta Trimestral</div>
+    </div>
+    ${vendRows}`;
 
   // ALL marcas adj — alphabetical
   const allMarcas = Object.keys(RAW_DATA.marcas).sort((a,b) => a.localeCompare(b, 'es'));
@@ -3286,7 +3307,7 @@ function toTitleCase(str) {
   return str.replace(/\S+/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
 }
 
-function makeVendAdjItem(v, vp) {
+function makeVendAdjRow(v, vp) {
   const rawLabel = v.replace(/^\d+-/,'').replace(/\.\./g,'').trim();
   const label = toTitleCase(rawLabel);
   const hist25 = vp ? vp.histQ2_2025 : getHistQ2(RAW_DATA.vendedores[v].historico, 2025);
@@ -3302,26 +3323,21 @@ function makeVendAdjItem(v, vp) {
   const color = varPct > 0 ? 'var(--teal)' : varPct < 0 ? 'var(--red)' : 'var(--text2)';
   const metaVal = hist25 * (1 + varPct / 100);
 
-  return `<div class="adj-item" style="min-height:132px;display:flex;flex-direction:column;justify-content:space-between">
-    <div class="adj-item-header">
-      <div class="adj-name" title="${rawLabel}" style="overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${label}</div>
-      <div style="font-size:14px;color:var(--text2);white-space:nowrap;flex-shrink:0;margin-left:8px">Q2 2025: ¢${(hist25/1e6).toFixed(1)}M</div>
+  return `<div class="adj-row">
+    <div class="adj-name" title="${rawLabel}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${label}</div>
+    <div style="text-align:right;font-family:var(--font-mono);color:var(--text2);white-space:nowrap">¢${(hist25/1e6).toFixed(1)}M</div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="adj-btn adj-btn-minus" onclick="stepVendQ22025('${escQ(v)}','${id}',-1)">−</button>
+      <input type="number" id="${id}" value="${varPct.toFixed(1)}" step="0.5"
+        style="width:72px;font-size:16px;font-weight:700;text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px 4px;background:var(--bg3);color:${color}"
+        oninput="setVendQ22025('${escQ(v)}','${id}',this.value)">
+      <button class="adj-btn adj-btn-plus" onclick="stepVendQ22025('${escQ(v)}','${id}',1)">+</button>
+      <span style="font-size:16px;font-weight:700;color:${color};min-width:64px">${varPct >= 0 ? '+' : ''}${varPct.toFixed(1)}%</span>
+      ${hasTarget ? `<button onclick="clearVendQ22025('${escQ(v)}')" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--text3);padding:0" title="Volver a proyección del modelo">✕</button>` : ''}
     </div>
-    <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
-      <span style="font-size:14px;color:var(--text2);flex-shrink:0">Var Q2 2025:</span>
-      <div style="display:flex;align-items:center;gap:4px;flex:1">
-        <button class="adj-btn adj-btn-minus" onclick="stepVendQ22025('${escQ(v)}','${id}',-1)">−</button>
-        <input type="number" id="${id}" value="${varPct.toFixed(1)}" step="0.5"
-          style="width:72px;font-size:16px;font-weight:700;text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px 4px;background:var(--bg3);color:${color}"
-          oninput="setVendQ22025('${escQ(v)}','${id}',this.value)">
-        <button class="adj-btn adj-btn-plus" onclick="stepVendQ22025('${escQ(v)}','${id}',1)">+</button>
-        <span style="font-size:16px;font-weight:700;color:${color}">${varPct >= 0 ? '+' : ''}${varPct.toFixed(1)}%</span>
-      </div>
-      ${hasTarget ? `<button onclick="clearVendQ22025('${escQ(v)}')" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--text3);padding:0" title="Volver a proyección del modelo">✕ modelo</button>` : ''}
-    </div>
-    <div style="font-size:14px;color:var(--text2);margin-top:3px">
-      Meta Trimestral: <strong style="color:var(--teal)">¢${(metaVal/1e6).toFixed(1)}M</strong>
-      ${hasTarget ? '<span style="color:var(--gold);font-size:14px"> · ajuste manual</span>' : '<span style="color:var(--text3);font-size:14px"> · proyección modelo</span>'}
+    <div style="font-size:14px;color:var(--text2);white-space:nowrap">
+      <strong style="color:var(--teal);font-family:var(--font-mono)">¢${(metaVal/1e6).toFixed(1)}M</strong>
+      ${hasTarget ? '<span style="color:var(--gold)"> · manual</span>' : '<span style="color:var(--text3)"> · modelo</span>'}
     </div>
   </div>`;
 }
@@ -3369,10 +3385,10 @@ function filterAdjMarca(search) {
 }
 
 function filterAdjVendedor(search) {
-  const items = document.getElementById('adjVendedor').querySelectorAll('.adj-item');
-  items.forEach(item => {
-    const name = item.querySelector('.adj-name').textContent.toLowerCase();
-    item.style.display = name.includes(search.toLowerCase()) ? '' : 'none';
+  const rows = document.getElementById('adjVendedor').querySelectorAll('.adj-row:not(.adj-row-head)');
+  rows.forEach(row => {
+    const name = row.querySelector('.adj-name').textContent.toLowerCase();
+    row.style.display = name.includes(search.toLowerCase()) ? '' : 'none';
   });
 }
 
