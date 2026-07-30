@@ -6492,7 +6492,9 @@ async function toggleTendMarcaArt(rowId, marca) {
   const mProj = computeMarcaProjections();
   const mp = mProj[marca.trim()];
   const mTotal = mp ? mp.proj.reduce((a,b)=>a+b,0) : 0;
-  const HIST_IDX = [6,7,8,9,10,11,12,13,14];
+  // m0=jul-24 … m23=jun-26 (sin padding); las columnas mostradas son las
+  // últimas 9 (oct-25 … jun-26), igual que histLabels = allMonths.slice(-9)
+  const HIST_IDX = [15,16,17,18,19,20,21,22,23];
 
   const rowsHtml = rows.map(r => {
     const share = r.hist_q3_2025 / totH25;
