@@ -1462,6 +1462,7 @@ const RAW_DATA = {"months":[],"monthly_total":[],"overall_proj":[],"presupuesto_
 let state = {
   adjustments: { vendedores: {}, marcas: {}, portafolios: {} },
   marcaOverrides: {},  // { 'MARCA': [jul, ago, sep] } — absolute value overrides
+  articuloOverrides: {}, // { 'vendedoraliasmarcaarticulo': {vendedor,alias,marca,articulo,jul,ago,sep,baseJul,baseAgo,baseSep} }
   adjVsQ22025: {},
   budgetWeights: null,
   blendWeight: 0.60,
@@ -1663,6 +1664,45 @@ function getMarcaVendorExtra(baseTotals, grandBaseTotal) {
   return vendorExtra;
 }
 
+// Separador seguro para armar claves compuestas (no puede aparecer en
+// nombres reales de vendedor/marca/cliente/artículo).
+const _K = '';
+
+// Motor bidireccional a nivel Artículo: cada ajuste manual en un artículo
+// específico (Vendedor×Cliente×Marca×Artículo) se guarda como delta exacto
+// (valor nuevo − valor base congelado al momento de editar) y se enruta,
+// SIN diluir, hacia:
+//   • vendorExtra[vendedor]   → entra a computeVendProjections
+//   • marcaExtra[marca]       → entra a computeMarcaProjections
+//   • cellExtra[vendedor|marca]   → se fija exacto en buildVendMarcaGrid
+//   • aliasExtra[vendedor|marca|alias] → se fija exacto en buildVCMSplit
+// Como los 4 mapas nacen del MISMO delta, la suma se preserva en cascada:
+// vendedor, marca, portafolio, cliente y artículo siempre cuadran entre sí
+// y con el total general, sin importar en qué nivel se edite.
+function getArticuloExtras() {
+  const vendorExtra = {};
+  const marcaExtra = {};
+  const cellExtra = {};
+  const aliasExtra = {};
+  Object.values(state.articuloOverrides || {}).forEach(ov => {
+    const delta = [ov.jul - ov.baseJul, ov.ago - ov.baseAgo, ov.sep - ov.baseSep];
+    if (!delta[0] && !delta[1] && !delta[2]) return;
+    if (!vendorExtra[ov.vendedor]) vendorExtra[ov.vendedor] = [0, 0, 0];
+    if (!marcaExtra[ov.marca])     marcaExtra[ov.marca]     = [0, 0, 0];
+    const ckey = ov.vendedor + _K + ov.marca;
+    if (!cellExtra[ckey]) cellExtra[ckey] = [0, 0, 0];
+    const akey = ov.vendedor + _K + ov.marca + _K + ov.alias;
+    if (!aliasExtra[akey]) aliasExtra[akey] = [0, 0, 0];
+    delta.forEach((d, i) => {
+      vendorExtra[ov.vendedor][i] += d;
+      marcaExtra[ov.marca][i]     += d;
+      cellExtra[ckey][i]          += d;
+      aliasExtra[akey][i]         += d;
+    });
+  });
+  return { vendorExtra, marcaExtra, cellExtra, aliasExtra };
+}
+
 // ── Caché de proyecciones ──
 // computeVendProjections es llamado varias veces por render (directamente y
 // dentro de computeMarcaProjections / computePortProjections / getBudgetMonthlyWeights).
@@ -1686,6 +1726,14 @@ function computeVendProjections() {
   // Delta de marcas ajustadas, ruteado solo a los vendedores realmente
   // expuestos a cada marca
   const vendorExtra = getMarcaVendorExtra(baseTotals, grandBaseTotal);
+
+  // Delta de artículos editados a mano — exacto, va 100% al vendedor dueño
+  // de esa celda (motor bidireccional Artículo → Vendedor)
+  const artExtras = getArticuloExtras();
+  Object.entries(artExtras.vendorExtra).forEach(([vend, d]) => {
+    if (!vendorExtra[vend]) vendorExtra[vend] = [0, 0, 0];
+    d.forEach((x, i) => { vendorExtra[vend][i] += x; });
+  });
 
   const result = {};
   Object.entries(RAW_DATA.vendedores).forEach(([vend, d]) => {
@@ -1734,6 +1782,7 @@ function computeVendProjections() {
 
 function computeMarcaProjections() {
   const raw = {};
+  const artExtras = getArticuloExtras();
   Object.entries(RAW_DATA.marcas).forEach(([marca, d]) => {
     const base = getProyeccion(d);
     const ov = state.marcaOverrides[marca];
@@ -1746,6 +1795,15 @@ function computeMarcaProjections() {
       const pct = state.adjustments.marcas[marca] || 0;
       proj = base.map(v => v * (1 + pct / 100));
       touched = pct !== 0;
+    }
+    // Delta de artículos de esta marca editados a mano (motor bidireccional
+    // Artículo → Marca) — exacto, se suma encima del override/ajuste (o de
+    // la base si la marca no tenía ningún ajuste propio) y saca a la marca
+    // del pool "sin tocar" para que no absorba también el reparto genérico.
+    const extra = artExtras.marcaExtra[marca];
+    if (extra && (extra[0] || extra[1] || extra[2])) {
+      proj = proj.map((v, i) => v + extra[i]);
+      touched = true;
     }
     raw[marca] = {
       proj,
@@ -1817,7 +1875,7 @@ function computePortProjections() {
   return result;
 }
 
-function buildVendMarcaGrid(vendProj, marcaProj) {
+function buildVendMarcaGrid(vendProj, marcaProj, artExtras) {
   // Reconcilia, celda por celda (vendedor × marca), usando el peso histórico
   // REAL de cada vendedor en cada marca (RAW_DATA.vendMarcaHist) como forma,
   // pero forzando que:
@@ -1827,10 +1885,24 @@ function buildVendMarcaGrid(vendProj, marcaProj) {
   // matriz consistente con ambos márgenes, manteniendo las proporciones
   // reales de quién vende qué. Si subís una marca, solo se mueven (en este
   // grid) las celdas de los vendedores que de verdad la venden.
+  artExtras = artExtras || getArticuloExtras();
   const vendKeys  = Object.keys(RAW_DATA.vendedores);
   const marcaKeys = Object.keys(RAW_DATA.marcas);
-  const R = {}; vendKeys.forEach(v  => { R[v] = vendProj[v]  ? vendProj[v].proj  : [0,0,0]; });
-  const C = {}; marcaKeys.forEach(m => { C[m] = marcaProj[m] ? marcaProj[m].proj : [0,0,0]; });
+  // El IPF corre sobre los márgenes SIN el delta fijo de artículos editados
+  // a mano (se resta acá); ese delta se vuelve a sumar exacto, celda por
+  // celda, después de converger — así la celda editada no se diluye entre
+  // las demás marcas del vendedor / vendedores de la marca, y los márgenes
+  // siguen cuadrando exacto con vendProj/marcaProj (que sí lo incluyen).
+  const R = {}; vendKeys.forEach(v  => {
+    const full = vendProj[v]  ? vendProj[v].proj  : [0,0,0];
+    const ex = artExtras.vendorExtra[v] || [0,0,0];
+    R[v] = full.map((x,i) => x - ex[i]);
+  });
+  const C = {}; marcaKeys.forEach(m => {
+    const full = marcaProj[m] ? marcaProj[m].proj : [0,0,0];
+    const ex = artExtras.marcaExtra[m] || [0,0,0];
+    C[m] = full.map((x,i) => x - ex[i]);
+  });
 
   const hasReal  = RAW_DATA.vendMarcaHist && Object.keys(RAW_DATA.vendMarcaHist).length > 0;
   const vendPort = RAW_DATA.vendedorPortafolio || {};
@@ -1880,10 +1952,21 @@ function buildVendMarcaGrid(vendProj, marcaProj) {
     }
     vendKeys.forEach(v => { marcaKeys.forEach(m => { grid[v][m][i] = Mtx[v][m]; }); });
   }
+
+  // Fijar exacto el delta de artículos editados a mano sobre su celda
+  // vendedor×marca real (no pasa por el reparto proporcional del IPF).
+  Object.entries(artExtras.cellExtra).forEach(([key, delta]) => {
+    const sep = key.indexOf(_K);
+    const v = key.slice(0, sep), m = key.slice(sep + 1);
+    if (!grid[v] || !grid[v][m]) return;
+    grid[v][m] = grid[v][m].map((x,i) => x + delta[i]);
+  });
+
   return grid;
 }
 
-function buildVCMSplit(grid) {
+function buildVCMSplit(grid, artExtras) {
+  artExtras = artExtras || getArticuloExtras();
   // Reparte cada celda grid[vendedor][marca] entre los clientes reales que
   // le compran esa marca a ese vendedor (RAW_DATA.vcmRaw). Si una celda no
   // tiene detalle granular, cae al reparto histórico general de clientes
@@ -1903,26 +1986,44 @@ function buildVCMSplit(grid) {
     const vendClients = RAW_DATA.vendedorClientes?.[vend] || {};
     const vendClientTotal = Object.values(vendClients).reduce((s,d) => s + (d.histQ2_2025 || 0), 0);
 
-    Object.entries(marcas).forEach(([marca, val]) => {
+    Object.entries(marcas).forEach(([marca, valPinned]) => {
+      // valPinned ya incluye el delta fijo de artículos editados a mano de
+      // esta celda (viene así del grid) — se resta acá para repartir SOLO
+      // la parte orgánica entre los clientes reales, y el delta se vuelve a
+      // fijar exacto sobre el/los cliente(s) puntuales más abajo. Así el
+      // cliente editado no diluye su ajuste entre el resto de la cartera.
+      const cellExtra = artExtras.cellExtra[vend + _K + marca] || [0,0,0];
+      const val = valPinned.map((x,i) => x - cellExtra[i]);
       const cellTotal = val.reduce((a,b) => a + b, 0);
-      if (cellTotal <= 0) return;
-      const clients = (byVM[vend] && byVM[vend][marca]) || [];
-      const wTotal  = clients.reduce((s,c) => s + c.w, 0);
       result[vend][marca] = {};
-      if (wTotal > 0) {
-        clients.forEach(c => {
-          const share = c.w / wTotal;
-          result[vend][marca][c.alias] = val.map(v => v * share);
-        });
-      } else if (vendClientTotal > 0) {
-        Object.entries(vendClients).forEach(([alias, cd]) => {
-          const share = (cd.histQ2_2025 || 0) / vendClientTotal;
-          if (share <= 0) return;
-          result[vend][marca][alias] = val.map(v => v * share);
-        });
-      } else {
-        result[vend][marca]['(Sin detalle)'] = val.slice();
+      if (cellTotal > 0) {
+        const clients = (byVM[vend] && byVM[vend][marca]) || [];
+        const wTotal  = clients.reduce((s,c) => s + c.w, 0);
+        if (wTotal > 0) {
+          clients.forEach(c => {
+            const share = c.w / wTotal;
+            result[vend][marca][c.alias] = val.map(v => v * share);
+          });
+        } else if (vendClientTotal > 0) {
+          Object.entries(vendClients).forEach(([alias, cd]) => {
+            const share = (cd.histQ2_2025 || 0) / vendClientTotal;
+            if (share <= 0) return;
+            result[vend][marca][alias] = val.map(v => v * share);
+          });
+        } else {
+          result[vend][marca]['(Sin detalle)'] = val.slice();
+        }
       }
+      // Fijar exacto el delta de artículos editados a mano sobre el cliente
+      // puntual al que pertenecen (motor bidireccional Artículo → Cliente).
+      Object.entries(artExtras.aliasExtra).forEach(([akey, delta]) => {
+        if (!akey.startsWith(vend + _K + marca + _K)) return;
+        const alias = akey.slice((vend + _K + marca + _K).length);
+        if (!delta[0] && !delta[1] && !delta[2]) return;
+        if (!result[vend][marca][alias]) result[vend][marca][alias] = [0,0,0];
+        result[vend][marca][alias] = result[vend][marca][alias].map((x,i) => x + delta[i]);
+      });
+      if (Object.keys(result[vend][marca]).length === 0) delete result[vend][marca];
     });
   });
   return result;
@@ -1973,8 +2074,9 @@ function computeClientProjections() {
   // clientes que de verdad la compran.
   const vendProj  = computeVendProjections();
   const marcaProj = computeMarcaProjections();
-  const grid  = buildVendMarcaGrid(vendProj, marcaProj);
-  const split = buildVCMSplit(grid);
+  const artExtras = getArticuloExtras();
+  const grid  = buildVendMarcaGrid(vendProj, marcaProj, artExtras);
+  const split = buildVCMSplit(grid, artExtras);
   return clientProjFromSplit(split);
 }
 
@@ -2008,8 +2110,9 @@ function render() {
   // Grid vendedor×marca reconciliado (IPF) + reparto real a clientes — UNA
   // sola vez por render, reutilizado por Vend-Marca, Vend-Cliente y Clientes
   // para que los tres siempre coincidan entre sí y con los totales arriba.
-  const vcmGrid  = buildVendMarcaGrid(vendProj, marcaProj);
-  const vcmSplit = buildVCMSplit(vcmGrid);
+  const artExtras = getArticuloExtras();
+  const vcmGrid  = buildVendMarcaGrid(vendProj, marcaProj, artExtras);
+  const vcmSplit = buildVCMSplit(vcmGrid, artExtras);
   const clientProj = clientProjFromSplit(vcmSplit);
 
   // Update monthly budget breakdown (uses projection distribution, so must re-render)
@@ -2105,7 +2208,7 @@ function renderTabContent(idx) {
     case 10: renderVCMTable(d.vendProj, d.vcmSplit); break;
     case 11: renderTendenciaTab(d.vendProj, d.marcaProj, d.vcmGrid); break;
     case 12: renderArtTab(d.vendProj); break;
-    case 13: renderVCMATable(d.vendProj, d.vcmSplit); break;
+    case 13: renderVCMATable(d.vendProj, d.vcmSplit); restoreVCMAExpansion(); break;
   }
 }
 
@@ -2750,6 +2853,11 @@ function renderVCMATable(vendProj, split) {
   </tr>`;
 }
 
+// Recuerda qué fila está abierta en Vend-Cliente-Marca-Art para poder
+// reabrirla después de un render() (p.ej. al editar un artículo) — sin
+// esto, cada edición colapsaría el árbol que el usuario tiene abierto.
+window._vcmaExpanded = null;
+
 function toggleVCMAVendedor(vidx) {
   const rows = document.querySelectorAll(`#vcmaBody tr[data-vcma-vend="${vidx}"]`);
   const tog  = document.getElementById(`vcmavtog_${vidx}`);
@@ -2761,6 +2869,9 @@ function toggleVCMAVendedor(vidx) {
       const rowId = r.getAttribute('onclick')?.match(/'(vcma_\d+_\d+)'/)?.[1];
       if (rowId) collapseVCMACliente(rowId);
     });
+    if (window._vcmaExpanded && window._vcmaExpanded.vidx === vidx) window._vcmaExpanded = null;
+  } else {
+    window._vcmaExpanded = { vidx };
   }
 }
 
@@ -2780,10 +2891,14 @@ function toggleVCMACliente(rowId, vendedor, alias) {
   if (isOpen) {
     marcaRow.style.display = 'none';
     if (tog) tog.textContent = '+';
+    if (window._vcmaExpanded && window._vcmaExpanded.rowId === rowId) {
+      window._vcmaExpanded = { vidx: window._vcmaExpanded.vidx };
+    }
     return;
   }
   marcaRow.style.display = 'table-row';
   if (tog) tog.textContent = '−';
+  if (window._vcmaExpanded) Object.assign(window._vcmaExpanded, { rowId, vendedor, alias, marcaRowId: null, marca: null });
 
   const split   = _lastRenderData?.vcmSplit || {};
   const vendKey = findSplitVendKey(split, vendedor);
@@ -2862,10 +2977,14 @@ async function toggleVCMAMarca(marcaRowId, vendedor, alias, marca) {
   if (isOpen) {
     artRow.style.display = 'none';
     if (tog) tog.textContent = '+';
+    if (window._vcmaExpanded && window._vcmaExpanded.marcaRowId === marcaRowId) {
+      window._vcmaExpanded = { vidx: window._vcmaExpanded.vidx, rowId: window._vcmaExpanded.rowId, vendedor: window._vcmaExpanded.vendedor, alias: window._vcmaExpanded.alias };
+    }
     return;
   }
   artRow.style.display = 'table-row';
   if (tog) tog.textContent = '−';
+  if (window._vcmaExpanded) Object.assign(window._vcmaExpanded, { marcaRowId, marca });
 
   const content = document.getElementById(`${marcaRowId}_content`);
   const cacheKey = `${vendedor}|${alias}|${marca}`;
@@ -2893,29 +3012,50 @@ async function toggleVCMAMarca(marcaRowId, vendedor, alias, marca) {
 
   const split   = _lastRenderData?.vcmSplit || {};
   const vendKey = findSplitVendKey(split, vendedor);
+  const safeVend  = vendKey.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const safeAlias = alias.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const safeMarca = marca.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  // cellVal ya incluye el pin exacto de cualquier artículo de ESTA celda que
+  // esté editado a mano (viene así del motor bidireccional) — se resta acá
+  // para repartir SOLO la parte orgánica entre los artículos sin tocar.
   const cellVal = (vendKey && split[vendKey]?.[marca]?.[alias]) || [0,0,0];
-  const totJul = cellVal[0], totAgo = cellVal[1], totSep = cellVal[2];
+  const ovMap = {};
+  Object.values(state.articuloOverrides).forEach(ov => {
+    if (ov.vendedor === vendKey && ov.alias === alias && ov.marca === marca) ovMap[ov.articulo] = ov;
+  });
+  const ovTotal = [0,0,0];
+  let ovH25 = 0;
+  arts.forEach(r => {
+    const ov = ovMap[r.articulo];
+    if (ov) { ovTotal[0]+=ov.jul; ovTotal[1]+=ov.ago; ovTotal[2]+=ov.sep; ovH25 += Number(r.hist_q3_2025)||0; }
+  });
+  const totJul = cellVal[0]-ovTotal[0], totAgo = cellVal[1]-ovTotal[1], totSep = cellVal[2]-ovTotal[2];
   const totCell = totJul + totAgo + totSep;
-  const totH25 = arts.reduce((s,r)=>s+(Number(r.hist_q3_2025)||0),0) || 1;
+  const totH25 = (arts.reduce((s,r)=>s+(Number(r.hist_q3_2025)||0),0) - ovH25) || 1;
 
   const rows = arts.map(r => {
     const h25 = Number(r.hist_q3_2025)||0;
     const h24 = Number(r.hist_q3_2024)||0;
+    const ov = ovMap[r.articulo];
     const share = h25 / totH25;
     const wJul = Number(r.m_jul25)||0, wAgo = Number(r.m_ago25)||0, wSep = Number(r.m_sep25)||0;
     const wSum = wJul+wAgo+wSep;
-    const artTot = totCell * share;
-    let aJul, aAgo, aSep;
+    let natJul, natAgo, natSep; // valor "natural" (sin override) — se congela como base al editar
+    const natTot = totCell * share;
     if (wSum > 0) {
-      aJul = artTot * wJul / wSum;
-      aAgo = artTot * wAgo / wSum;
-      aSep = artTot - aJul - aAgo;
+      natJul = natTot * wJul / wSum;
+      natAgo = natTot * wAgo / wSum;
+      natSep = natTot - natJul - natAgo;
     } else {
-      aJul = totJul * share; aAgo = totAgo * share; aSep = totSep * share;
+      natJul = totJul * share; natAgo = totAgo * share; natSep = totSep * share;
     }
+    const aJul = ov ? ov.jul : natJul, aAgo = ov ? ov.ago : natAgo, aSep = ov ? ov.sep : natSep;
+    const artTot = aJul + aAgo + aSep;
     const varP = h25>0?((artTot-h25)/h25*100):0;
     const artLabel = `${r.articulo||''} ${r.descripcion||''}`.replace(/"/g,'&quot;');
-    return `<tr style="background:var(--bg);border-bottom:1px solid var(--border)">
+    const safeArt = (r.articulo||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const inputId = `${marcaRowId}_art_${safeId(r.articulo||'')}`;
+    return `<tr style="background:${ov?'rgba(212,160,23,0.08)':'var(--bg)'};border-bottom:1px solid var(--border)">
       <td title="${artLabel}" style="padding:4px 8px 4px 96px;font-size:14px;width:320px;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
         📦 <span style="font-family:var(--font-mono)">${r.articulo||''}</span>
         <span style="color:var(--text3);margin-left:6px;font-size:14px">${r.descripcion||''}</span>
@@ -2925,7 +3065,14 @@ async function toggleVCMAMarca(marcaRowId, vendedor, alias, marca) {
       <td class="num" style="font-size:14px;color:var(--gold)">${fmt(aJul)}</td>
       <td class="num" style="font-size:14px;color:var(--gold)">${fmt(aAgo)}</td>
       <td class="num" style="font-size:14px;color:var(--gold)">${fmt(aSep)}</td>
-      <td class="num" style="font-size:14px;font-weight:600">${fmt(artTot)}</td>
+      <td class="num" style="font-size:14px;font-weight:600" onclick="event.stopPropagation()">
+        <span style="display:inline-flex;align-items:center;gap:4px;justify-content:flex-end">
+          <input type="number" id="${inputId}" value="${artTot.toFixed(0)}" min="0" step="1"
+            style="width:100px;font-size:14px;font-weight:600;text-align:right;border:1px solid ${ov?'var(--gold)':'var(--border)'};border-radius:5px;padding:2px 5px;background:var(--bg3);color:var(--text)"
+            onchange="setArticuloOverride('${safeVend}','${safeAlias}','${safeMarca}','${safeArt}',this.value,${natJul.toFixed(4)},${natAgo.toFixed(4)},${natSep.toFixed(4)})">
+          ${ov ? `<button onclick="event.stopPropagation();clearArticuloOverride('${safeVend}','${safeAlias}','${safeMarca}','${safeArt}')" style="font-size:12px;background:none;border:none;cursor:pointer;color:var(--text3);padding:0" title="Volver al valor del modelo">✕</button>` : ''}
+        </span>
+      </td>
       <td class="num ${varP>=0?'pos':'neg'}" style="font-size:14px">${fmtPct(varP)}</td>
     </tr>`;
   }).join('');
@@ -2940,6 +3087,63 @@ async function toggleVCMAMarca(marcaRowId, vendedor, alias, marca) {
       </colgroup>
       <tbody>${rows}</tbody>
     </table>`;
+  }
+}
+
+// Edita el valor de un artículo puntual (Vendedor×Cliente×Marca×Artículo).
+// El delta (nuevo − natural congelado al primer edit) se enruta exacto —
+// sin diluir — a vendedor, marca, cliente y total general (getArticuloExtras
+// + buildVendMarcaGrid/buildVCMSplit), garantizando que la suma de
+// cualquier dimensión siga cuadrando con el presupuesto total.
+function setArticuloOverride(vendedor, alias, marca, articulo, newValStr, natJul, natAgo, natSep) {
+  if (guardLocked()) { render(); return; }
+  const newTotal = parseFloat(newValStr);
+  if (isNaN(newTotal) || newTotal < 0) { render(); return; }
+
+  const key = vendedor + _K + alias + _K + marca + _K + articulo;
+  let ov = state.articuloOverrides[key];
+  if (!ov) {
+    // Primera edición de este artículo: congela el valor "natural" (el que
+    // mostraba el modelo sin ningún ajuste manual) como referencia del delta.
+    ov = { vendedor, alias, marca, articulo, baseJul: natJul, baseAgo: natAgo, baseSep: natSep };
+    state.articuloOverrides[key] = ov;
+  }
+  const baseTotal = ov.baseJul + ov.baseAgo + ov.baseSep;
+  // Mantiene la misma forma mensual (jul/ago/sep) que tenía el valor base,
+  // solo escalada al nuevo total que escribió el usuario.
+  if (baseTotal > 0) {
+    ov.jul = newTotal * ov.baseJul / baseTotal;
+    ov.ago = newTotal * ov.baseAgo / baseTotal;
+    ov.sep = newTotal - ov.jul - ov.ago;
+  } else {
+    ov.jul = newTotal / 3; ov.ago = newTotal / 3; ov.sep = newTotal - ov.jul - ov.ago;
+  }
+
+  invalidateProjCache();
+  render();
+  saveStateSilent();
+}
+
+function clearArticuloOverride(vendedor, alias, marca, articulo) {
+  if (guardLocked()) return;
+  const key = vendedor + _K + alias + _K + marca + _K + articulo;
+  delete state.articuloOverrides[key];
+  invalidateProjCache();
+  render();
+  saveStateSilent();
+}
+
+// Reabre, después de un render(), la rama del árbol Vend-Cliente-Marca-Art
+// que el usuario tenía abierta (renderVCMATable reconstruye todo cerrado).
+function restoreVCMAExpansion() {
+  const st = window._vcmaExpanded;
+  if (!st || st.vidx === undefined || st.vidx === null) return;
+  toggleVCMAVendedor(st.vidx);
+  if (st.rowId) {
+    toggleVCMACliente(st.rowId, st.vendedor, st.alias);
+    if (st.marcaRowId) {
+      toggleVCMAMarca(st.marcaRowId, st.vendedor, st.alias, st.marca);
+    }
   }
 }
 
@@ -3272,6 +3476,19 @@ function renderTendenciaTab(vendProj, marcaProj) {
 }
 
 function renderAdjPanels() {
+  // Rebuild reemplaza el innerHTML entero (incluido el <input> que el
+  // usuario puede estar editando en ese momento) — sin esto, cada tecla
+  // dispara oninput → render() → renderAdjPanels(), que destruye el nodo
+  // enfocado y el navegador pierde el foco tras el primer carácter.
+  // Guardamos foco + selección y los restauramos después del rebuild.
+  const active = document.activeElement;
+  const activeId = active && active.id;
+  const isTextInput = active && (active.tagName === 'INPUT');
+  let selStart = null, selEnd = null;
+  if (isTextInput) {
+    try { selStart = active.selectionStart; selEnd = active.selectionEnd; } catch(e) {}
+  }
+
   // Vendedor adj — vs Q3 2025 mode
   const vendProj = computeVendProjections();
   const vendRows = Object.keys(RAW_DATA.vendedores)
@@ -3297,6 +3514,16 @@ function renderAdjPanels() {
       <div style="text-align:right">%</div>
     </div>
     ${marcaRows}`;
+
+  if (activeId) {
+    const el = document.getElementById(activeId);
+    if (el && typeof el.focus === 'function') {
+      el.focus();
+      if (selStart !== null && typeof el.setSelectionRange === 'function') {
+        try { el.setSelectionRange(selStart, selEnd); } catch(e) { /* type=number no soporta selection en algunos navegadores */ }
+      }
+    }
+  }
 }
 
 function makeMarcaAdjRow(key) {
@@ -3348,12 +3575,12 @@ function makeVendAdjRow(v, vp) {
         style="width:72px;font-size:16px;font-weight:700;text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px 4px;background:var(--bg3);color:${color}"
         oninput="setVendQ22025('${escQ(v)}','${id}',this.value)">
       <button class="adj-btn adj-btn-plus" onclick="stepVendQ22025('${escQ(v)}','${id}',1)">+</button>
-      <span style="font-size:16px;font-weight:700;color:${color};min-width:64px">${varPct >= 0 ? '+' : ''}${varPct.toFixed(1)}%</span>
+      <span id="${id}_pct" style="font-size:16px;font-weight:700;color:${color};min-width:64px">${varPct >= 0 ? '+' : ''}${varPct.toFixed(1)}%</span>
       ${hasTarget ? `<button onclick="clearVendQ22025('${escQ(v)}')" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--text3);padding:0" title="Volver a proyección del modelo">✕</button>` : ''}
     </div>
     <div style="font-size:14px;color:var(--text2);white-space:nowrap">
-      <strong style="color:var(--teal);font-family:var(--font-mono)">¢${fmt(metaVal)}</strong>
-      ${hasTarget ? '<span style="color:var(--gold)"> · manual</span>' : '<span style="color:var(--text3)"> · modelo</span>'}
+      <strong id="${id}_meta" style="color:var(--teal);font-family:var(--font-mono)">¢${fmt(metaVal)}</strong>
+      <span id="${id}_tag">${hasTarget ? '<span style="color:var(--gold)"> · manual</span>' : '<span style="color:var(--text3)"> · modelo</span>'}</span>
     </div>
   </div>`;
 }
@@ -3371,18 +3598,29 @@ function stepVendQ22025(v, id, delta) {
 function setVendQ22025(v, id, val) {
   if (guardLocked()) { render(); return; }
   const pct = parseFloat(val);
-  if (!isNaN(pct)) {
-    state.adjVsQ22025[v] = pct;
-    render();
-    // Update display label inline without full re-render
-    const hist25 = getHistQ2(RAW_DATA.vendedores[v].historico, 2025);
-    const meta = hist25 * (1 + pct / 100);
-    const el = document.getElementById(id);
-    if (el) {
-      const color = pct > 0 ? 'var(--teal)' : pct < 0 ? 'var(--red)' : 'var(--text2)';
-      el.style.color = color;
-    }
-  }
+  if (isNaN(pct)) return;
+  state.adjVsQ22025[v] = pct;
+  invalidateProjCache(); // estado cambió → proyección debe recalcularse
+
+  // Actualiza el color/label/meta de ESTA fila en el momento, sin tocar el
+  // <input> — así el usuario puede seguir escribiendo (varios dígitos,
+  // decimales, borrar) sin que un rebuild del panel le corte el foco o le
+  // pise el valor que está tecleando a mitad de escritura.
+  const hist25 = getHistQ2(RAW_DATA.vendedores[v].historico, 2025);
+  const meta = hist25 * (1 + pct / 100);
+  const color = pct > 0 ? 'var(--teal)' : pct < 0 ? 'var(--red)' : 'var(--text2)';
+  const inputEl = document.getElementById(id);
+  if (inputEl) inputEl.style.color = color;
+  const pctEl = document.getElementById(id + '_pct');
+  if (pctEl) { pctEl.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%'; pctEl.style.color = color; }
+  const metaEl = document.getElementById(id + '_meta');
+  if (metaEl) metaEl.textContent = '¢' + fmt(meta);
+
+  // El resto de la app (KPIs, Marcas, Portafolio, Clientes, Vend-Marca...)
+  // se recalcula con un debounce corto — igual criterio que el slider de
+  // marcas (updateAdj) — así no se reconstruye el DOM en cada tecla.
+  clearTimeout(window._vendAdjDebounce);
+  window._vendAdjDebounce = setTimeout(render, 350);
 }
 
 function clearVendQ22025(v) {
@@ -4397,8 +4635,9 @@ async function _doExportExcel(exportBtn) {
   // clientes que usan las vistas en vivo — así el Excel siempre coincide
   // exacto con "Meta por Marca", "Meta por Zona de Venta", Vend-Marca y
   // Vend-Cliente, marca por marca y cliente por cliente.
-  const vcmGrid  = buildVendMarcaGrid(vendProj, marcaProj);
-  const vcmSplit = buildVCMSplit(vcmGrid);
+  const _exportArtExtras = getArticuloExtras();
+  const vcmGrid  = buildVendMarcaGrid(vendProj, marcaProj, _exportArtExtras);
+  const vcmSplit = buildVCMSplit(vcmGrid, _exportArtExtras);
   const normVend = s => (s||'').replace(/^\d+-/,'').trim().toLowerCase();
   const vendModelTotal = {};
   Object.entries(vendProj).forEach(([v,d]) => { vendModelTotal[v] = d.proj.reduce((a,b)=>a+b,0); });
@@ -5504,6 +5743,7 @@ function buildSnapshot() {
     state: {
       adjustments:    state.adjustments,
       marcaOverrides: state.marcaOverrides,
+      articuloOverrides: state.articuloOverrides,
       adjVsQ22025:    state.adjVsQ22025,
       reasignaciones: state.reasignaciones,
       budgetTarget:   state.budgetTarget,
@@ -5712,6 +5952,7 @@ function loadSavedState() {
     const s = snapshot.state;
     state.adjustments    = s.adjustments    || { vendedores:{}, marcas:{}, portafolios:{} };
     state.marcaOverrides = s.marcaOverrides || {};
+    state.articuloOverrides = s.articuloOverrides || {};
     state.adjVsQ22025    = s.adjVsQ22025    || {};
     state.reasignaciones = s.reasignaciones || [];
     state.budgetTarget   = s.budgetTarget   || RAW_DATA.presupuesto_q2;
@@ -6363,6 +6604,7 @@ function doReset() {
   // 2. Reset all adjustments
   state.adjustments   = { vendedores: {}, marcas: {}, portafolios: {} };
   state.marcaOverrides = {};
+  state.articuloOverrides = {};
   state.reasignaciones = [];
   state.blendWeight    = 0.60;
   state.smoothOutliers = false;
