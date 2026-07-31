@@ -376,7 +376,6 @@ body {
   background: rgba(0,122,101,0.1); color:var(--teal);
   font-size:11px; font-weight:700; transition:all 0.2s; flex-shrink:0;
   vertical-align:middle; }
-.vp-vendor-row.expanded .vp-toggle { background:var(--teal); color:#fff; }
 .vp-port-row { background: rgba(0,122,101,0.03); }
 .vp-port-row td:first-child { padding-left: 42px; color:var(--text2); font-size:16px; }
 .vp-port-row td { font-size:16px; }
@@ -728,7 +727,6 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
   <div class="tab" onclick="switchTab(5)">🏪 Clientes</div>
   <div class="tab" onclick="switchTab(2)">🏷️ Marcas</div>
   <div class="tab" onclick="switchTab(1)">👤 Zonas de Venta</div>
-  <div class="tab" onclick="switchTab(4)">📋 Zona de Vta. - Vendedores</div>
   <div class="tab" onclick="switchTab(9)">🏪👤 Vend-Cliente</div>
   <div class="tab" onclick="switchTab(8)">🏷️👤 Vend-Marca</div>
   <div class="tab" onclick="switchTab(10)">🏪👤🏷️ Vend-Cliente-Marca</div>
@@ -890,41 +888,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
 </div>
 
 <div class="panel-section" id="tab3"></div>
-<!-- TAB 4: VENDEDOR - PORTAFOLIO -->
-<div class="panel-section" id="tab4">
-  <div class="card">
-    <div class="card-header">
-      <div>
-        <div class="card-title">Vista Zona de Ventas × Vendedor Secundario — Meta Trimestral</div>
-        <div class="card-sub">Distribución por Vendedor · ¢ Colones · Haga clic en un vendedor para expandir</div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-outline" onclick="expandAllVP()" style="font-size:16px;padding:5px 12px">↕ Expandir todo</button>
-        <button class="btn btn-outline" onclick="collapseAllVP()" style="font-size:16px;padding:5px 12px">↕ Colapsar todo</button>
-        <input type="text" class="search-input" placeholder="🔍 Buscar vendedor..." id="searchVendPort" oninput="filterVendPort(this.value)">
-      </div>
-    </div>
-    <div class="table-wrap" style="max-height:620px">
-      <table class="data-table" id="vendPortTable">
-        <thead>
-          <tr>
-            <th style="min-width:280px">Zona / Vendedor</th>
-            <th class="num">Hist Q3 2024 (¢)</th>
-            <th class="num">Hist Q3 2025 (¢)</th>
-            <th class="num">Meta Jul 2026 (¢)</th>
-            <th class="num">Meta Ago 2026 (¢)</th>
-            <th class="num">Meta Sep 2026 (¢)</th>
-            <th class="num">Total Trimestre (¢)</th>
-            <th class="num">Var % vs Q3 2025</th>
-            <th class="num">% Part.</th>
-          </tr>
-        </thead>
-        <tbody id="vendPortTableBody"></tbody>
-        <tfoot id="vendPortTableFoot"></tfoot>
-      </table>
-    </div>
-  </div>
-</div>
+<div class="panel-section" id="tab4"></div>
 
 <!-- TAB 5: CLIENTES -->
 <div class="panel-section" id="tab5">
@@ -2119,7 +2083,6 @@ function renderTabContent(idx) {
       break;
     case 1: renderVendTable(d.vendProj); break;
     case 2: renderMarcaTable(d.marcaProj); break;
-    case 4: renderVendPortTable(d.vendProj, d.portProj); break;
     case 5: renderClientTable(d.clientProj); break;
     case 6: renderAdjPanels(); break;
     case 8: renderVendMarcaTable(d.vendProj, d.vcmGrid); break;
@@ -2990,149 +2953,6 @@ function collapseAll(bodyId) {
   const rows = document.querySelectorAll(`#${bodyId} tr.vp-port-row`);
   rows.forEach(r => r.classList.add('hidden'));
   document.querySelectorAll(`#${bodyId} .vp-toggle`).forEach(t => t.textContent = '+');
-}
-
-
-
-function renderVendPortTable(vendProj, portProj) {
-  // Alphabetical sort
-  const sorted = Object.entries(vendProj)
-    .map(([v, d]) => ({ v, ...d, total: d.proj.reduce((a,b)=>a+b,0) }))
-    .sort((a,b) => a.v.replace(/^\d+-/,'').trim().localeCompare(b.v.replace(/^\d+-/,'').trim(), 'es'));
-
-  // Use scaled portProj for shares — guarantees portafolio totals match vendedor grand total
-  const portGrandProj = [0,1,2].map(i =>
-    Object.values(portProj).reduce((s,d) => s + d.proj[i], 0)
-  );
-  // Per-portfolio share per month derived from already-scaled portProj
-  const portShares = {};
-  ['Portafolio 1','Portafolio 2','Portafolio 3'].forEach(p => {
-    portShares[p] = [0,1,2].map(i =>
-      portGrandProj[i] > 0 ? portProj[p].proj[i] / portGrandProj[i] : 0
-    );
-  });
-
-  const grandTotal = sorted.reduce((s,x)=>s+x.total,0);
-  const portNames = ['Portafolio 1','Portafolio 2','Portafolio 3'];
-  const portLabels = ['Vendedor 1','Vendedor 2','Vendedor 3'];
-  const portColors = ['p1','p2','p3'];
-
-  // Grand totals accumulators
-  const totH25 = sorted.reduce((s,x)=>s+x.histQ2_2025,0);
-  const totH24 = sorted.reduce((s,x)=>s+x.histQ2_2024,0);
-  const totAbr = sorted.reduce((s,x)=>s+x.proj[0],0);
-  const totMay = sorted.reduce((s,x)=>s+x.proj[1],0);
-  const totJun = sorted.reduce((s,x)=>s+x.proj[2],0);
-  const totVar = totH25 > 0 ? ((grandTotal-totH25)/totH25*100) : 0;
-
-  let html = '';
-  sorted.forEach((x, idx) => {
-    const varPct = x.histQ2_2025 > 0 ? ((x.total - x.histQ2_2025)/x.histQ2_2025*100) : 0;
-    const partPct = grandTotal > 0 ? (x.total/grandTotal*100) : 0;
-    const vendId = 'vp_' + idx;
-    const label = x.v.replace(/^\d+-/,'').replace(/\.\./g,'.').trim();
-
-    // Vendor summary row
-    html += `<tr class="vp-vendor-row" id="vrow_${idx}" onclick="toggleVP(${idx})">
-      <td><span class="vp-toggle" id="vtog_${idx}">+</span>${label}</td>
-      <td class="num">${fmt(x.histQ2_2024)}</td>
-      <td class="num">${fmt(x.histQ2_2025)}</td>
-      <td class="num">${fmt(x.proj[0])}</td>
-      <td class="num">${fmt(x.proj[1])}</td>
-      <td class="num">${fmt(x.proj[2])}</td>
-      <td class="num" style="color:var(--teal);font-weight:700">${fmt(x.total)}</td>
-      <td class="num ${varPct>=0?'pos':'neg'}">${fmtPct(varPct)}</td>
-      <td class="num">${partPct.toFixed(1)}%</td>
-    </tr>`;
-
-    // Portfolio child rows — use per-month shares from scaled portProj
-    portNames.forEach((port, pi) => {
-      const sh = portShares[port];           // [share_abr, share_may, share_jun]
-      const pAbr  = x.proj[0] * sh[0];
-      const pMay  = x.proj[1] * sh[1];
-      const pJun  = x.proj[2] * sh[2];
-      const pTot  = pAbr + pMay + pJun;
-      // Historical share: use the overall historical portafolio weight
-      const histShare = portProj[port] ?
-        (portProj[port].histQ2_2025 / (Object.values(portProj).reduce((s,d)=>s+d.histQ2_2025,0)||1)) : 0;
-      const pH25  = x.histQ2_2025 * histShare;
-      const pH24  = x.histQ2_2024 * histShare;
-      const pVar  = pH25 > 0 ? ((pTot-pH25)/pH25*100) : 0;
-      const pPart = grandTotal > 0 ? (pTot/grandTotal*100) : 0;
-      html += `<tr class="vp-port-row ${portColors[pi]} hidden" data-parent="${idx}">
-        <td>${portLabels[pi]}</td>
-        <td class="num">${fmt(pH24)}</td>
-        <td class="num">${fmt(pH25)}</td>
-        <td class="num">${fmt(pAbr)}</td>
-        <td class="num">${fmt(pMay)}</td>
-        <td class="num">${fmt(pJun)}</td>
-        <td class="num" style="font-weight:600">${fmt(pTot)}</td>
-        <td class="num ${pVar>=0?'pos':'neg'}">${fmtPct(pVar)}</td>
-        <td class="num">${pPart.toFixed(1)}%</td>
-      </tr>`;
-    });
-  });
-
-  document.getElementById('vendPortTableBody').innerHTML = html;
-  document.getElementById('vendPortTableFoot').innerHTML = `<tr class="total-row">
-    <td><strong>TOTAL GENERAL</strong></td>
-    <td class="num"><strong>${fmt(totH24)}</strong></td>
-    <td class="num"><strong>${fmt(totH25)}</strong></td>
-    <td class="num"><strong>${fmt(totAbr)}</strong></td>
-    <td class="num"><strong>${fmt(totMay)}</strong></td>
-    <td class="num"><strong>${fmt(totJun)}</strong></td>
-    <td class="num" style="color:var(--teal)"><strong>${fmt(grandTotal)}</strong></td>
-    <td class="num ${totVar>=0?'pos':'neg'}"><strong>${fmtPct(totVar)}</strong></td>
-    <td class="num"><strong>100.0%</strong></td>
-  </tr>`;
-}
-
-function toggleVP(idx) {
-  const row = document.getElementById('vrow_' + idx);
-  const tog = document.getElementById('vtog_' + idx);
-  const children = document.querySelectorAll(`[data-parent="${idx}"]`);
-  const isExpanded = row.classList.contains('expanded');
-  if (isExpanded) {
-    row.classList.remove('expanded');
-    tog.textContent = '+';
-    children.forEach(r => r.classList.add('hidden'));
-  } else {
-    row.classList.add('expanded');
-    tog.textContent = '−';
-    children.forEach(r => r.classList.remove('hidden'));
-  }
-}
-
-function expandAllVP() {
-  document.querySelectorAll('.vp-vendor-row').forEach((row, i) => {
-    row.classList.add('expanded');
-    const tog = document.getElementById('vtog_' + i);
-    if (tog) tog.textContent = '−';
-  });
-  document.querySelectorAll('.vp-port-row').forEach(r => r.classList.remove('hidden'));
-}
-
-function collapseAllVP() {
-  document.querySelectorAll('.vp-vendor-row').forEach((row, i) => {
-    row.classList.remove('expanded');
-    const tog = document.getElementById('vtog_' + i);
-    if (tog) tog.textContent = '+';
-  });
-  document.querySelectorAll('.vp-port-row').forEach(r => r.classList.add('hidden'));
-}
-
-function filterVendPort(search) {
-  const q = search.toLowerCase();
-  document.querySelectorAll('.vp-vendor-row').forEach((row, i) => {
-    const name = row.cells[0].textContent.toLowerCase();
-    const match = name.includes(q);
-    row.style.display = match ? '' : 'none';
-    // hide/show children accordingly
-    document.querySelectorAll(`[data-parent="${i}"]`).forEach(r => {
-      if (!match) { r.style.display = 'none'; }
-      else { r.style.display = row.classList.contains('expanded') ? '' : 'none'; }
-    });
-  });
 }
 
 function renderClientTable(clientProj) {
