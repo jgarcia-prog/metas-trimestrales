@@ -3957,7 +3957,7 @@ function updateEmailCount() { const n=document.querySelectorAll('.email-cb:check
 
 function buildEmailHTML(vendedor, totals, clientes) {
   const PC = {'Portafolio 1':'#dc2626','Portafolio 2':'#0891b2','Portafolio 3':'#1e3a8a'};
-  const fm = n => '\u00a2' + Math.round(n).toLocaleString('es-CR');
+  const fm = n => '$' + Math.round(n).toLocaleString('es-CR');
   const fp = n => (n>=0?'\u25b2 +':'\u25bc ')+Math.abs(n).toFixed(1)+'%';
   const vc = v => v>=0?'#059669':'#dc2626';
   const vt = totals.hist_q3_2025>0?((totals.meta_q3-totals.hist_q3_2025)/totals.hist_q3_2025)*100:0;
@@ -4000,10 +4000,11 @@ function buildEmailHTML(vendedor, totals, clientes) {
 }
 
 async function buildVCMPayload(vcmData, vendedor, vendProjData) {
-  // Normalización robusta: elimina número prefijo, puntos finales, espacios
-  // extra y pasa a minúsculas — así "MICHAELL SOLANO" == "MICHAEL SOLANO"
-  // no ocurrirá más; los errores tipográficos leves tampoco afectarán.
-  const normV = s => s.replace(/^\d+-/,'').replace(/\.+$/,'').trim().toLowerCase()
+  // Normalización robusta: elimina número prefijo, puntos finales, espacios,
+  // anotaciones tipo "(SC)" y pasa a minúsculas — así "MICHAELL SOLANO" ==
+  // "MICHAEL SOLANO" no ocurrirá más; los errores tipográficos leves
+  // tampoco afectarán.
+  const normV = s => s.replace(/^\d+-/,'').replace(/\([^)]*\)/g,'').replace(/\.+$/,'').trim().toLowerCase()
                       .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const nvend = normV(vendedor);
 
@@ -4012,6 +4013,20 @@ async function buildVCMPayload(vcmData, vendedor, vendProjData) {
   if (rows.length === 0) {
     // Exacto no encontró nada → buscar por nombre normalizado
     rows = vcmData.filter(r => normV(r.vendedor) === nvend);
+  }
+  if (rows.length === 0) {
+    // Nombre corto (ej. "CÉSAR MONTOYA") vs nombre legal completo con
+    // segundo nombre y dos apellidos (ej. "CESAR JESÚS MONTOYA CARVAJAL"):
+    // coincide si la primera Y la última palabra del nombre corto aparecen
+    // ambas como palabras completas en el nombre del VCM.
+    const words = nvend.split(' ').filter(Boolean);
+    if (words.length >= 2) {
+      const first = words[0], last = words[words.length - 1];
+      rows = vcmData.filter(r => {
+        const rw = normV(r.vendedor || '').split(' ').filter(Boolean);
+        return rw.includes(first) && rw.includes(last);
+      });
+    }
   }
   if (rows.length === 0) {
     // Un nombre es prefijo del otro (ej. "ALLAN PACHECO" vs "ALLAN PACHECO VILLALOBOS")
@@ -4034,7 +4049,7 @@ async function buildVCMPayload(vcmData, vendedor, vendProjData) {
     byAlias[r.alias].meta_q3+=Number(r.meta_q3)||0;
     byAlias[r.alias].marcas.push({marca:r.marca,portafolio:r.portafolio,hist_q3_2025:Number(r.hist_q3_2025)||0,hist_q3_2024:Number(r.hist_q3_2024)||0,meta_q3:Number(r.meta_q3)||0});
   });
-  const clientes=Object.values(byAlias).filter(c=>c.meta_q3>10000);
+  const clientes=Object.values(byAlias).filter(c=>c.meta_q3>0);
   // Monthly breakdown from the model projection (more accurate than VCM average)
   // Use passed data or fuzzy-find in vendProj
   let projData = vendProjData;
