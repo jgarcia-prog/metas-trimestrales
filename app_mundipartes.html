@@ -795,6 +795,26 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     </div>
   </div>
 
+  <!-- Charts del Resumen -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+    <div class="card" style="padding:16px">
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Tendencia de Ventas</div>
+      <div class="chart-wrap"><canvas id="trendChart" height="200"></canvas></div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Distribución por Portafolio</div>
+      <div class="chart-wrap"><canvas id="donutChart" height="200"></canvas></div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Zonas de Venta</div>
+      <div class="chart-wrap"><canvas id="vendChart" height="200"></canvas></div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Marcas</div>
+      <div class="chart-wrap"><canvas id="marcaChart" height="200"></canvas></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- TAB 1: VENDEDORES -->
@@ -1212,26 +1232,6 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <tbody id="vendClienteBody"></tbody>
         <tfoot id="vendClienteFoot"></tfoot>
       </table>
-    </div>
-  </div>
-
-  <!-- Charts del Resumen -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
-    <div class="card" style="padding:16px">
-      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Tendencia de Ventas</div>
-      <div class="chart-wrap"><canvas id="trendChart" height="200"></canvas></div>
-    </div>
-    <div class="card" style="padding:16px">
-      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Distribución por Portafolio</div>
-      <div class="chart-wrap"><canvas id="donutChart" height="200"></canvas></div>
-    </div>
-    <div class="card" style="padding:16px">
-      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Zonas de Venta</div>
-      <div class="chart-wrap"><canvas id="vendChart" height="200"></canvas></div>
-    </div>
-    <div class="card" style="padding:16px">
-      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Marcas</div>
-      <div class="chart-wrap"><canvas id="marcaChart" height="200"></canvas></div>
     </div>
   </div>
 
@@ -2093,7 +2093,8 @@ function render() {
   // pestaña bajo demanda sin recalcular ni re-renderizar las demás —
   // evita reconstruir 8 tablas + 2 charts en cada click de tab.
   _lastRenderData = { vendProj, marcaProj, portProj, vcmGrid, vcmSplit, clientProj,
-                       totalProj, q2Hist, budget, monthlyProj, monthlyHist25 };
+                       totalProj, q2Hist, budget, monthlyProj, monthlyHist25,
+                       filtVendProj, filtPortProj, filtMarcaProj };
 
   renderTabContent(window._activeTabIdx ?? 0);
   if (typeof applyLockUI === 'function' && isLocked()) applyLockUI();
@@ -2111,6 +2112,10 @@ function renderTabContent(idx) {
     case 0:
       renderKPIs(d.q2Hist, d.totalProj, d.budget, d.monthlyProj, d.monthlyHist25);
       renderAlerts(d.totalProj, d.budget);
+      renderTrendChart(d.filtVendProj);
+      renderDonut(d.filtPortProj);
+      renderVendChart(d.filtVendProj);
+      renderMarcaChart(d.filtMarcaProj);
       break;
     case 1: renderVendTable(d.vendProj); break;
     case 2: renderMarcaTable(d.marcaProj); break;
@@ -2146,8 +2151,6 @@ function fmtPct(v) {
 }
 
 function renderKPIs(q2Hist, totalProj, budget, monthlyProj, monthlyHist25) {
-  // Skip chart rebuild when Resumen tab is not active — avoids 7x WebGL destroy/create
-  const _skipCharts = (window._activeTabIdx !== undefined && window._activeTabIdx !== 0);
   document.getElementById('kpi_hist').textContent = '$' + fmt(q2Hist);
   document.getElementById('kpi_budget').textContent = '$' + fmt(budget);
   document.getElementById('kpi_proj').textContent = '$' + fmt(totalProj);
@@ -3724,7 +3727,7 @@ function renderSupervisorList(list) {
   updateEmailCount();
 }
 
-async function buildSupervisorEmailHTML(supervisor, vendedoresData, vcmData) {
+async function buildSupervisorEmailHTML(supervisor, vendedoresData, split) {
   const fm = n => '$' + Math.round(n).toLocaleString('es-CR');
   const fp = n => (n >= 0 ? '▲ +' : '▼ ') + Math.abs(n).toFixed(1) + '%';
   const vc = v => v >= 0 ? '#059669' : '#dc2626';
@@ -3757,7 +3760,7 @@ async function buildSupervisorEmailHTML(supervisor, vendedoresData, vcmData) {
     if (!p) continue;
     const total = p.proj.reduce((a,b)=>a+b,0);
     const vt = p.histQ2_2025 > 0 ? ((total - p.histQ2_2025) / p.histQ2_2025) * 100 : 0;
-    const { clientes } = vcmData ? await buildVCMPayload(vcmData, v.vendedor, p) : { clientes: [] };
+    const { clientes } = split ? buildVCMPayloadFromSplit(v.vendedor, vendProj, split) : { clientes: [] };
     teamRows.push({ label: v.label, proj: p.proj, total, hist: p.histQ2_2025, vt, clientes });
   }
   teamRows.sort((a,b) => b.total - a.total);
@@ -3890,15 +3893,15 @@ function renderEmailList(list) {
 async function previewEmailSingle(mode, idx) {
   document.getElementById('emailStatus').textContent = '⏳ Preparando vista previa...';
   _previewList = [];
+  const split = _lastRenderData?.vcmSplit || {};
+  const vendProj = _lastRenderData?.vendProj || {};
   if (mode === 'supervisores') {
-    const vcmData = await loadVCMEmailData();
     const s = _emailSuperData[idx];
-    if (s) _previewList.push({ v: { label: s.label, correo: s.correo, correo_supervisor: s.correo }, html: await buildSupervisorEmailHTML(s.label, s.vendedores, vcmData) });
+    if (s) _previewList.push({ v: { label: s.label, correo: s.correo, correo_supervisor: s.correo }, html: await buildSupervisorEmailHTML(s.label, s.vendedores, split) });
   } else {
-    const vcmData = await loadVCMEmailData();
     const v = _emailVendorData[idx];
     if (v) {
-      const { clientes, totals } = await buildVCMPayload(vcmData, v.vendedor, computeVendProjections()[v.vendedor]);
+      const { clientes, totals } = buildVCMPayloadFromSplit(v.vendedor, vendProj, split);
       _previewList.push({ v, html: buildEmailHTML(v.vendedor, totals, clientes) });
     }
   }
@@ -3915,22 +3918,17 @@ async function sendEmailSingle(mode, idx) {
   document.getElementById('emailStatus').textContent = '⏳ Enviando...';
   try {
     let payload;
+    const split = _lastRenderData?.vcmSplit || {};
+    const vendProj = _lastRenderData?.vendProj || {};
     if (mode === 'supervisores') {
-      const vcmData = await loadVCMEmailData();
       const s = _emailSuperData[idx];
-      const html = await buildSupervisorEmailHTML(s.label, s.vendedores, vcmData);
+      const html = await buildSupervisorEmailHTML(s.label, s.vendedores, split);
       payload = [{ vendedor: s.label, correo: testMode ? testEmail : s.correo, correo_supervisor: testMode ? testEmail : s.correo, html_override: html }];
     } else {
-      const vcmData = await loadVCMEmailData();
       const v = _emailVendorData[idx];
-      const vendProjAll = computeVendProjections();
-      const normKeyS = s => s.replace(/\.+$/, '').trim().toLowerCase();
-      const vpIdx = {};
-      Object.entries(vendProjAll).forEach(([k,vv]) => { vpIdx[normKeyS(k)] = vv; });
-      const proj = vendProjAll[v.vendedor] || vpIdx[normKeyS(v.vendedor)] || null;
-      // proj puede ser null si el vendedor no tiene histórico en el modelo
-      // (vendedor nuevo). buildVCMPayload tiene fallback con pesos de presupuesto.
-      const { clientes, totals } = await buildVCMPayload(vcmData, v.vendedor, proj);
+      // buildVCMPayloadFromSplit resuelve el vendedor con el mismo fuzzy-match
+      // que ya usa la vista Vend-Cliente/supervisor -- sin fallback local aquí.
+      const { clientes, totals } = buildVCMPayloadFromSplit(v.vendedor, vendProj, split);
       payload = [{ vendedor: v.vendedor, correo: testMode ? testEmail : v.correo, correo_supervisor: testMode ? testEmail : v.correo_supervisor, clientes, totals }];
     }
     const res = await fetch(getEdgeURL(), { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }, body: JSON.stringify({ vendedores: payload }) });
@@ -3956,25 +3954,21 @@ function filterEmailList(q) {
 function updateEmailCount() { const n=document.querySelectorAll('.email-cb:checked').length; document.getElementById('emailSelectedCount').textContent=`${n} vendedor${n!==1?'es':''} seleccionado${n!==1?'s':''}`; }
 
 function buildEmailHTML(vendedor, totals, clientes) {
-  const PC = {'Portafolio 1':'#dc2626','Portafolio 2':'#0891b2','Portafolio 3':'#1e3a8a'};
   const fm = n => '$' + Math.round(n).toLocaleString('es-CR');
-  const fp = n => (n>=0?'\u25b2 +':'\u25bc ')+Math.abs(n).toFixed(1)+'%';
+  const fp = n => (n>=0?'▲ +':'▼ ')+Math.abs(n).toFixed(1)+'%';
   const vc = v => v>=0?'#059669':'#dc2626';
   const vt = totals.hist_q3_2025>0?((totals.meta_q3-totals.hist_q3_2025)/totals.hist_q3_2025)*100:0;
   const nm = vendedor.replace(/^\d+-/,'').trim();
+  // Los montos por cliente/marca son los MISMOS valores reales (jul/ago/sep)
+  // que muestra la vista "Vend-Cliente" de la app -- vienen del mismo split
+  // reconciliado (vendProj x marcaProj x vcmRaw), no de una re-proporcion
+  // independiente. Asi el correo y la app siempre coinciden.
   const rows = clientes.sort((a,b)=>b.meta_q3-a.meta_q3).map(c=>{
-    const qTotal=totals.meta_q3||1;
-    const cJul=(totals.meta_jul||0)*c.meta_q3/qTotal;
-    const cAgo=(totals.meta_ago||0)*c.meta_q3/qTotal;
-    const cSep=(totals.meta_sep||0)*c.meta_q3/qTotal;
     const mr=(c.marcas||[]).sort((a,b)=>b.meta_q3-a.meta_q3).map(m=>{
-      const mJul=(totals.meta_jul||0)*m.meta_q3/qTotal;
-      const mAgo=(totals.meta_ago||0)*m.meta_q3/qTotal;
-      const mSep=(totals.meta_sep||0)*m.meta_q3/qTotal;
-      const pc=PC[m.portafolio]||'#6b7280';
-      return `<tr style="background:#f9fafb"><td style="padding:6px 8px 6px 28px;font-size:12px;color:#374151;border-bottom:1px solid #f3f4f6">${m.marca}<span style="font-size:10px;color:#9ca3af;margin-left:4px">${m.portafolio}</span></td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(mJul)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(mAgo)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(mSep)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;font-weight:700;color:#1e3a8a;border-bottom:1px solid #f3f4f6">${fm(m.meta_q3)}</td></tr>`;
+      const pc=PORT_COLORS[m.portafolio]||'#6b7280';
+      return `<tr style="background:#f9fafb"><td style="padding:6px 8px 6px 28px;font-size:12px;color:#374151;border-bottom:1px solid #f3f4f6">${m.marca}<span style="font-size:10px;color:#9ca3af;margin-left:4px">${m.portafolio}</span></td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.jul)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.ago)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.sep)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;font-weight:700;color:#1e3a8a;border-bottom:1px solid #f3f4f6">${fm(m.meta_q3)}</td></tr>`;
     }).join('');
-    return `<tr><td colspan="5" style="padding:0"><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><colgroup><col style="width:40%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup><tr style="background:#eff6ff"><td style="padding:9px 12px;font-size:13px;font-weight:600;color:#1e40af;border-bottom:1px solid #dbeafe">\ud83c\udfaa ${c.nombre||c.alias}${c.alias&&c.nombre&&c.alias!==c.nombre?`<span style="font-size:11px;font-weight:400;color:#6b7280;margin-left:6px">\u21b3 ${c.alias}</span>`:''}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(cJul)}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(cAgo)}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(cSep)}</td><td style="padding:9px 12px;font-size:13px;font-weight:700;text-align:right;color:#0f766e;border-bottom:1px solid #dbeafe">${fm(c.meta_q3)}</td></tr>${mr}</table></td></tr>`;
+    return `<tr><td colspan="5" style="padding:0"><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><colgroup><col style="width:40%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup><tr style="background:#eff6ff"><td style="padding:9px 12px;font-size:13px;font-weight:600;color:#1e40af;border-bottom:1px solid #dbeafe">\ud83c\udfaa ${c.alias}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.jul)}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.ago)}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.sep)}</td><td style="padding:9px 12px;font-size:13px;font-weight:700;text-align:right;color:#0f766e;border-bottom:1px solid #dbeafe">${fm(c.meta_q3)}</td></tr>${mr}</table></td></tr>`;
   }).join('');
   return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif"><table width="100%" cellpadding="0" cellspacing="0" style="max-width:700px;margin:24px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)"><tr><td style="padding:28px 32px 16px"><div style="font-size:16px;color:#111827;font-weight:600">Estimado/a ${nm},</div><div style="font-size:14px;color:#6b7280;margin-top:8px;line-height:1.6">A continuaci\u00f3n encontr\u00e1s las metas de ventas proyectadas para el tercer trimestre 2026, desglosadas por mes, cliente y marca.</div></td></tr><tr><td style="padding:0 32px 24px">
 <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #e5e7eb">
@@ -3999,113 +3993,74 @@ function buildEmailHTML(vendedor, totals, clientes) {
 </td></tr><tr><td style="padding:0 32px 32px"><div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Desglose por Cliente y Marca</div><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e5e7eb"><colgroup><col style="width:40%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup><thead><tr style="background:#009ee3"><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:left">Cliente / Marca</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Jul</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Ago</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Sep</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Total Q3</th></tr></thead><tbody>${rows}</tbody></table></td></tr><tr><td style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb"><div style="font-size:12px;color:#374151;line-height:1.9">Quedo atento ante cualquier consulta y apoyo.<br>Saludos cordiales,<br><strong>Jorge García</strong></div></td></tr></table></body></html>`;
 }
 
-async function buildVCMPayload(vcmData, vendedor, vendProjData) {
-  // Normalización robusta: elimina número prefijo, puntos finales, espacios,
-  // anotaciones tipo "(SC)" y pasa a minúsculas — así "MICHAELL SOLANO" ==
-  // "MICHAEL SOLANO" no ocurrirá más; los errores tipográficos leves
-  // tampoco afectarán.
+function buildVCMPayloadFromSplit(vendedor, vendProj, split) {
+  // Homologado con la vista "Vend-Cliente": arma el desglose por cliente y
+  // marca a partir del MISMO split reconciliado (vendProj x marcaProj x
+  // vcmRaw, via IPF) que usa renderVendClienteTable -- asi el correo nunca
+  // puede mostrar un cliente ni un monto distinto de lo que ve el usuario
+  // en esa pestana. Solo se resuelve, con el mismo fuzzy-match usado para
+  // proyecciones de supervisor (findProj), que clave real de vendProj/split
+  // corresponde al identificador de vendedor que llega de la lista de
+  // correos (que puede traer prefijo numerico, ej. "179-CESAR MONTOYA" vs
+  // "CESAR JESUS MONTOYA CARVAJAL").
   const normV = s => s.replace(/^\d+-/,'').replace(/\([^)]*\)/g,'').replace(/\.+$/,'').trim().toLowerCase()
                       .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const nvend = normV(vendedor);
 
-  // Buscar filas de VCM que correspondan a este vendedor (con fallback fuzzy)
-  let rows = vcmData.filter(r => r.vendedor === vendedor);
-  if (rows.length === 0) {
-    // Exacto no encontró nada → buscar por nombre normalizado
-    rows = vcmData.filter(r => normV(r.vendedor) === nvend);
-  }
-  if (rows.length === 0) {
-    // Nombre corto (ej. "CÉSAR MONTOYA") vs nombre legal completo con
-    // segundo nombre y dos apellidos (ej. "CESAR JESÚS MONTOYA CARVAJAL"):
-    // coincide si la primera Y la última palabra del nombre corto aparecen
-    // ambas como palabras completas en el nombre del VCM.
+  const keys = Object.keys(vendProj);
+  let vendKey = vendProj[vendedor] ? vendedor : null;
+  if (!vendKey) vendKey = keys.find(k => normV(k) === nvend);
+  if (!vendKey) {
     const words = nvend.split(' ').filter(Boolean);
     if (words.length >= 2) {
       const first = words[0], last = words[words.length - 1];
-      rows = vcmData.filter(r => {
-        const rw = normV(r.vendedor || '').split(' ').filter(Boolean);
-        return rw.includes(first) && rw.includes(last);
+      vendKey = keys.find(k => {
+        const kw = normV(k).split(' ').filter(Boolean);
+        return kw.includes(first) && kw.includes(last);
       });
     }
   }
-  if (rows.length === 0) {
-    // Un nombre es prefijo del otro (ej. "ALLAN PACHECO" vs "ALLAN PACHECO VILLALOBOS")
-    rows = vcmData.filter(r => {
-      const nr = normV(r.vendedor || '');
-      return nr && (nvend.startsWith(nr) || nr.startsWith(nvend));
+  if (!vendKey) {
+    vendKey = keys.find(k => {
+      const nk = normV(k);
+      return nk && (nvend.startsWith(nk) || nk.startsWith(nvend));
     });
   }
-  if (rows.length === 0) {
-    // Últimos dos recursos agotados → comparar solo las dos primeras palabras
-    const words = nvend.split(' ').slice(0, 2).join(' ');
-    rows = vcmData.filter(r => normV(r.vendedor || '').split(' ').slice(0, 2).join(' ') === words);
+  if (!vendKey) {
+    const words2 = nvend.split(' ').slice(0, 2).join(' ');
+    vendKey = keys.find(k => normV(k).split(' ').slice(0, 2).join(' ') === words2);
   }
 
   const byAlias = {};
-  rows.forEach(r=>{
-    if(!byAlias[r.alias])byAlias[r.alias]={alias:r.alias,nombre:r.cliente_nombre,marcas:[],hist_q3_2025:0,hist_q3_2024:0,meta_q3:0};
-    byAlias[r.alias].hist_q3_2025+=Number(r.hist_q3_2025)||0;
-    byAlias[r.alias].hist_q3_2024+=Number(r.hist_q3_2024)||0;
-    byAlias[r.alias].meta_q3+=Number(r.meta_q3)||0;
-    byAlias[r.alias].marcas.push({marca:r.marca,portafolio:r.portafolio,hist_q3_2025:Number(r.hist_q3_2025)||0,hist_q3_2024:Number(r.hist_q3_2024)||0,meta_q3:Number(r.meta_q3)||0});
-  });
-  const clientes=Object.values(byAlias).filter(c=>c.meta_q3>0);
-  // Monthly breakdown from the model projection (more accurate than VCM average)
-  // Use passed data or fuzzy-find in vendProj
-  let projData = vendProjData;
-  if (!projData || !projData.proj) {
-    const vendProj = computeVendProjections();
-    const norm = v => normV(v);
-    const key = Object.keys(vendProj).find(k => {
-      const nk = norm(k);
-      return nk === nvend || nvend.startsWith(nk) || nk.startsWith(nvend) ||
-             nk.split(' ').slice(0,2).join(' ') === nvend.split(' ').slice(0,2).join(' ');
+  if (vendKey && split[vendKey]) {
+    Object.entries(split[vendKey]).forEach(([marca, clients]) => {
+      const portafolio = RAW_DATA.marcas[marca]?.portafolio || '';
+      Object.entries(clients).forEach(([alias, val]) => {
+        if (!byAlias[alias]) byAlias[alias] = { alias, marcas: [], jul: 0, ago: 0, sep: 0, meta_q3: 0 };
+        const mTotal = val[0] + val[1] + val[2];
+        byAlias[alias].marcas.push({ marca, portafolio, jul: val[0], ago: val[1], sep: val[2], meta_q3: mTotal });
+        byAlias[alias].jul += val[0];
+        byAlias[alias].ago += val[1];
+        byAlias[alias].sep += val[2];
+        byAlias[alias].meta_q3 += mTotal;
+      });
     });
-    projData = key ? vendProj[key] : null;
   }
-  const proj = projData?.proj || [0,0,0];
-  const projTotal = proj.reduce((a,b)=>a+b,0);
-  const clientTotal = clientes.reduce((s,c)=>s+c.meta_q3,0);
-  const meta_q3 = projTotal || clientTotal;
+  const clientes = Object.values(byAlias).filter(c => c.meta_q3 > 0);
 
-  // Si el modelo devuelve proj=[0,0,0] pero hay un total válido por clientes,
-  // repartir mensualmente usando los pesos del Presupuesto para que
-  // Jul/Ago/Sep no aparezcan en $0 en el correo.
-  let meta_jul, meta_ago, meta_sep;
-  if (projTotal > 0) {
-    [meta_jul, meta_ago, meta_sep] = proj;
-  } else if (meta_q3 > 0) {
-    const bw = (typeof getBudgetMonthlyWeights === 'function')
-      ? getBudgetMonthlyWeights()
-      : [1/3, 1/3, 1/3];
-    [meta_jul, meta_ago, meta_sep] = bw.map(w => meta_q3 * w);
-  } else {
-    [meta_jul, meta_ago, meta_sep] = [0, 0, 0];
-  }
+  const vp = vendKey ? vendProj[vendKey] : null;
+  const proj = vp?.proj || [0, 0, 0];
+  const meta_q3 = proj.reduce((a,b) => a + b, 0);
 
   const totals = {
-    hist_q3_2025: clientes.reduce((s,c)=>s+c.hist_q3_2025,0),
-    hist_q3_2024: clientes.reduce((s,c)=>s+c.hist_q3_2024,0),
+    hist_q3_2025: vp?.histQ2_2025 || 0,
+    hist_q3_2024: vp?.histQ2_2024 || 0,
     meta_q3,
-    meta_jul,
-    meta_ago,
-    meta_sep
+    meta_jul: proj[0],
+    meta_ago: proj[1],
+    meta_sep: proj[2]
   };
-  return {clientes,totals};
-}
-
-async function loadVCMEmailData() {
-  // [PERF F-03] Caché con TTL de 5 minutos por sesión — evita doble roundtrip
-  // cuando el usuario envía correos y luego exporta Excel en la misma sesión.
-  // El caché se invalida en doReset() y expira automáticamente en 5 min.
-  const now = Date.now();
-  if (window._vcmEmailFullData && window._vcmEmailCacheAt && (now - window._vcmEmailCacheAt) < 300000) {
-    return window._vcmEmailFullData;
-  }
-  const res=await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export_mundipartes?limit=50000`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`,'Prefer':'count=none'},body:'{}'});
-  window._vcmEmailFullData = await res.json();
-  window._vcmEmailCacheAt = Date.now();
-  return window._vcmEmailFullData;
+  return { clientes, totals };
 }
 
 async function previewEmail() {
@@ -4114,25 +4069,19 @@ async function previewEmail() {
   document.getElementById('emailStatus').textContent='⏳ Preparando vista previa...';
 
   _previewList=[];
+  const split = _lastRenderData?.vcmSplit || {};
+  const vendProj = _lastRenderData?.vendProj || {};
   if (_emailMode === 'supervisores') {
-    const vcmDataSup = await loadVCMEmailData();
     for (const cb of checked.slice(0,5)) {
       const s = _emailSuperData[parseInt(cb.dataset.idx)];
       if (!s) continue;
-      _previewList.push({ v: { label: s.label, correo: s.correo, correo_supervisor: s.correo }, html: await buildSupervisorEmailHTML(s.label, s.vendedores, vcmDataSup) });
+      _previewList.push({ v: { label: s.label, correo: s.correo, correo_supervisor: s.correo }, html: await buildSupervisorEmailHTML(s.label, s.vendedores, split) });
     }
   } else {
-    const vcmData=await loadVCMEmailData();
-    const vendProj=computeVendProjections();
-    const normKey2 = s => s.replace(/\.+$/, '').trim().toLowerCase();
-    const vendProjIdx2 = {};
-    Object.entries(vendProj).forEach(([k,v]) => { vendProjIdx2[normKey2(k)] = v; });
-    const safeVP = v => vendProj[v] || vendProjIdx2[normKey2(v)] || null;
     for(const cb of checked.slice(0,5)){
       const v=_emailVendorData[parseInt(cb.dataset.idx)];
       if(!v)continue;
-      const proj = safeVP(v.vendedor); // puede ser null → buildVCMPayload usa fallback
-      const{clientes,totals}=await buildVCMPayload(vcmData,v.vendedor,proj);
+      const{clientes,totals}=buildVCMPayloadFromSplit(v.vendedor,vendProj,split);
       _previewList.push({v,html:buildEmailHTML(v.vendedor,totals,clientes)});
     }
   }
@@ -4160,33 +4109,21 @@ async function sendEmails(){
   document.getElementById('emailStatus').textContent='⏳ Preparando correos...';
   try{
     const vendedores=[];
-    const vendProjRaw = computeVendProjections();
-
-    // Los nombres en RAW_DATA.vendedores pueden tener puntos finales ("..") o
-    // espacios extra que no coinciden con los nombres limpios de Supabase.
-    // Construimos un índice normalizado para hacer el lookup de forma robusta.
-    const normKey = s => s.replace(/\.+$/, '').trim().toLowerCase();
-    const vendProjIdx = {};
-    Object.entries(vendProjRaw).forEach(([k, v]) => { vendProjIdx[normKey(k)] = v; });
-    const safeVendProj = v => vendProjRaw[v] || vendProjIdx[normKey(v)] || null;
+    const split = _lastRenderData?.vcmSplit || {};
+    const vendProj = _lastRenderData?.vendProj || {};
 
     if (_emailMode === 'supervisores') {
-      document.getElementById('emailStatus').textContent='⏳ Cargando datos VCM...';
-      const vcmDataSup = await loadVCMEmailData();
       for (const cb of checked) {
         const s = _emailSuperData[parseInt(cb.dataset.idx)];
         if (!s) continue;
-        const html = await buildSupervisorEmailHTML(s.label, s.vendedores, vcmDataSup);
+        const html = await buildSupervisorEmailHTML(s.label, s.vendedores, split);
         vendedores.push({ vendedor: s.label, correo: s.correo, correo_supervisor: s.correo, html_override: html });
       }
     } else {
-      document.getElementById('emailStatus').textContent='⏳ Cargando datos VCM...';
-      const vcmData=await loadVCMEmailData();
       for(const cb of checked){
         const v=_emailVendorData[parseInt(cb.dataset.idx)];
         if(!v)continue;
-        const proj = safeVendProj(v.vendedor); // puede ser null → buildVCMPayload usa fallback
-        const{clientes,totals}=await buildVCMPayload(vcmData,v.vendedor,proj);
+        const{clientes,totals}=buildVCMPayloadFromSplit(v.vendedor,vendProj,split);
         if (!totals.meta_q3) continue; // sin datos de ningún tipo → omitir
         vendedores.push({vendedor:v.vendedor,correo:v.correo,correo_supervisor:v.correo_supervisor,clientes,totals});
       }
