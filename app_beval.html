@@ -259,7 +259,8 @@ body {
   background: var(--bg3); font-size: 14px; font-weight: 600; color: var(--text2);
   letter-spacing: 0.3px;
 }
-#adjVendedor { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.adj-row.adj-row-marca { grid-template-columns: 1fr 260px 90px; }
+#adjVendedor, #adjMarca { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .adj-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .adj-name { font-size: 16px; font-weight: 500; color: var(--text); }
 .adj-pct {
@@ -954,7 +955,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
       <div class="card-title">⚙️ Ajuste por Marca — Todas las marcas</div>
       <input type="text" class="adj-marca-search" id="searchAdjMarca" placeholder="🔍 Filtrar marca..." oninput="filterAdjMarca(this.value)" style="width:240px;margin-bottom:0">
     </div>
-    <div class="adj-grid" id="adjMarca"></div>
+    <div id="adjMarca"></div>
   </div>
   <div class="card" style="margin-top:0">
     <div class="card-header">
@@ -3257,27 +3258,6 @@ function renderTendenciaTab(vendProj, marcaProj) {
   </tr>`;
 }
 
-function makeAdjItem(type, key, label) {
-  const val = (state.adjustments[type][key] || 0);
-  const pct = (val + 50) / 100 * 100;
-  const pfx = type === 'vendedores' ? 'V' : type === 'portafolios' ? 'P' : 'M';
-  const id = `adj${pfx}_${safeId(key)}`;
-  const colorStr = val > 0 ? 'color:var(--teal)' : val < 0 ? 'color:var(--red)' : 'color:var(--text2)';
-  return `<div class="adj-item">
-    <div class="adj-item-header">
-      <div class="adj-name">${label}</div>
-      <div class="adj-pct" id="${id}_lbl" style="${colorStr}">${val >= 0 ? '+' : ''}${val.toFixed(0)}%</div>
-    </div>
-    <div class="adj-controls">
-      <button class="adj-btn adj-btn-minus" onclick="stepAdj('${type}','${escQ(key)}','${id}',-1)">−</button>
-      <input type="range" class="adj-range" min="-50" max="50" step="1" value="${val}"
-        style="--val:${pct}%" id="${id}"
-        oninput="updateAdj('${type}','${escQ(key)}',this)">
-      <button class="adj-btn adj-btn-plus" onclick="stepAdj('${type}','${escQ(key)}','${id}',1)">+</button>
-    </div>
-  </div>`;
-}
-
 function renderAdjPanels() {
   // Vendedor adj — vs Q3 2025 mode
   const vendProj = computeVendProjections();
@@ -3296,9 +3276,32 @@ function renderAdjPanels() {
 
   // ALL marcas adj — alphabetical
   const allMarcas = Object.keys(RAW_DATA.marcas).sort((a,b) => a.localeCompare(b, 'es'));
-  document.getElementById('adjMarca').innerHTML = allMarcas.map(m =>
-    makeAdjItem('marcas', m, m)
-  ).join('');
+  const marcaRows = allMarcas.map(m => makeMarcaAdjRow(m)).join('');
+  document.getElementById('adjMarca').innerHTML = `
+    <div class="adj-row adj-row-marca adj-row-head">
+      <div>Marca</div>
+      <div>Ajuste</div>
+      <div style="text-align:right">%</div>
+    </div>
+    ${marcaRows}`;
+}
+
+function makeMarcaAdjRow(key) {
+  const val = (state.adjustments.marcas[key] || 0);
+  const pct = (val + 50) / 100 * 100;
+  const id = `adjM_${safeId(key)}`;
+  const colorStr = val > 0 ? 'color:var(--teal)' : val < 0 ? 'color:var(--red)' : 'color:var(--text2)';
+  return `<div class="adj-row adj-row-marca">
+    <div class="adj-name" title="${key}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${key}</div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="adj-btn adj-btn-minus" onclick="stepAdj('marcas','${escQ(key)}','${id}',-1)">−</button>
+      <input type="range" class="adj-range" min="-50" max="50" step="1" value="${val}"
+        style="--val:${pct}%" id="${id}"
+        oninput="updateAdj('marcas','${escQ(key)}',this)">
+      <button class="adj-btn adj-btn-plus" onclick="stepAdj('marcas','${escQ(key)}','${id}',1)">+</button>
+    </div>
+    <div class="adj-pct" id="${id}_lbl" style="${colorStr}">${val >= 0 ? '+' : ''}${val.toFixed(0)}%</div>
+  </div>`;
 }
 
 // Nombres de vendedor llegan en MAYÚSCULAS desde la base — se muestran en
@@ -3377,10 +3380,10 @@ function clearVendQ22025(v) {
 }
 
 function filterAdjMarca(search) {
-  const items = document.getElementById('adjMarca').querySelectorAll('.adj-item');
-  items.forEach(item => {
-    const name = item.querySelector('.adj-name').textContent.toLowerCase();
-    item.style.display = name.includes(search.toLowerCase()) ? '' : 'none';
+  const rows = document.getElementById('adjMarca').querySelectorAll('.adj-row:not(.adj-row-head)');
+  rows.forEach(row => {
+    const name = row.querySelector('.adj-name').textContent.toLowerCase();
+    row.style.display = name.includes(search.toLowerCase()) ? '' : 'none';
   });
 }
 
