@@ -794,26 +794,6 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     </div>
   </div>
 
-  <!-- Charts del Resumen -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
-    <div class="card" style="padding:16px">
-      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Tendencia de Ventas</div>
-      <div class="chart-wrap"><canvas id="trendChart" height="200"></canvas></div>
-    </div>
-    <div class="card" style="padding:16px">
-      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Distribución por Portafolio</div>
-      <div class="chart-wrap"><canvas id="donutChart" height="200"></canvas></div>
-    </div>
-    <div class="card" style="padding:16px">
-      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Zonas de Venta</div>
-      <div class="chart-wrap"><canvas id="vendChart" height="200"></canvas></div>
-    </div>
-    <div class="card" style="padding:16px">
-      <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px">Top Marcas</div>
-      <div class="chart-wrap"><canvas id="marcaChart" height="200"></canvas></div>
-    </div>
-  </div>
-
 </div>
 
 <!-- TAB 1: VENDEDORES -->
@@ -2037,16 +2017,12 @@ function render() {
 
   // Apply filters for KPI/summary
   let filtVendProj = vendProj;
-  let filtPortProj = portProj;
-  let filtMarcaProj = marcaProj;
 
   if (state.filterVendedor) {
     filtVendProj = {};
     if (vendProj[state.filterVendedor]) filtVendProj[state.filterVendedor] = vendProj[state.filterVendedor];
   }
   if (state.filterPortfolio !== 'all') {
-    filtPortProj = {};
-    if (portProj[state.filterPortfolio]) filtPortProj[state.filterPortfolio] = portProj[state.filterPortfolio];
     // Filter vendors by portfolio proportionally
     if (!state.filterVendedor) {
       const portShare = {};
@@ -2068,7 +2044,6 @@ function render() {
   }
   if (state.filterMarca) {
     if (marcaProj[state.filterMarca]) {
-      filtMarcaProj = { [state.filterMarca]: marcaProj[state.filterMarca] };
       const marcaTotal = Object.values(RAW_DATA.marcas).reduce((s,d)=>s+d.proyeccion.reduce((a,b)=>a+b,0),0) || 1;
       const selMarcaTotal = (RAW_DATA.marcas[state.filterMarca]?.proyeccion.reduce((a,b)=>a+b,0) || 0);
       const ratio = selMarcaTotal / marcaTotal;
@@ -2102,8 +2077,7 @@ function render() {
   // pestaña bajo demanda sin recalcular ni re-renderizar las demás —
   // evita reconstruir 8 tablas + 2 charts en cada click de tab.
   _lastRenderData = { vendProj, marcaProj, portProj, vcmGrid, vcmSplit, clientProj,
-                       totalProj, q2Hist, budget, monthlyProj, monthlyHist25,
-                       filtVendProj, filtPortProj, filtMarcaProj };
+                       totalProj, q2Hist, budget, monthlyProj, monthlyHist25 };
 
   renderTabContent(window._activeTabIdx ?? 0);
   if (typeof applyLockUI === 'function' && isLocked()) applyLockUI();
@@ -2121,10 +2095,6 @@ function renderTabContent(idx) {
     case 0:
       renderKPIs(d.q2Hist, d.totalProj, d.budget, d.monthlyProj, d.monthlyHist25);
       renderAlerts(d.totalProj, d.budget);
-      renderTrendChart(d.filtVendProj);
-      renderDonut(d.filtPortProj);
-      renderVendChart(d.filtVendProj);
-      renderMarcaChart(d.filtMarcaProj);
       break;
     case 1: renderVendTable(d.vendProj); break;
     case 2: renderMarcaTable(d.marcaProj); break;
@@ -2243,121 +2213,11 @@ const PORT_COLORS = { 'Portafolio 1': '#dc2626', 'Portafolio 2': '#06b6d4', 'Por
 function chartTooltip() {
   return { backgroundColor: '#fff', borderColor: '#cdd8e8', borderWidth: 1, titleColor: '#1a2634', bodyColor: '#4a6080' };
 }
-function chartScales() {
-  return {
-    x: { ticks: { color: '#4a6080', font: { size: 10 }, maxRotation: 45 }, grid: { color: '#e8eef6' } },
-    y: { ticks: { color: '#4a6080', callback: v => fmtShort(v) }, grid: { color: '#e8eef6' } }
-  };
-}
 function chartScalesH() {
   return {
     x: { ticks: { color: '#4a6080', callback: v => fmtShort(v) }, grid: { color: '#e8eef6' } },
     y: { ticks: { color: '#4a6080', font: { size: 11 } }, grid: { color: 'transparent' } }
   };
-}
-
-function renderTrendChart(filtVendProj) {
-  destroyChart('trendChart');
-  const labels = [...RAW_DATA.months.map(m => m.replace(' de ', ' ')), 'Jul 2026 (Proy)', 'Ago 2026 (Proy)', 'Sep 2026 (Proy)'];
-
-  const hist = RAW_DATA.months.map((m, i) => RAW_DATA.monthly_total[i]);
-  const projTotals = [0, 0, 0];
-  Object.values(filtVendProj).forEach(v => { v.proj.forEach((p, i) => projTotals[i] += p); });
-
-  const histPadded = [...hist, null, null, null];
-  const projPadded = [...Array(hist.length).fill(null), ...projTotals];
-
-  const _el_trendChart = document.getElementById('trendChart'); if (!_el_trendChart) return;
-  const ctx = _el_trendChart.getContext('2d');
-  state.charts['trendChart'] = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Venta Histórica', data: histPadded, borderColor: '#1a73e8', backgroundColor: 'rgba(26,115,232,0.07)', borderWidth: 2, pointRadius: 2, fill: true, tension: 0.3 },
-        { label: 'Meta Trimestral', data: projPadded, borderColor: '#007a65', backgroundColor: 'rgba(0,122,101,0.10)', borderWidth: 2.5, pointRadius: 5, fill: true, borderDash: [6,3], tension: 0.3, pointBackgroundColor: '#007a65' }
-      ]
-    },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { labels: { color: '#4a6080', font: { family: 'Myriad Pro', size: 12 } } },
-        tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } }
-      },
-      scales: {
-        x: { ticks: { color: '#4a6080', font: { size: 10 }, maxRotation: 45 }, grid: { color: '#e8eef6' } },
-        y: { ticks: { color: '#4a6080', callback: v => fmtShort(v) }, grid: { color: '#e8eef6' } }
-      }
-    }
-  });
-}
-
-function renderDonut(filtPortProj) {
-  destroyChart('donutChart');
-  const labels = Object.keys(filtPortProj);
-  const vals = labels.map(p => filtPortProj[p].proj.reduce((a, b) => a + b, 0));
-  const colors = labels.map(l => PORT_COLORS[l] || '#aaa');
-  const total = vals.reduce((a,b)=>a+b,0);
-
-  const _el_donutChart = document.getElementById('donutChart'); if (!_el_donutChart) return;
-  const ctx = _el_donutChart.getContext('2d');
-  state.charts['donutChart'] = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels,
-      datasets: [{ data: vals, backgroundColor: colors, borderColor: '#ffffff', borderWidth: 3, hoverOffset: 8 }]
-    },
-    options: {
-      responsive: true, cutout: '62%',
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#4a6080', font: { family: 'Myriad Pro', size: 11 }, padding: 14 } },
-        tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${ctx.label}: ${fmt(ctx.parsed)} (${((ctx.parsed / total)*100).toFixed(1)}%)` } }
-      }
-    }
-  });
-}
-
-function renderVendChart(filtVendProj) {
-  destroyChart('vendChart');
-  const sorted = Object.entries(filtVendProj)
-    .map(([v, d]) => ({ v, total: d.proj.reduce((a, b) => a + b, 0) }))
-    .sort((a, b) => b.total - a.total).slice(0, 10);
-
-  const _el_vendChart = document.getElementById('vendChart'); if (!_el_vendChart) return;
-  const ctx = _el_vendChart.getContext('2d');
-  state.charts['vendChart'] = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(x => x.v.replace(/^\d+-/, '').replace('..', '').trim().split(' ').slice(0,2).join(' ')),
-      datasets: [{ label: 'Meta Trimestral', data: sorted.map(x => x.total), backgroundColor: COLORS, borderRadius: 5 }]
-    },
-    options: { responsive: true, indexAxis: 'y',
-      plugins: { legend: { display: false }, tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${fmt(ctx.parsed.x)}` } } },
-      scales: chartScalesH()
-    }
-  });
-}
-
-function renderMarcaChart(filtMarcaProj) {
-  destroyChart('marcaChart');
-  const sorted = Object.entries(filtMarcaProj)
-    .map(([m, d]) => ({ m, total: d.proj.reduce((a, b) => a + b, 0) }))
-    .sort((a, b) => b.total - a.total).slice(0, 10);
-
-  const _el_marcaChart = document.getElementById('marcaChart'); if (!_el_marcaChart) return;
-  const ctx = _el_marcaChart.getContext('2d');
-  state.charts['marcaChart'] = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(x => x.m),
-      datasets: [{ label: 'Meta Trimestral', data: sorted.map(x => x.total), backgroundColor: COLORS.map((c,i) => i%2===0?c:c+'bb'), borderRadius: 5 }]
-    },
-    options: { responsive: true, indexAxis: 'y',
-      plugins: { legend: { display: false }, tooltip: { ...chartTooltip(), callbacks: { label: ctx => ` ${fmt(ctx.parsed.x)}` } } },
-      scales: chartScalesH()
-    }
-  });
 }
 
 function renderVendTable(vendProj) {
