@@ -3724,7 +3724,7 @@ function renderSupervisorList(list) {
   updateEmailCount();
 }
 
-function buildSupervisorEmailHTML(supervisor, vendedoresData) {
+async function buildSupervisorEmailHTML(supervisor, vendedoresData, vcmData) {
   const fm = n => '$' + Math.round(n).toLocaleString('es-CR');
   const fp = n => (n >= 0 ? '▲ +' : '▼ ') + Math.abs(n).toFixed(1) + '%';
   const vc = v => v >= 0 ? '#059669' : '#dc2626';
@@ -3751,16 +3751,16 @@ function buildSupervisorEmailHTML(supervisor, vendedoresData) {
     return key ? vendProj[key] : null;
   };
 
-  const teamRows = vendedoresData
-    .map(v => {
-      const p = findProj(v.vendedor);
-      if (!p) return null;
-      const total = p.proj.reduce((a,b)=>a+b,0);
-      const vt = p.histQ2_2025 > 0 ? ((total - p.histQ2_2025) / p.histQ2_2025) * 100 : 0;
-      return { label: v.label, proj: p.proj, total, hist: p.histQ2_2025, vt };
-    })
-    .filter(Boolean)
-    .sort((a,b) => b.total - a.total);
+  const teamRows = [];
+  for (const v of vendedoresData) {
+    const p = findProj(v.vendedor);
+    if (!p) continue;
+    const total = p.proj.reduce((a,b)=>a+b,0);
+    const vt = p.histQ2_2025 > 0 ? ((total - p.histQ2_2025) / p.histQ2_2025) * 100 : 0;
+    const { clientes } = vcmData ? await buildVCMPayload(vcmData, v.vendedor, p) : { clientes: [] };
+    teamRows.push({ label: v.label, proj: p.proj, total, hist: p.histQ2_2025, vt, clientes });
+  }
+  teamRows.sort((a,b) => b.total - a.total);
 
   const teamTotal  = teamRows.reduce((s,r)=>s+r.total,0);
   const teamHist   = teamRows.reduce((s,r)=>s+r.hist,0);
@@ -3777,6 +3777,19 @@ function buildSupervisorEmailHTML(supervisor, vendedoresData) {
       <td style="padding:10px 12px;font-size:13px;text-align:right;color:#374151">${fm(r.proj[2])}</td>
       <td style="padding:10px 12px;font-size:13px;text-align:right;font-weight:700;color:#0f766e">${fm(r.total)}</td>
     </tr>`;
+  }).join('');
+
+  const breakdown = teamRows.filter(r => r.clientes.length).map(r => {
+    const clientRows = [...r.clientes].sort((a,b)=>b.meta_q3-a.meta_q3).map(c => {
+      const marcaLine = (c.marcas||[]).sort((a,b)=>b.meta_q3-a.meta_q3)
+        .map(m => `${m.marca} (${fm(m.meta_q3)})`).join(', ');
+      return `<tr style="border-bottom:1px solid #f3f4f6">
+        <td style="padding:6px 10px;font-size:12px;color:#374151">${c.nombre||c.alias}</td>
+        <td style="padding:6px 10px;font-size:11px;color:#6b7280">${marcaLine}</td>
+        <td style="padding:6px 10px;font-size:12px;text-align:right;font-weight:700;color:#0f766e">${fm(c.meta_q3)}</td>
+      </tr>`;
+    }).join('');
+    return `<tr style="background:#eff6ff"><td colspan="3" style="padding:8px 10px;font-size:12px;font-weight:700;color:#1e40af;border-top:2px solid #dbeafe">👤 ${r.label}</td></tr>${clientRows}`;
   }).join('');
 
   return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"></head>
@@ -3826,6 +3839,18 @@ function buildSupervisorEmailHTML(supervisor, vendedoresData) {
       </tfoot>
     </table>
   </td></tr>
+  <!-- Desglose por Cliente y Marca del equipo -->
+  <tr><td style="padding:0 32px 32px">
+    <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Desglose por Cliente y Marca</div>
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e5e7eb">
+      <thead><tr style="background:#009ee3">
+        <th style="padding:8px 10px;font-size:11px;font-weight:600;color:#fff;text-align:left">Cliente</th>
+        <th style="padding:8px 10px;font-size:11px;font-weight:600;color:#fff;text-align:left">Marcas</th>
+        <th style="padding:8px 10px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Q3</th>
+      </tr></thead>
+      <tbody>${breakdown || '<tr><td colspan="3" style="padding:12px;text-align:center;color:#9ca3af;font-size:12px">Sin datos de clientes disponibles</td></tr>'}</tbody>
+    </table>
+  </td></tr>
   <tr><td style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb">
     <div style="font-size:12px;color:#9ca3af;line-height:1.6">
       Quedo atento ante cualquier consulta y apoyo.<br>Saludos cordiales,<br><strong>Jorge García</strong>
@@ -3866,8 +3891,9 @@ async function previewEmailSingle(mode, idx) {
   document.getElementById('emailStatus').textContent = '⏳ Preparando vista previa...';
   _previewList = [];
   if (mode === 'supervisores') {
+    const vcmData = await loadVCMEmailData();
     const s = _emailSuperData[idx];
-    if (s) _previewList.push({ v: { label: s.label, correo: s.correo, correo_supervisor: s.correo }, html: buildSupervisorEmailHTML(s.label, s.vendedores) });
+    if (s) _previewList.push({ v: { label: s.label, correo: s.correo, correo_supervisor: s.correo }, html: await buildSupervisorEmailHTML(s.label, s.vendedores, vcmData) });
   } else {
     const vcmData = await loadVCMEmailData();
     const v = _emailVendorData[idx];
@@ -3890,8 +3916,9 @@ async function sendEmailSingle(mode, idx) {
   try {
     let payload;
     if (mode === 'supervisores') {
+      const vcmData = await loadVCMEmailData();
       const s = _emailSuperData[idx];
-      const html = buildSupervisorEmailHTML(s.label, s.vendedores);
+      const html = await buildSupervisorEmailHTML(s.label, s.vendedores, vcmData);
       payload = [{ vendedor: s.label, correo: testMode ? testEmail : s.correo, correo_supervisor: testMode ? testEmail : s.correo, html_override: html }];
     } else {
       const vcmData = await loadVCMEmailData();
@@ -3969,7 +3996,7 @@ function buildEmailHTML(vendedor, totals, clientes) {
     }).join('')}
   </tr>
 </table>
-</td></tr><tr><td style="padding:0 32px 32px"><div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Desglose por Cliente y Marca</div><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e5e7eb"><thead><tr style="background:#009ee3"><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:left">Cliente / Marca</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Jul</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Ago</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Sep</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Total Q3</th></tr></thead><tbody>${rows}</tbody></table></td></tr><tr><td style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb"><div style="font-size:12px;color:#374151;line-height:1.9">Quedo atento ante cualquier consulta y apoyo.<br>Saludos cordiales,<br><strong>Jorge Garc�a</strong></div></td></tr></table></body></html>`;
+</td></tr><tr><td style="padding:0 32px 32px"><div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Desglose por Cliente y Marca</div><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e5e7eb"><thead><tr style="background:#009ee3"><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:left">Cliente / Marca</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Jul</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Ago</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Sep</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Total Q3</th></tr></thead><tbody>${rows}</tbody></table></td></tr><tr><td style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb"><div style="font-size:12px;color:#374151;line-height:1.9">Quedo atento ante cualquier consulta y apoyo.<br>Saludos cordiales,<br><strong>Jorge García</strong></div></td></tr></table></body></html>`;
 }
 
 async function buildVCMPayload(vcmData, vendedor, vendProjData) {
@@ -3987,9 +4014,16 @@ async function buildVCMPayload(vcmData, vendedor, vendProjData) {
     rows = vcmData.filter(r => normV(r.vendedor) === nvend);
   }
   if (rows.length === 0) {
-    // Último recurso: el nombre del VCM empieza con el mismo número-código
-    const prefixNum = vendedor.match(/^(\d+)-/)?.[1];
-    if (prefixNum) rows = vcmData.filter(r => r.vendedor?.startsWith(prefixNum + '-'));
+    // Un nombre es prefijo del otro (ej. "ALLAN PACHECO" vs "ALLAN PACHECO VILLALOBOS")
+    rows = vcmData.filter(r => {
+      const nr = normV(r.vendedor || '');
+      return nr && (nvend.startsWith(nr) || nr.startsWith(nvend));
+    });
+  }
+  if (rows.length === 0) {
+    // Últimos dos recursos agotados → comparar solo las dos primeras palabras
+    const words = nvend.split(' ').slice(0, 2).join(' ');
+    rows = vcmData.filter(r => normV(r.vendedor || '').split(' ').slice(0, 2).join(' ') === words);
   }
 
   const byAlias = {};
@@ -4066,12 +4100,12 @@ async function previewEmail() {
 
   _previewList=[];
   if (_emailMode === 'supervisores') {
-    // Supervisor preview — no VCM needed
-    checked.slice(0,5).forEach(cb => {
+    const vcmDataSup = await loadVCMEmailData();
+    for (const cb of checked.slice(0,5)) {
       const s = _emailSuperData[parseInt(cb.dataset.idx)];
-      if (!s) return;
-      _previewList.push({ v: { label: s.label, correo: s.correo, correo_supervisor: s.correo }, html: buildSupervisorEmailHTML(s.label, s.vendedores) });
-    });
+      if (!s) continue;
+      _previewList.push({ v: { label: s.label, correo: s.correo, correo_supervisor: s.correo }, html: await buildSupervisorEmailHTML(s.label, s.vendedores, vcmDataSup) });
+    }
   } else {
     const vcmData=await loadVCMEmailData();
     const vendProj=computeVendProjections();
@@ -4122,12 +4156,14 @@ async function sendEmails(){
     const safeVendProj = v => vendProjRaw[v] || vendProjIdx[normKey(v)] || null;
 
     if (_emailMode === 'supervisores') {
-      checked.forEach(cb => {
+      document.getElementById('emailStatus').textContent='⏳ Cargando datos VCM...';
+      const vcmDataSup = await loadVCMEmailData();
+      for (const cb of checked) {
         const s = _emailSuperData[parseInt(cb.dataset.idx)];
-        if (!s) return;
-        const html = buildSupervisorEmailHTML(s.label, s.vendedores);
+        if (!s) continue;
+        const html = await buildSupervisorEmailHTML(s.label, s.vendedores, vcmDataSup);
         vendedores.push({ vendedor: s.label, correo: s.correo, correo_supervisor: s.correo, html_override: html });
-      });
+      }
     } else {
       document.getElementById('emailStatus').textContent='⏳ Cargando datos VCM...';
       const vcmData=await loadVCMEmailData();
