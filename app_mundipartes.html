@@ -5522,11 +5522,19 @@ function buildSnapshot() {
 }
 
 function saveStateSilent() {
+  const snapshot = buildSnapshot();
   try {
-    const snapshot = buildSnapshot();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
     updateSaveIndicator(snapshot.savedAt);
-  } catch(e) { /* cuota — el auto-save reintentará */ }
+  } catch(e) {
+    // Cuota excedida por el cache pesado de rawData: reintentar solo con
+    // los ajustes (livianos) — eso es lo que no se puede perder.
+    try {
+      const lightSnapshot = { ...snapshot, rawData: null, rawDataModified: false };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(lightSnapshot));
+      updateSaveIndicator(snapshot.savedAt);
+    } catch(e2) { /* localStorage lleno incluso sin rawData — silencioso */ }
+  }
 }
 
 function saveState() {
@@ -5536,11 +5544,20 @@ function saveState() {
   const nombre = prompt('Nombre para esta versión (opcional):', '') || '';
   snapshot.nombre = nombre.trim();
 
-  let mainSaved = false, versionSaved = false, errMsg = '';
+  let mainSaved = false, versionSaved = false, errMsg = '', droppedCache = false;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
     mainSaved = true;
-  } catch(e) { errMsg = e.message; }
+  } catch(e) {
+    // Cuota excedida por el cache pesado de rawData: los ajustes del usuario
+    // NO deben perderse por esto — reintentar guardando solo lo liviano.
+    try {
+      const lightSnapshot = { ...snapshot, rawData: null, rawDataModified: false };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(lightSnapshot));
+      mainSaved = true;
+      droppedCache = true;
+    } catch(e2) { errMsg = e2.message; }
+  }
 
   // Historial de versiones: SOLO ajustes (sin rawData) — liviano y siempre cabe
   try {
@@ -5551,7 +5568,14 @@ function saveState() {
     while (versions.length > 8) versions.pop();
     localStorage.setItem(VERSIONS_KEY, JSON.stringify(versions));
     versionSaved = true;
-  } catch(e) { if (!errMsg) errMsg = e.message; }
+  } catch(e) {
+    // Historial lleno: recortar más agresivo (solo esta versión) y reintentar
+    try {
+      const versionEntry = { ...snapshot, rawData: null };
+      localStorage.setItem(VERSIONS_KEY, JSON.stringify([versionEntry]));
+      versionSaved = true;
+    } catch(e2) { if (!errMsg) errMsg = e2.message; }
+  }
 
   const btn = document.getElementById('saveBtn');
   const orig = btn.innerHTML;
@@ -5560,6 +5584,9 @@ function saveState() {
     btn.classList.add('saved');
     setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('saved'); }, 2000);
     updateSaveIndicator(snapshot.savedAt);
+    if (droppedCache) {
+      alert('✓ Tus ajustes se guardaron correctamente.\n\n⚠️ No se pudo guardar el cache de datos de Supabase (espacio lleno). La próxima vez que abrís la app vas a necesitar presionar "Conectar a Supabase" de nuevo, pero tus ajustes van a seguir ahí.');
+    }
   } else {
     alert('⚠️ Error al guardar: ' + (errMsg || 'espacio de almacenamiento insuficiente') +
       '\n\nSugerencia: abrí el Historial de versiones y considerá depurar datos si el problema persiste.');
