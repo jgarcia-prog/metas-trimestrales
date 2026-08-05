@@ -5066,7 +5066,7 @@ async function _doExportExcel(exportBtn) {
   wsBD['!autofilter'] = { ref: wsBD['!ref'] };
 
   // Tipo de cambio editable — celda de referencia para la fórmula USD
-  XLSX.utils.sheet_add_aoa(wsBD, [['Tipo de Cambio ₡/USD:', EXCHANGE_RATE_DEFAULT]], { origin: 'J1' });
+  XLSX.utils.sheet_add_aoa(wsBD, [['Tipo de Cambio', EXCHANGE_RATE_DEFAULT]], { origin: 'J1' });
   wsBD['!cols'][9] = { wch: 22 };
   wsBD['!cols'][10] = { wch: 10 };
 
