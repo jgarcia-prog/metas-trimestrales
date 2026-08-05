@@ -531,7 +531,7 @@ body {
     </div>
   </div>
   <div class="header-right" style="gap:5px">
-    <span id="dataStatus" class="status-chip chip-ok">● Datos cargados</span>
+    <span id="dataStatus" class="status-chip chip-warn">○ Sin datos — cargá desde ⚡ Supabase</span>
 
 
 
@@ -626,8 +626,8 @@ body {
     </div>
     <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:8px;color:var(--text)">Limpiar datos cargados</div>
     <div style="font-size:16px;color:var(--text2);line-height:1.6;margin-bottom:20px">
-      Esto va a <strong>eliminar todos los datos cargados</strong> (Supabase o Excel) y dejar el dashboard vacío.<br><br>
-      <span style="font-size:16px;color:var(--text3)">Los ajustes manuales se conservan. Deberás volver a cargar desde ⚡ Supabase.</span>
+      Esto va a <strong>eliminar todos los datos cargados</strong> (Supabase o Excel) <strong>y todos los ajustes manuales</strong>, y dejar el dashboard completamente vacío.<br><br>
+      <span style="font-size:16px;color:var(--text3)">Ideal antes de compartir el archivo. Deberás volver a cargar desde ⚡ Supabase.</span>
     </div>
     <div style="display:flex;gap:10px;justify-content:center">
       <button class="btn btn-outline" onclick="document.getElementById('limpiarModal').style.display='none'" style="flex:1;max-width:140px">Cancelar</button>
@@ -6438,11 +6438,15 @@ function clearSupabaseData() {
 function doLimpiar() {
   document.getElementById('limpiarModal').style.display = 'none';
 
-  // Reset to completely empty RAW_DATA
+  // Reset to completely empty RAW_DATA — para compartir el archivo, arranca
+  // de cero: sin datos y sin ningún ajuste manual, hasta que se conecte a
+  // Supabase de nuevo.
   RAW_DATA.vendedores      = {};
   RAW_DATA.marcas          = {};
   RAW_DATA.portafolios     = {};
   RAW_DATA.clientes        = {};
+  RAW_DATA.vendMarcaHist   = {};
+  RAW_DATA.vcmRaw          = [];
   RAW_DATA.vendedorClientes = {};
   RAW_DATA.vendedorPortafolio = {};
   RAW_DATA.monthly_total   = Array(30).fill(0);
@@ -6450,21 +6454,59 @@ function doLimpiar() {
   RAW_DATA.months          = Array(30).fill('');
   window._rawDataModified  = false;
   window._vcmEmailFullData = null;
+  window._vcmEmailCacheAt  = null;
+  window._originalVendedorClientes = null;
+  ORIGINAL_RAW_DATA = JSON.parse(JSON.stringify(RAW_DATA));
 
-  // Clear localStorage data but keep adjustments
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    delete saved.RAW_DATA;
-    delete saved._rawDataModified;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-  } catch(e) {}
+  // Limpiar TODOS los ajustes manuales (vendedor, marca, artículo, filtros,
+  // presupuesto, reasignaciones) — no solo los datos cargados.
+  state.adjustments   = { vendedores: {}, marcas: {}, portafolios: {} };
+  state.marcaOverrides = {};
+  state.articuloOverrides = {};
+  state.reasignaciones = [];
+  state.blendWeight    = 0.60;
+  state.smoothOutliers = false;
+  state.smoothSigma    = 2.0;
+  state.adjVsQ22025    = {};
+  state.budgetWeights  = null;
+  state.budgetTarget   = 0;
+  state.filterPortfolio = 'all';
+  state.filterVendedor  = '';
+  state.filterMarca     = '';
+  state.tendenciaView   = 'vendedor';
+
+  const budgetInput = document.getElementById('budgetInput');
+  if (budgetInput) budgetInput.value = 0;
+  const blendSlider = document.getElementById('blendSlider');
+  if (blendSlider) { blendSlider.value = 60; updateBlendWeight(60); }
+  const smoothToggle = document.getElementById('smoothToggle');
+  if (smoothToggle) { smoothToggle.checked = false; updateSmoothing(); }
+  const smoothSlider = document.getElementById('smoothSlider');
+  if (smoothSlider) smoothSlider.value = 2;
+  const filtVend = document.getElementById('filterVendedor');
+  if (filtVend) filtVend.value = '';
+  const filtPort = document.getElementById('filterPortfolio');
+  if (filtPort) filtPort.value = 'all';
+  const filtMarca = document.getElementById('filterMarca');
+  if (filtMarca) filtMarca.value = '';
+
+  // Borrar TODO lo persistido (localStorage + claves de IA en sessionStorage)
+  // para que la próxima carga de la página arranque en blanco, sin restaurar
+  // nada — clave para compartir el archivo limpio con otras personas.
+  localStorage.removeItem(STORAGE_KEY);
+  ['cofersa_ai_gemini', 'cofersa_ai_groq', 'cofersa_ai_anthropic'].forEach(k => sessionStorage.removeItem(k));
+
+  invalidateProjCache();
+  initAdjustments();
+  populateFilters();
+  renderAdjPanels();
 
   // Update status bar
   const statusEl = document.getElementById('dataStatus');
   if (statusEl) statusEl.textContent = '○ Sin datos — cargá desde ⚡ Supabase';
 
   render();
-  showToast('🗑️ Datos limpiados — cargá desde ⚡ Supabase');
+  showToast('🗑️ Todo limpio — sin datos ni ajustes. Cargá desde ⚡ Supabase');
 }
 
 function showToast(msg) {
