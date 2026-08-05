@@ -4906,17 +4906,28 @@ async function _doExportExcel(exportBtn) {
   // ── HOJA 8: BASE DE DATOS (formato relacional, una fila por mes/cliente/marca/vendedor) ──
   if (exportBtn) exportBtn.textContent = '⏳ Generando Base de Datos...';
 
-  // VendedorKey / ClienteKey = prefijo de empresa (CO/BE/FE/MU/SI) + '-' + el
-  // código propio del vendedor/cliente, para poder consolidar los 5 archivos
-  // en una sola Base de Datos sin que se choquen los códigos entre empresas.
+  // VendedorKey / ClienteKey / ArticuloKey / Marca = prefijo de empresa
+  // (CO/BE/FE/MU/SI) + '-' + el código propio, para poder consolidar los 5
+  // archivos en una sola Base de Datos sin que se choquen los códigos entre
+  // empresas. VendedorKey además lleva una 'Z' antes del código propio.
   const formatVendorKey = (vendedorRaw) => {
     if (!vendedorRaw) return '';
     const match = vendedorRaw.match(/^([A-Za-z0-9]+)-/);
     const code = match ? match[1] : vendedorRaw.replace(/\s+/g, '');
-    return CO_PREFIX + '-' + code.toUpperCase();
+    return CO_PREFIX + '-Z' + code.toUpperCase();
   };
 
   const formatClienteKey = (raw) => {
+    if (!raw) return '';
+    return CO_PREFIX + '-' + String(raw).trim();
+  };
+
+  const formatArticuloKey = (raw) => {
+    if (!raw) return '';
+    return CO_PREFIX + '-' + String(raw).trim();
+  };
+
+  const formatMarcaKey = (raw) => {
     if (!raw) return '';
     return CO_PREFIX + '-' + String(raw).trim();
   };
@@ -4939,47 +4950,127 @@ async function _doExportExcel(exportBtn) {
     excelSerial(2026, 9, 1)  // Septiembre 2026 → 46266
   ];
 
-  const bdRows = [['Fecha','Empresa','ClienteKey','ArticuloKey','VendedorKey','Monto_Meta_Local','Monto_Meta_USD']];
+  // Granularidad de artículo: fetch masivo (una sola llamada, Vendedor ×
+  // Marca × Artículo con detalle mensual) para repartir cada celda
+  // Vendedor×Cliente×Marca de vcmData entre sus artículos reales, en
+  // proporción a su peso histórico — mismo criterio que usa la vista
+  // Vendedor-Cliente-Marca-Artículo, pero de una sola vez para toda la Base
+  // de Datos en lugar de una llamada por celda.
+  if (exportBtn) exportBtn.textContent = '⏳ Cargando artículos...';
+  let artData = [];
+  if (hasSupabase) {
+    try {
+      const resArt = await fetch(`${SUPA_URL}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'apikey':SUPA_KEY, 'Authorization':`Bearer ${SUPA_KEY}`, 'Prefer':'count=none' },
+        body: JSON.stringify({ p_vendedor: null, p_marca: null })
+      });
+      const dataArt = await resArt.json();
+      if (Array.isArray(dataArt)) artData = dataArt;
+    } catch(e) {
+      console.warn('Articulos hist fetch error:', e);
+    }
+  }
+  const artByVendMarca = {};
+  artData.forEach(a => {
+    if (!a.vendedor || !a.marca || !a.articulo) return;
+    if (!artByVendMarca[a.vendedor]) artByVendMarca[a.vendedor] = {};
+    if (!artByVendMarca[a.vendedor][a.marca]) artByVendMarca[a.vendedor][a.marca] = [];
+    artByVendMarca[a.vendedor][a.marca].push({
+      articulo: a.articulo,
+      h25: Number(a.hist_q3_2025) || 0,
+      // m12/m13/m14 = Jul/Ago/Sep 2025 (mismo índice que usa el resto de la app)
+      wJul: Number(a.m12) || 0,
+      wAgo: Number(a.m13) || 0,
+      wSep: Number(a.m14) || 0
+    });
+  });
+  const findArtVendKey = (vendedor) => {
+    if (artByVendMarca[vendedor]) return vendedor;
+    const norm = s => (s || '').trim().toLowerCase();
+    return Object.keys(artByVendMarca).find(k => norm(k) === norm(vendedor));
+  };
+
+  if (exportBtn) exportBtn.textContent = '⏳ Generando Base de Datos...';
+  const bdRows = [['Fecha','Empresa','ClienteKey','ArticuloKey','Marca','VendedorKey','Monto_Meta_Local','Monto_Meta_USD']];
 
   if (vcmData.length > 0) {
     vcmData.forEach(r => {
       // Usar los valores mensuales reales calculados por el modelo IPF —
-      // misma fuente que hoja 8, sin redistribución adicional.
+      // misma fuente que hoja 7, sin redistribución adicional.
       const jul = Math.round(r.meta_jul_2026 || 0);
       const ago = Math.round(r.meta_ago_2026 || 0);
       const sep = Math.round(r.meta_sep_2026 || 0);
       if (jul <= 0 && ago <= 0 && sep <= 0) return;
 
-      [[monthSerials[0], jul], [monthSerials[1], ago], [monthSerials[2], sep]].forEach(([serial, monto]) => {
+      const clienteKey = formatClienteKey(r.cod_cliente || r.alias || '');
+      const marcaKey   = formatMarcaKey(r.marca_sfl || r.marca || '');
+      const vendorKey  = formatVendorKey(r.vendedor);
+
+      const emitRow = (serial, monto, articuloKey) => {
         if (monto <= 0) return;
         bdRows.push([
           serial,
           CO_NAME,
-          formatClienteKey(r.cod_cliente || r.alias || ''),
-          r.marca_sfl || r.marca || '',
-          formatVendorKey(r.vendedor),
+          clienteKey,
+          articuloKey,
+          marcaKey,
+          vendorKey,
           // El monto real del modelo va en la moneda nativa de la empresa;
           // la otra columna queda en 0 y se calcula con fórmula más abajo.
           CO_USD_NATIVE ? 0 : monto, // Monto_Meta_Local
           CO_USD_NATIVE ? monto : 0  // Monto_Meta_USD
         ]);
+      };
+
+      const vKey = findArtVendKey(r.vendedor);
+      const arts = (vKey && artByVendMarca[vKey][r.marca]) || [];
+
+      if (arts.length === 0) {
+        // Sin detalle de artículo para esta combinación vendedor×marca —
+        // no se pierde el monto, queda a nivel marca con un marcador.
+        emitRow(monthSerials[0], jul, formatArticuloKey('Sin detalle'));
+        emitRow(monthSerials[1], ago, formatArticuloKey('Sin detalle'));
+        emitRow(monthSerials[2], sep, formatArticuloKey('Sin detalle'));
+        return;
+      }
+
+      const totH25 = arts.reduce((s,a) => s + a.h25, 0);
+      arts.forEach(a => {
+        const share = totH25 > 0 ? a.h25 / totH25 : 1 / arts.length;
+        const wSum = a.wJul + a.wAgo + a.wSep;
+        const artTot = (jul + ago + sep) * share;
+        let aJul, aAgo, aSep;
+        if (wSum > 0) {
+          aJul = Math.round(artTot * a.wJul / wSum);
+          aAgo = Math.round(artTot * a.wAgo / wSum);
+          aSep = Math.round(artTot - aJul - aAgo);
+        } else {
+          aJul = Math.round(jul * share);
+          aAgo = Math.round(ago * share);
+          aSep = Math.round(sep * share);
+        }
+        const articuloKey = formatArticuloKey(a.articulo);
+        emitRow(monthSerials[0], aJul, articuloKey);
+        emitRow(monthSerials[1], aAgo, articuloKey);
+        emitRow(monthSerials[2], aSep, articuloKey);
       });
     });
   } else {
-    bdRows.push(['(Sin datos — cargá desde ⚡ Supabase para generar la Base de Datos)','','','','','','']);
+    bdRows.push(['(Sin datos — cargá desde ⚡ Supabase para generar la Base de Datos)','','','','','','','']);
   }
 
   const wsBD = XLSX.utils.aoa_to_sheet(bdRows);
-  wsBD['!cols'] = [{wch:12},{wch:12},{wch:18},{wch:30},{wch:30},{wch:18},{wch:16}];
+  wsBD['!cols'] = [{wch:12},{wch:12},{wch:18},{wch:18},{wch:26},{wch:20},{wch:18},{wch:16}];
   wsBD['!freeze'] = { xSplit: 0, ySplit: 1, topLeftCell: 'A2', activePane: 'bottomLeft' };
   wsBD['!autofilter'] = { ref: wsBD['!ref'] };
 
   // Tipo de cambio editable — celda de referencia para la fórmula USD
-  XLSX.utils.sheet_add_aoa(wsBD, [['Tipo de Cambio ₡/USD:', EXCHANGE_RATE_DEFAULT]], { origin: 'I1' });
-  wsBD['!cols'][8] = { wch: 22 };
-  wsBD['!cols'][9] = { wch: 10 };
+  XLSX.utils.sheet_add_aoa(wsBD, [['Tipo de Cambio ₡/USD:', EXCHANGE_RATE_DEFAULT]], { origin: 'J1' });
+  wsBD['!cols'][9] = { wch: 22 };
+  wsBD['!cols'][10] = { wch: 10 };
 
-  // Apply formats + fórmula de conversión referenciando el tipo de cambio ($J$1).
+  // Apply formats + fórmula de conversión referenciando el tipo de cambio ($K$1).
   // Empresas en colones (Cofersa): Local es el monto real, USD = Local / TipoCambio.
   // Empresas en USD (Beval/Febeca/Mundipartes/Sillaca): USD es el monto real,
   // Local = USD × TipoCambio.
@@ -4990,17 +5081,17 @@ async function _doExportExcel(exportBtn) {
     if (wsBD[aAddr] && wsBD[aAddr].t === 'n') {
       wsBD[aAddr].z = 'd/m/yyyy';
     }
-    const fAddr = XLSX.utils.encode_cell({ r: R, c: 5 }); // Monto_Meta_Local
-    const gAddr = XLSX.utils.encode_cell({ r: R, c: 6 }); // Monto_Meta_USD
+    const fAddr = XLSX.utils.encode_cell({ r: R, c: 6 }); // Monto_Meta_Local
+    const gAddr = XLSX.utils.encode_cell({ r: R, c: 7 }); // Monto_Meta_USD
     // IMPORTANTE: se incluye un valor "v" en caché junto con la fórmula "f" —
     // una celda que solo tiene fórmula (sin v) se pierde silenciosamente al
     // escribir el archivo con esta versión de la librería XLSX.
     if (CO_USD_NATIVE) {
       if (wsBD[gAddr] && wsBD[gAddr].t === 'n') wsBD[gAddr].z = '#,##0.00';
-      if (wsBD[gAddr]) wsBD[fAddr] = { t: 'n', v: Math.round((wsBD[gAddr].v || 0) * EXCHANGE_RATE_DEFAULT), f: `G${R+1}*$J$1`, z: '#,##0' };
+      if (wsBD[gAddr]) wsBD[fAddr] = { t: 'n', v: Math.round((wsBD[gAddr].v || 0) * EXCHANGE_RATE_DEFAULT), f: `H${R+1}*$K$1`, z: '#,##0' };
     } else {
       if (wsBD[fAddr] && wsBD[fAddr].t === 'n') wsBD[fAddr].z = '#,##0';
-      if (wsBD[fAddr]) wsBD[gAddr] = { t: 'n', v: (wsBD[fAddr].v || 0) / EXCHANGE_RATE_DEFAULT, f: `F${R+1}/$J$1`, z: '#,##0.00' };
+      if (wsBD[fAddr]) wsBD[gAddr] = { t: 'n', v: (wsBD[fAddr].v || 0) / EXCHANGE_RATE_DEFAULT, f: `G${R+1}/$K$1`, z: '#,##0.00' };
     }
   }
 
