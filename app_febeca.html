@@ -1510,8 +1510,14 @@ document.addEventListener('DOMContentLoaded', () => {
   state.budgetTarget = RAW_DATA.presupuesto_q2;
   document.getElementById('budgetInput').value = Math.round(state.budgetTarget / 1e6);
 
-  // Restore last saved state (if any)
-  const restored = loadSavedState();
+  // Restaurar SOLO si venimos de un "↩ Restaurar" explícito del Historial de
+  // versiones (marca en sessionStorage justo antes del reload). Una apertura
+  // normal del archivo (compartido, recargado, o reabierto) siempre arranca
+  // 100% en blanco, como una app recién publicada — sin auto-restaurar datos
+  // ni ajustes de sesiones anteriores.
+  const forceRestore = sessionStorage.getItem('forecast_force_restore');
+  if (forceRestore) sessionStorage.removeItem('forecast_force_restore');
+  const restored = forceRestore ? loadSavedState() : false;
   // Re-apply reasignaciones if any were restored (they modify RAW_DATA)
   if (state.reasignaciones.length > 0) rebuildVendedorClientes();
 
@@ -5950,8 +5956,10 @@ function restoreVersion(idx) {
   if (!confirm('¿Restaurar esta versión? Los cambios no guardados actuales se perderán.')) return;
 
   // Aplicar como si fuera el estado guardado principal y recargar la página
-  // (la ruta más segura: reutiliza loadSavedState en el arranque)
+  // (la ruta más segura: reutiliza loadSavedState en el arranque). La apertura
+  // normal ya no auto-restaura, así que marcamos este reload como explícito.
   localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
+  sessionStorage.setItem('forecast_force_restore', '1');
   location.reload();
 }
 
