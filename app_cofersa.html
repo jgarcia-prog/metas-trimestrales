@@ -597,8 +597,9 @@ body {
       <button onclick="closeVersionsModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2)">✕</button>
     </div>
     <div id="versionsList" style="padding:16px 24px;overflow-y:auto;flex:1"></div>
-    <div style="padding:14px 24px;border-top:1px solid var(--border);font-size:14px;color:var(--text3)">
-      Se guardan las últimas 8 versiones. Cada "Guardar" manual crea una nueva versión con nombre opcional.
+    <div style="padding:14px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div style="font-size:14px;color:var(--text3)">Se guardan las últimas 8 versiones. Cada "Guardar" manual crea una nueva versión con nombre opcional.</div>
+      <button id="clearAllVersionsBtn" onclick="clearAllVersions()" style="display:none;padding:6px 12px;font-size:14px;font-weight:600;border:1px solid #dc2626;background:rgba(220,38,38,0.08);color:#dc2626;border-radius:7px;cursor:pointer;white-space:nowrap;flex-shrink:0">🗑️ Borrar historial</button>
     </div>
   </div>
 </div>
@@ -5922,6 +5923,9 @@ function openVersionsModal() {
   let versions = [];
   try { versions = JSON.parse(localStorage.getItem(VERSIONS_KEY) || '[]'); } catch(e) {}
 
+  const clearAllBtn = document.getElementById('clearAllVersionsBtn');
+  if (clearAllBtn) clearAllBtn.style.display = versions.length ? 'inline-flex' : 'none';
+
   if (versions.length === 0) {
     list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:30px 0;font-size:16px">Aún no hay versiones guardadas.<br>Presioná "Guardar" para crear la primera.</div>';
   } else {
@@ -5937,7 +5941,10 @@ function openVersionsModal() {
           <div style="font-size:16px">${nombre}<span style="color:var(--text2)">${fecha}</span></div>
           <div style="font-size:14px;color:var(--text3);margin-top:2px">${nAdj} ajuste(s) activos${v.rawDataModified ? ' · datos modificados' : ''}</div>
         </div>
-        <button onclick="restoreVersion(${i})" style="padding:6px 12px;font-size:14px;font-weight:600;border:1px solid var(--teal);background:rgba(0,122,101,0.08);color:var(--teal);border-radius:7px;cursor:pointer;white-space:nowrap">↩ Restaurar</button>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button onclick="restoreVersion(${i})" style="padding:6px 12px;font-size:14px;font-weight:600;border:1px solid var(--teal);background:rgba(0,122,101,0.08);color:var(--teal);border-radius:7px;cursor:pointer;white-space:nowrap">↩ Restaurar</button>
+          <button onclick="deleteVersion(${i})" title="Borrar esta versión" style="padding:6px 10px;font-size:14px;font-weight:600;border:1px solid #dc2626;background:rgba(220,38,38,0.08);color:#dc2626;border-radius:7px;cursor:pointer">✕</button>
+        </div>
       </div>`;
     }).join('');
   }
@@ -5946,6 +5953,22 @@ function openVersionsModal() {
 
 function closeVersionsModal() {
   document.getElementById('versionsModal').style.display = 'none';
+}
+
+function deleteVersion(idx) {
+  let versions = [];
+  try { versions = JSON.parse(localStorage.getItem(VERSIONS_KEY) || '[]'); } catch(e) {}
+  if (!versions[idx]) return;
+  if (!confirm('¿Borrar esta versión guardada? No se puede deshacer.')) return;
+  versions.splice(idx, 1);
+  localStorage.setItem(VERSIONS_KEY, JSON.stringify(versions));
+  openVersionsModal();
+}
+
+function clearAllVersions() {
+  if (!confirm('¿Borrar TODO el historial de versiones guardadas? No se puede deshacer.')) return;
+  localStorage.removeItem(VERSIONS_KEY);
+  openVersionsModal();
 }
 
 function restoreVersion(idx) {
@@ -6498,14 +6521,13 @@ function doLimpiar() {
   const filtMarca = document.getElementById('filterMarca');
   if (filtMarca) filtMarca.value = '';
 
-  // Borrar TODO lo persistido (localStorage + claves de IA en sessionStorage)
+  // Borrar el snapshot principal (localStorage + claves de IA en sessionStorage)
   // para que la próxima carga de la página arranque en blanco, sin restaurar
-  // nada — clave para compartir el archivo limpio con otras personas. Incluye
-  // el Historial de versiones: versiones guardadas antes de "Limpiar" no deben
-  // seguir apareciendo (serían datos/ajustes de otra sesión, no de un arranque
-  // limpio).
+  // nada — clave para compartir el archivo limpio con otras personas. El
+  // Historial de versiones NO se toca acá a propósito: son guardados
+  // explícitos y con nombre que el usuario quiere conservar; para borrarlos
+  // existe el botón "Borrar historial" dentro del modal de Versiones.
   localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(VERSIONS_KEY);
   ['cofersa_ai_gemini', 'cofersa_ai_groq', 'cofersa_ai_anthropic'].forEach(k => sessionStorage.removeItem(k));
 
   invalidateProjCache();
