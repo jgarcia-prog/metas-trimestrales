@@ -6500,8 +6500,12 @@ function doLimpiar() {
 
   // Borrar TODO lo persistido (localStorage + claves de IA en sessionStorage)
   // para que la próxima carga de la página arranque en blanco, sin restaurar
-  // nada — clave para compartir el archivo limpio con otras personas.
+  // nada — clave para compartir el archivo limpio con otras personas. Incluye
+  // el Historial de versiones: versiones guardadas antes de "Limpiar" no deben
+  // seguir apareciendo (serían datos/ajustes de otra sesión, no de un arranque
+  // limpio).
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(VERSIONS_KEY);
   ['cofersa_ai_gemini', 'cofersa_ai_groq', 'cofersa_ai_anthropic'].forEach(k => sessionStorage.removeItem(k));
 
   invalidateProjCache();
