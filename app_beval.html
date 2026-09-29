@@ -3000,9 +3000,9 @@ async function toggleVCMAMarca(marcaRowId, vendedor, alias, marca) {
   if (!_vcmaArtCache[cacheKey]) {
     if (content) content.innerHTML = '<span style="color:var(--text3);font-size:14px;padding:8px 96px;display:block">⏳ Cargando artículos...</span>';
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_cliente_marca_articulos_hist_${CO_PARAM}`, {
+      const res = await fetch(`${SUPA_URL_VENTAS}/rest/v1/rpc/get_cliente_marca_articulos_hist_${CO_PARAM}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` },
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY_VENTAS, 'Authorization': `Bearer ${SUPA_KEY_VENTAS}` },
         body: JSON.stringify({ p_vendedor: vendedor, p_alias: alias, p_marca: marca })
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -4628,9 +4628,9 @@ async function _doExportExcel(exportBtn) {
   let vcmData = [];
   if (hasSupabase) {
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_vcm_export_beval?limit=50000`, {
+      const res = await fetch(`${SUPA_URL_VENTAS}/rest/v1/rpc/get_vcm_export_beval?limit=50000`, {
         method: 'POST',
-        headers: { 'Content-Type':'application/json', 'apikey':SUPA_KEY, 'Authorization':`Bearer ${SUPA_KEY}`, 'Prefer':'count=none' },
+        headers: { 'Content-Type':'application/json', 'apikey':SUPA_KEY_VENTAS, 'Authorization':`Bearer ${SUPA_KEY_VENTAS}`, 'Prefer':'count=none' },
         body: '{}'
       });
       const data = await res.json();
@@ -4967,9 +4967,9 @@ async function _doExportExcel(exportBtn) {
   let artData = [];
   if (hasSupabase) {
     try {
-      const resArt = await fetch(`${SUPA_URL}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
+      const resArt = await fetch(`${SUPA_URL_VENTAS}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
         method: 'POST',
-        headers: { 'Content-Type':'application/json', 'apikey':SUPA_KEY, 'Authorization':`Bearer ${SUPA_KEY}`, 'Prefer':'count=none' },
+        headers: { 'Content-Type':'application/json', 'apikey':SUPA_KEY_VENTAS, 'Authorization':`Bearer ${SUPA_KEY_VENTAS}`, 'Prefer':'count=none' },
         body: JSON.stringify({ p_vendedor: null, p_marca: null })
       });
       const dataArt = await resArt.json();
@@ -5140,6 +5140,8 @@ async function _doExportExcel(exportBtn) {
 // ==================== SUPABASE INTEGRATION ====================
 const SUPA_URL  = 'https://gjjizybsdqqcxrzmlzru.supabase.co';
 const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdqaml6eWJzZHFxY3hyem1senJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzU1NDAsImV4cCI6MjA5NjYxMTU0MH0.dJg0eEJ_FTTArp8agJEq_crf3fctwA0gPsVi8b_W2kg';
+const SUPA_URL_VENTAS = 'https://iiiutggecxabnswxlcsw.supabase.co';
+const SUPA_KEY_VENTAS = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpaXV0Z2dlY3hhYm5zd3hsY3N3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxOTAyNjIsImV4cCI6MjEwNTc2NjI2Mn0.f1OP_7YHiDH_G4ZL0yBykxtdiud1HfxKrDnATy3tIWE';
 
 // Month labels for Supabase 24-month window (Jul 2024 – Sep 2026)
 // Padded with 6 zeros at start so Q2 2025 stays at indices 15-17 (same as embedded data)
@@ -5152,13 +5154,15 @@ const SUPA_MONTH_LABELS = [
   'ene-26','feb-26','mar-26','abr-26','may-26','jun-26'
 ];
 
-async function supaRPC(fn, params = {}) {
-  const res = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
+async function supaRPC(fn, params = {}, useVentas = false) {
+  const base = useVentas ? SUPA_URL_VENTAS : SUPA_URL;
+  const key  = useVentas ? SUPA_KEY_VENTAS : SUPA_KEY;
+  const res = await fetch(`${base}/rest/v1/rpc/${fn}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`
+      'apikey': key,
+      'Authorization': `Bearer ${key}`
     },
     body: JSON.stringify(params)
   });
@@ -5194,17 +5198,17 @@ async function loadFromSupabase() {
   try {
     // Fetch RPCs secuencialmente para diagnóstico visual
     _setStatus('⏳ 1/7 Cargando vendedores...');
-    const vendRows = await supaRPC('get_vendedores_hist_beval');
+    const vendRows = await supaRPC('get_vendedores_hist_beval', {}, true);
     _setStatus(`⏳ 2/7 Marcas... (${vendRows.length} zonas OK)`);
-    const marcaRows = await supaRPC('get_marcas_hist_beval');
+    const marcaRows = await supaRPC('get_marcas_hist_beval', {}, true);
     _setStatus(`⏳ 3/7 Clientes... (${marcaRows.length} marcas OK)`);
-    const clienteRows = await supaRPC('get_clientes_hist_beval');
+    const clienteRows = await supaRPC('get_clientes_hist_beval', {}, true);
     _setStatus(`⏳ 4/7 Portafolio... (${clienteRows.length} clientes OK)`);
     const portReglas = await supaRPC('get_vendor_portafolio');
     _setStatus(`⏳ 5/7 Vend×Marca... (${portReglas.length} reglas OK)`);
-    const vendMarcaRows = await supaRPC('get_vend_marca_hist_beval');
+    const vendMarcaRows = await supaRPC('get_vend_marca_hist_beval', {}, true);
     _setStatus(`⏳ 6/7 VCM export... (${vendMarcaRows.length} filas OK)`);
-    const vcmRows = await supaRPC('get_vcm_export_beval');
+    const vcmRows = await supaRPC('get_vcm_export_beval', {}, true);
     _setStatus(`⏳ 7/7 Config... (${vcmRows.length} VCM OK)`);
     const cfgRows = await supaRPC('get_config_empresa', {p_empresa: 'beval'});
     _setStatus(`⏳ Procesando datos...`);
@@ -6921,9 +6925,9 @@ async function toggleTendMarcaArt(rowId, marca) {
     const content = document.getElementById(`${rowId}_content`);
     if (content) content.innerHTML = '<span style="color:var(--text3);font-size:16px;padding:8px 32px;display:block">⏳ Cargando artículos...</span>';
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
+      const res = await fetch(`${SUPA_URL_VENTAS}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
         method: 'POST',
-        headers: {'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`},
+        headers: {'Content-Type':'application/json','apikey':SUPA_KEY_VENTAS,'Authorization':`Bearer ${SUPA_KEY_VENTAS}`},
         body: JSON.stringify({ p_vendedor: null, p_marca: marca.trim() })
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -7147,9 +7151,9 @@ async function toggleArtMarca(rowId, vendedor, marca) {
     const content = document.getElementById(`${rowId}_content`);
     if (content) content.innerHTML = '<span style="color:var(--text3);font-size:16px;padding:8px 72px;display:block">⏳ Cargando artículos...</span>';
     try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
+      const res = await fetch(`${SUPA_URL_VENTAS}/rest/v1/rpc/get_articulos_hist_${CO_PARAM}`, {
         method: 'POST',
-        headers: {'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':`Bearer ${SUPA_KEY}`},
+        headers: {'Content-Type':'application/json','apikey':SUPA_KEY_VENTAS,'Authorization':`Bearer ${SUPA_KEY_VENTAS}`},
         body: JSON.stringify({ p_vendedor: vendedor.trim(), p_marca: marca.trim() })
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
