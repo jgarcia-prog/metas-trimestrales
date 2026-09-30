@@ -646,7 +646,7 @@ body {
       <div style="font-size:20px;font-weight:700;color:var(--text)">Carga Masiva — Meta por Marca</div>
     </div>
     <div style="font-size:16px;color:var(--text2);line-height:1.6;margin:8px 0 14px">
-      Pegá los datos copiados de Excel (3 columnas: <strong>Marca, Meta Jul, Meta Ago, Meta Sep</strong>, separadas por tabulación o coma). Cada marca encontrada actualiza su meta exactamente como si la editaras manualmente — el resto del modelo (Vendedores, Portafolio, Clientes) se recalcula automáticamente.
+      Pegá los datos copiados de Excel (3 columnas: <strong>Marca, Meta Oct, Meta Nov, Meta Dic</strong>, separadas por tabulación o coma). Cada marca encontrada actualiza su meta exactamente como si la editaras manualmente — el resto del modelo (Vendedores, Portafolio, Clientes) se recalcula automáticamente.
     </div>
     <textarea id="marcaBulkTextarea" placeholder="3M&#9;12500000&#9;13200000&#9;11800000
 Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
@@ -760,9 +760,9 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
 
   <div class="kpi-row" id="kpiRow">
     <div class="kpi-card">
-      <div class="kpi-label">Venta Q3 2025</div>
+      <div class="kpi-label">Venta Q4 2025</div>
       <div class="kpi-value" id="kpi_hist">—</div>
-      <div class="kpi-sub">Jul + Ago + Sep 2025</div>
+      <div class="kpi-sub">Oct + Nov + Dic 2025</div>
       <div style="margin-top:10px;height:38px;display:flex;align-items:center">
         <span style="font-size:14px;color:var(--text3);opacity:0.7">Histórico real — sin redistribución</span>
       </div>
@@ -781,7 +781,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     <div class="kpi-card blue">
       <div class="kpi-label">Meta Trimestral</div>
       <div class="kpi-value" id="kpi_proj">—</div>
-      <div class="kpi-sub">Jul + Ago + Sep 2026</div>
+      <div class="kpi-sub">Oct + Nov + Dic 2026</div>
       <div id="kpi_proj_badge" class="kpi-badge" style="margin-top:8px"></div>
       <div id="projMonthlyBreakdown" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px"></div>
     </div>
@@ -814,14 +814,14 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
           <tr>
             <th>Zona de Venta</th>
             <th>Portafolio</th>
-            <th class="num">Hist Q3 2024 ($)</th>
-            <th class="num">Hist Q3 2025 ($)</th>
+            <th class="num">Hist Q4 2024 ($)</th>
+            <th class="num">Hist Q4 2025 ($)</th>
             <th class="num">Prom Mensual 2025 ($)</th>
-            <th class="num">Meta Jul 2026 ($)</th>
-            <th class="num">Meta Ago 2026 ($)</th>
-            <th class="num">Meta Sep 2026 ($)</th>
+            <th class="num">Meta Oct 2026 ($)</th>
+            <th class="num">Meta Nov 2026 ($)</th>
+            <th class="num">Meta Dic 2026 ($)</th>
             <th class="num">Total Trimestre ($)</th>
-            <th class="num">Var % vs Q3 2025</th>
+            <th class="num">Var % vs Q4 2025</th>
             <th class="num">Ajuste %</th>
           </tr>
         </thead>
@@ -838,7 +838,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
     <div class="card-header">
       <div>
         <div class="card-title">Meta por Marca
-          <span style="font-size:14px;font-weight:400;color:var(--text3);margin-left:10px">✏️ Clic en Meta Jul/Ago/Sep/Total Q3 para editar directamente</span>
+          <span style="font-size:14px;font-weight:400;color:var(--text3);margin-left:10px">✏️ Clic en Meta Oct/Nov/Dic/Total Q4 para editar directamente</span>
           <button onclick="clearAllMarcaOverrides()" style="margin-left:12px;padding:3px 10px;font-size:14px;border:1px solid #fca5a5;background:#fef2f2;color:#dc2626;border-radius:6px;cursor:pointer">✕ Limpiar ajustes de metas</button>
           <button onclick="openMarcaBulkLoad()" style="margin-left:6px;padding:3px 10px;font-size:14px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;border-radius:6px;cursor:pointer">📋 Carga Masiva</button>
         </div>
@@ -852,13 +852,13 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <thead>
           <tr>
             <th>Marca</th>
-            <th class="num">Hist Q3 2024 ($)</th>
-            <th class="num">Hist Q3 2025 ($)</th>
-            <th class="num">Meta Jul 2026 ($)</th>
-            <th class="num">Meta Ago 2026 ($)</th>
-            <th class="num">Meta Sep 2026 ($)</th>
+            <th class="num">Hist Q4 2024 ($)</th>
+            <th class="num">Hist Q4 2025 ($)</th>
+            <th class="num">Meta Oct 2026 ($)</th>
+            <th class="num">Meta Nov 2026 ($)</th>
+            <th class="num">Meta Dic 2026 ($)</th>
             <th class="num">Total Trimestre ($)</th>
-            <th class="num">Var % vs Q3 2025</th>
+            <th class="num">Var % vs Q4 2025</th>
             <th class="num">Ajuste %</th>
           </tr>
         </thead>
@@ -888,11 +888,11 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
           <tr>
             <th>#</th>
             <th>Cliente</th>
-            <th class="num">Hist Q3 2024 ($)</th>
-            <th class="num">Hist Q3 2025 ($)</th>
-            <th class="num">Meta Jul 2026 ($)</th>
-            <th class="num">Meta Ago 2026 ($)</th>
-            <th class="num">Meta Sep 2026 ($)</th>
+            <th class="num">Hist Q4 2024 ($)</th>
+            <th class="num">Hist Q4 2025 ($)</th>
+            <th class="num">Meta Oct 2026 ($)</th>
+            <th class="num">Meta Nov 2026 ($)</th>
+            <th class="num">Meta Dic 2026 ($)</th>
             <th class="num">Total Trimestre ($)</th>
             <th class="num">Var %</th>
             <th class="num">Ajuste</th>
@@ -1020,7 +1020,7 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <p style="margin-top:8px">El sistema utiliza un modelo híbrido que combina:</p>
         <br>
         <p><strong>1. Componente de Tendencia (<span id="trendPctLabel">60</span>%)</strong><br>
-        Regresión lineal de mínimos cuadrados sobre los últimos 24 meses, proyectada 3 meses hacia adelante (Abr, May, Sep 2026).</p>
+        Regresión lineal de mínimos cuadrados sobre los últimos 24 meses, proyectada 3 meses hacia adelante (Oct, Nov, Dic 2026).</p>
         <div class="formula-box">Tendencia(t) = β₀ + β₁·t &nbsp;[OLS sobre últimos 24 meses]</div>
         <p><strong>2. Componente Estacional (<span id="seasPctLabel">40</span>%)</strong><br>
         Promedio de los meses equivalentes de Q2 2024 y Q2 2025, escalado al nivel promedio reciente.</p>
@@ -1129,11 +1129,11 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <thead>
           <tr>
             <th style="min-width:280px">Vendedor / Marca</th>
-            <th class="num">Hist Q3 2024 ($)</th>
-            <th class="num">Hist Q3 2025 ($)</th>
-            <th class="num">Meta Jul 2026 ($)</th>
-            <th class="num">Meta Ago 2026 ($)</th>
-            <th class="num">Meta Sep 2026 ($)</th>
+            <th class="num">Hist Q4 2024 ($)</th>
+            <th class="num">Hist Q4 2025 ($)</th>
+            <th class="num">Meta Oct 2026 ($)</th>
+            <th class="num">Meta Nov 2026 ($)</th>
+            <th class="num">Meta Dic 2026 ($)</th>
             <th class="num">Total Trimestre ($)</th>
             <th class="num">Var % vs 2025</th>
             <th class="num">% Part.</th>
@@ -1165,11 +1165,11 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <thead>
           <tr>
             <th style="min-width:280px">Vendedor / Cliente</th>
-            <th class="num">Hist Q3 2024 ($)</th>
-            <th class="num">Hist Q3 2025 ($)</th>
-            <th class="num">Meta Jul 2026 ($)</th>
-            <th class="num">Meta Ago 2026 ($)</th>
-            <th class="num">Meta Sep 2026 ($)</th>
+            <th class="num">Hist Q4 2024 ($)</th>
+            <th class="num">Hist Q4 2025 ($)</th>
+            <th class="num">Meta Oct 2026 ($)</th>
+            <th class="num">Meta Nov 2026 ($)</th>
+            <th class="num">Meta Dic 2026 ($)</th>
             <th class="num">Total Trimestre ($)</th>
             <th class="num">Var % vs 2025</th>
             <th class="num">% Part.</th>
@@ -1211,12 +1211,12 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <thead>
           <tr>
             <th style="min-width:320px">Zona / Cliente / Marca</th>
-            <th class="num">Hist Q3 2024 ($)</th>
-            <th class="num">Hist Q3 2025 ($)</th>
-            <th class="num">Meta Jul 2026 ($)</th>
-            <th class="num">Meta Ago 2026 ($)</th>
-            <th class="num">Meta Sep 2026 ($)</th>
-            <th class="num">Total Meta Q3 ($)</th>
+            <th class="num">Hist Q4 2024 ($)</th>
+            <th class="num">Hist Q4 2025 ($)</th>
+            <th class="num">Meta Oct 2026 ($)</th>
+            <th class="num">Meta Nov 2026 ($)</th>
+            <th class="num">Meta Dic 2026 ($)</th>
+            <th class="num">Total Meta Q4 ($)</th>
             <th class="num">Var % vs 2025</th>
           </tr>
         </thead>
@@ -1279,12 +1279,12 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <thead>
           <tr>
             <th style="min-width:320px">Zona / Marca / Artículo</th>
-            <th class="num">Hist Q3 2024</th>
-            <th class="num">Hist Q3 2025</th>
-            <th class="num">Meta Jul 2026</th>
-            <th class="num">Meta Ago 2026</th>
-            <th class="num">Meta Sep 2026</th>
-            <th class="num">Total Meta Q3</th>
+            <th class="num">Hist Q4 2024</th>
+            <th class="num">Hist Q4 2025</th>
+            <th class="num">Meta Oct 2026</th>
+            <th class="num">Meta Nov 2026</th>
+            <th class="num">Meta Dic 2026</th>
+            <th class="num">Total Meta Q4</th>
             <th class="num">Var % vs 2025</th>
           </tr>
         </thead>
@@ -1323,12 +1323,12 @@ Phelps Dodge&#9;8400000&#9;9100000&#9;8700000
         <thead>
           <tr>
             <th style="min-width:320px">Zona / Cliente / Marca / Artículo</th>
-            <th class="num">Hist Q3 2024 ($)</th>
-            <th class="num">Hist Q3 2025 ($)</th>
-            <th class="num">Meta Jul 2026 ($)</th>
-            <th class="num">Meta Ago 2026 ($)</th>
-            <th class="num">Meta Sep 2026 ($)</th>
-            <th class="num">Total Meta Q3 ($)</th>
+            <th class="num">Hist Q4 2024 ($)</th>
+            <th class="num">Hist Q4 2025 ($)</th>
+            <th class="num">Meta Oct 2026 ($)</th>
+            <th class="num">Meta Nov 2026 ($)</th>
+            <th class="num">Meta Dic 2026 ($)</th>
+            <th class="num">Total Meta Q4 ($)</th>
             <th class="num">Var % vs 2025</th>
           </tr>
         </thead>
@@ -1452,7 +1452,7 @@ const CO_VENDEDORES_TABLE = 'Beval Vendedores';
 const CO_NAME  = 'Beval';
 const CO_PREFIX = 'BE';       // prefijo de 2 letras para ClienteKey/VendedorKey (Base de Datos)
 const CO_USD_NATIVE = true;   // true = la empresa opera en USD (Monto_Meta_USD es el monto real, Monto_Meta_Local se calcula con el tipo de cambio)
-const CO_CFG   = { quarter: 'Q3 2026', mes_inicio: 'julio de 2026', mes_fin: 'septiembre de 2026' };
+const CO_CFG   = { quarter: 'Q4 2026', mes_inicio: 'octubre de 2026', mes_fin: 'diciembre de 2026' };
 const CO_COLOR = '#9cb800';
 const STORAGE_KEY  = 'forecast_beval_state_v1';
 const VERSIONS_KEY = 'forecast_beval_versions_v1';
@@ -1564,10 +1564,10 @@ function getMonthIdx(name) {
 }
 
 function getHistQ2(historico, year) {
-  // Q3 indices (Jul/Ago/Sep) — consistent for both data sources:
-  // - Embedded data (27 months Jan2024-Mar2026): Q3 2024=[6,7,8], Q3 2025=[18,19,20]
-  // - Supabase data (30 months = 6 zeros + 24 real Jul2024-Jun2026): Q3 2024=[6,7,8], Q3 2025=[18,19,20]
-  const idx = year === 2025 ? [18,19,20] : [6,7,8];
+  // Q4 indices (Oct/Nov/Dic) — consistent for both data sources:
+  // - Embedded data (27 months Jan2024-Mar2026): Q4 2024=[9,10,11], Q4 2025=[21,22,23]
+  // - Supabase data (30 months = 6 zeros + 24 real Jul2024-Jun2026): Q4 2024=[9,10,11], Q4 2025=[21,22,23]
+  const idx = year === 2025 ? [21,22,23] : [9,10,11];
   return idx.reduce((s, i) => s + (historico[i] || 0), 0);
 }
 
@@ -1604,10 +1604,10 @@ function projectQ2JS(historico) {
   // e.g. 24 months loaded → project months 25, 26, 27
   const trend = [nMeses, nMeses+1, nMeses+2].map(t => Math.max(0, m*t+b));
 
-  // Seasonality: Q3 months (Jul/Ago/Sep) relative to START of full data array
-  // Q3 2024=[6,7,8], Q3 2025=[18,19,20] — consistent for both embedded and Supabase data
+  // Seasonality: Q4 months (Oct/Nov/Dic) relative to START of full data array
+  // Q4 2024=[9,10,11], Q4 2025=[21,22,23] — consistent for both embedded and Supabase data
   const offset = n - window;
-  const q2AbsIdx = { 0: [6,7,8], 1: [18,19,20] };
+  const q2AbsIdx = { 0: [9,10,11], 1: [21,22,23] };
   const getQ2 = (yr) => (q2AbsIdx[yr] || []).map(i => {
     const relIdx = i - offset;             // relative index within last24
     return (relIdx >= 0 && relIdx < nMeses) ? last24[relIdx] : (data[i] || 0);
@@ -1773,7 +1773,7 @@ function computeVendProjections() {
   });
 
   // SIEMPRE redistribuye el total mensual usando los pesos del Presupuesto,
-  // para que Meta Trimestral tenga exactamente los mismos % Jul/Ago/Sep que
+  // para que Meta Trimestral tenga exactamente los mismos % Oct/Nov/Dic que
   // el Presupuesto Trimestral. Si budgetWeights no está definido aún (primer
   // render), devuelve la distribución natural y getBudgetMonthlyWeights()
   // la almacenará como referencia en la siguiente llamada.
@@ -2178,10 +2178,10 @@ function render() {
   const budget     = state.budgetTarget;
   // Monthly projections for breakdown display
   const monthlyProj = [0,1,2].map(i => Object.values(filtVendProj).reduce((s,v)=>s+v.proj[i],0));
-  // Monthly Q3 2025 historical (indices 18,19,20 = Jul/Ago/Sep 2025)
+  // Monthly Q4 2025 historical (indices 18,19,20 = Oct/Nov/Dic 2025)
   // Use RAW_DATA.vendedores directly to access full historico
   const vendKeys = Object.keys(filtVendProj);
-  const monthlyHist25 = [18,19,20].map(i =>
+  const monthlyHist25 = [21,22,23].map(i =>
     vendKeys.reduce((s, v) => s + (RAW_DATA.vendedores[v]?.historico?.[i] || 0), 0)
   );
 
@@ -2246,11 +2246,11 @@ function renderKPIs(q2Hist, totalProj, budget, monthlyProj, monthlyHist25) {
   document.getElementById('kpi_budget').textContent = '$' + fmt(budget);
   document.getElementById('kpi_proj').textContent = '$' + fmt(totalProj);
 
-  // Historical monthly breakdown (Jul/Ago/Sep 2025)
+  // Historical monthly breakdown (Oct/Nov/Dic 2025)
   if (monthlyHist25 && document.getElementById('histMonthlyBreakdown')) {
     const histTotal = monthlyHist25.reduce((a,b)=>a+b,0) || 1;
     document.getElementById('histMonthlyBreakdown').innerHTML =
-      ['Jul 2025','Ago 2025','Sep 2025'].map((lbl, i) => {
+      ['Oct 2025','Nov 2025','Dic 2025'].map((lbl, i) => {
         const pct = (monthlyHist25[i] / histTotal * 100).toFixed(1);
         return `<div style="background:rgba(255,255,255,0.15);border-radius:6px;padding:5px 6px;text-align:center">
           <div style="font-size:14px;font-weight:700;letter-spacing:0.5px;opacity:0.8">${lbl}</div>
@@ -2263,11 +2263,11 @@ function renderKPIs(q2Hist, totalProj, budget, monthlyProj, monthlyHist25) {
   const varVsHist = ((totalProj - q2Hist) / q2Hist) * 100;
   const badge = document.getElementById('kpi_proj_badge');
   badge.className = 'kpi-badge ' + (varVsHist >= 0 ? 'badge-up' : 'badge-down');
-  badge.textContent = (varVsHist >= 0 ? '▲' : '▼') + ' ' + fmtPct(Math.abs(varVsHist)) + ' vs Q3 2025';
+  badge.textContent = (varVsHist >= 0 ? '▲' : '▼') + ' ' + fmtPct(Math.abs(varVsHist)) + ' vs Q4 2025';
 
   // Monthly projection breakdown — editable to redistribute
   if (monthlyProj) {
-    const labels = ['Jul 2026', 'Ago 2026', 'Sep 2026'];
+    const labels = ['Oct 2026', 'Nov 2026', 'Dic 2026'];
     const ids = ['pw_abr', 'pw_may', 'pw_jun'];
     document.getElementById('projMonthlyBreakdown').innerHTML = labels.map((lbl, i) => {
       const pct = totalProj > 0 ? (monthlyProj[i] / totalProj * 100).toFixed(1) : '0.0';
@@ -2474,7 +2474,7 @@ function renderMarcaTable(marcaProj) {
       ${editCell(x.proj[2], 2)}
       <td class="num" style="${totalOvStyle}cursor:pointer;font-weight:600;color:var(--gold)" 
         onclick="editMarcaCell(this,'${x.m.replace(/'/g,"\\'")}',3)"
-        title="Clic para editar total Q3 (se distribuye proporcionalmente)">
+        title="Clic para editar total Q4 (se distribuye proporcionalmente)">
         ${ovIcon}${fmt(x.total)}
       </td>
       <td class="num ${varPct>=0?'pos':'neg'}">${fmtPct(varPct)}</td>
@@ -2518,16 +2518,16 @@ function renderPortCards(portProj) {
     document.getElementById(portCardIds[i]).innerHTML = `
       <div class="card-header">
         <div><div class="card-title" style="color:${color}">${port}</div><div class="card-sub">Meta Trimestral</div></div>
-        <span class="kpi-badge ${varPct>=0?'badge-up':'badge-down'}">${fmtPct(varPct)} vs Q3 2025</span>
+        <span class="kpi-badge ${varPct>=0?'badge-up':'badge-down'}">${fmtPct(varPct)} vs Q4 2025</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px">
-        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Jul 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[0])}</div></div>
-        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Ago 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[1])}</div></div>
-        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Sep 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[2])}</div></div>
+        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Oct 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[0])}</div></div>
+        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Nov 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[1])}</div></div>
+        <div><div style="font-size:14px;color:var(--text2);margin-bottom:4px;letter-spacing:1px">Dic 2026</div><div style="font-family:var(--font-display);font-size:16px;font-weight:700">${fmt(d.proj[2])}</div></div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)">
         <div><span style="font-size:14px;color:var(--text2)">Total Trimestre</span><div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:${color}">${fmt(total)}</div></div>
-        <div style="text-align:right"><span style="font-size:14px;color:var(--text2)">Hist Q3 2025</span><div style="font-family:var(--font-display);font-size:16px;color:var(--text2)">${fmt(d.histQ2_2025)}</div></div>
+        <div style="text-align:right"><span style="font-size:14px;color:var(--text2)">Hist Q4 2025</span><div style="font-family:var(--font-display);font-size:16px;color:var(--text2)">${fmt(d.histQ2_2025)}</div></div>
       </div>`;
   });
 }
@@ -3036,18 +3036,18 @@ async function toggleVCMAMarca(marcaRowId, vendedor, alias, marca) {
   let ovH25 = 0;
   arts.forEach(r => {
     const ov = ovMap[r.articulo];
-    if (ov) { ovTotal[0]+=ov.jul; ovTotal[1]+=ov.ago; ovTotal[2]+=ov.sep; ovH25 += Number(r.hist_q3_2025)||0; }
+    if (ov) { ovTotal[0]+=ov.jul; ovTotal[1]+=ov.ago; ovTotal[2]+=ov.sep; ovH25 += Number(r.hist_q4_2025)||0; }
   });
   const totJul = cellVal[0]-ovTotal[0], totAgo = cellVal[1]-ovTotal[1], totSep = cellVal[2]-ovTotal[2];
   const totCell = totJul + totAgo + totSep;
-  const totH25 = (arts.reduce((s,r)=>s+(Number(r.hist_q3_2025)||0),0) - ovH25) || 1;
+  const totH25 = (arts.reduce((s,r)=>s+(Number(r.hist_q4_2025)||0),0) - ovH25) || 1;
 
   const rows = arts.map(r => {
-    const h25 = Number(r.hist_q3_2025)||0;
-    const h24 = Number(r.hist_q3_2024)||0;
+    const h25 = Number(r.hist_q4_2025)||0;
+    const h24 = Number(r.hist_q4_2024)||0;
     const ov = ovMap[r.articulo];
     const share = h25 / totH25;
-    const wJul = Number(r.m_jul25)||0, wAgo = Number(r.m_ago25)||0, wSep = Number(r.m_sep25)||0;
+    const wJul = Number(r.m_oct25)||0, wAgo = Number(r.m_nov25)||0, wSep = Number(r.m_dic25)||0;
     const wSum = wJul+wAgo+wSep;
     let natJul, natAgo, natSep; // valor "natural" (sin override) — se congela como base al editar
     const natTot = totCell * share;
@@ -3498,7 +3498,7 @@ function renderAdjPanels() {
     try { selStart = active.selectionStart; selEnd = active.selectionEnd; } catch(e) {}
   }
 
-  // Vendedor adj — vs Q3 2025 mode
+  // Vendedor adj — vs Q4 2025 mode
   const vendProj = computeVendProjections();
   const vendRows = Object.keys(RAW_DATA.vendedores)
     .sort((a,b) => a.replace(/^\d+-/,'').trim().localeCompare(b.replace(/^\d+-/,'').trim(), 'es'))
@@ -3565,7 +3565,7 @@ function makeVendAdjRow(v, vp) {
   const hist25 = vp ? vp.histQ2_2025 : getHistQ2(RAW_DATA.vendedores[v].historico, 2025);
   const projTotal = vp ? vp.proj.reduce((a,b)=>a+b,0) : 0;
 
-  // Current var vs Q3 2025
+  // Current var vs Q4 2025
   const hasTarget = state.adjVsQ22025[v] !== undefined;
   const varPct = hasTarget
     ? state.adjVsQ22025[v]
@@ -3864,14 +3864,14 @@ function autoAdjust() {
     document.getElementById('autoAdjResult').innerHTML = '<span style="color:var(--teal)">✅ La proyección ya supera el presupuesto. No se requiere ajuste.</span>';
     return;
   }
-  // Calcular cuánto % crecimiento vs Q3 2025 se necesita en total
+  // Calcular cuánto % crecimiento vs Q4 2025 se necesita en total
   const totalHist25 = Object.values(vendProj).reduce((s,v)=>s+v.histQ2_2025, 0);
   const targetPct = totalHist25 > 0 ? (budget / totalHist25 - 1) * 100 : (budget / total - 1) * 100;
-  // Aplicar el mismo % vs Q3 2025 a cada vendedor
+  // Aplicar el mismo % vs Q4 2025 a cada vendedor
   Object.keys(RAW_DATA.vendedores).forEach(v => {
     state.adjVsQ22025[v] = parseFloat(targetPct.toFixed(1));
   });
-  document.getElementById('autoAdjResult').innerHTML = `<span style="color:var(--gold)">⚡ Se aplicó <strong>+${targetPct.toFixed(1)}% vs Q3 2025</strong> a todos los vendedores para alcanzar el presupuesto de <strong>$${fmt(budget)}</strong>.</span>`;
+  document.getElementById('autoAdjResult').innerHTML = `<span style="color:var(--gold)">⚡ Se aplicó <strong>+${targetPct.toFixed(1)}% vs Q4 2025</strong> a todos los vendedores para alcanzar el presupuesto de <strong>$${fmt(budget)}</strong>.</span>`;
   renderAdjPanels();
   render();
 }
@@ -4040,13 +4040,13 @@ async function buildSupervisorEmailHTML(supervisor, vendedoresData, split) {
   }).join('');
 
   const breakdown = teamRows.filter(r => r.clientes.length).map(r => {
-    const clientRows = [...r.clientes].sort((a,b)=>b.meta_q3-a.meta_q3).map(c => {
-      const marcaLine = (c.marcas||[]).sort((a,b)=>b.meta_q3-a.meta_q3)
-        .map(m => `${m.marca} (${fm(m.meta_q3)})`).join(', ');
+    const clientRows = [...r.clientes].sort((a,b)=>b.meta_q4-a.meta_q4).map(c => {
+      const marcaLine = (c.marcas||[]).sort((a,b)=>b.meta_q4-a.meta_q4)
+        .map(m => `${m.marca} (${fm(m.meta_q4)})`).join(', ');
       return `<tr style="border-bottom:1px solid #f3f4f6">
         <td style="padding:6px 10px;font-size:12px;color:#374151">${c.nombre||c.alias}</td>
         <td style="padding:6px 10px;font-size:11px;color:#6b7280">${marcaLine}</td>
-        <td style="padding:6px 10px;font-size:12px;text-align:right;font-weight:700;color:#0f766e">${fm(c.meta_q3)}</td>
+        <td style="padding:6px 10px;font-size:12px;text-align:right;font-weight:700;color:#0f766e">${fm(c.meta_q4)}</td>
       </tr>`;
     }).join('');
     return `<tr style="background:#eff6ff"><td colspan="3" style="padding:8px 10px;font-size:12px;font-weight:700;color:#1e40af;border-top:2px solid #dbeafe">👤 ${r.label}</td></tr>${clientRows}`;
@@ -4069,7 +4069,7 @@ async function buildSupervisorEmailHTML(supervisor, vendedoresData, split) {
         </td>
       </tr>
       <tr style="background:#f0fdf4;border-top:1px solid #d1fae5">
-        ${[['Jul 2026',teamJul],['Ago 2026',teamAgo],['Sep 2026',teamSep]].map(([mes,v],i)=>`
+        ${[['Oct 2026',teamJul],['Nov 2026',teamAgo],['Dic 2026',teamSep]].map(([mes,v],i)=>`
         <td style="padding:10px 20px;text-align:center;${i>0?'border-left:1px solid #d1fae5':''}">
           <div style="font-size:10px;font-weight:700;color:#6b7280">${mes}</div>
           <div style="font-size:15px;font-weight:700;color:#064e3b;margin-top:3px">${fm(v)}</div>
@@ -4084,10 +4084,10 @@ async function buildSupervisorEmailHTML(supervisor, vendedoresData, split) {
     <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e5e7eb">
       <thead><tr style="background:#009ee3">
         <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:left">Vendedor</th>
-        <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Jul</th>
-        <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Ago</th>
-        <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Sep</th>
-        <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Total Q3</th>
+        <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Oct</th>
+        <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Nov</th>
+        <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Dic</th>
+        <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Total Q4</th>
       </tr></thead>
       <tbody>${rows}</tbody>
       <tfoot><tr style="background:#f3f4f6;font-weight:700">
@@ -4106,7 +4106,7 @@ async function buildSupervisorEmailHTML(supervisor, vendedoresData, split) {
       <thead><tr style="background:#009ee3">
         <th style="padding:8px 10px;font-size:11px;font-weight:600;color:#fff;text-align:left">Cliente</th>
         <th style="padding:8px 10px;font-size:11px;font-weight:600;color:#fff;text-align:left">Marcas</th>
-        <th style="padding:8px 10px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Q3</th>
+        <th style="padding:8px 10px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Q4</th>
       </tr></thead>
       <tbody>${breakdown || '<tr><td colspan="3" style="padding:12px;text-align:center;color:#9ca3af;font-size:12px">Sin datos de clientes disponibles</td></tr>'}</tbody>
     </table>
@@ -4214,31 +4214,31 @@ function buildEmailHTML(vendedor, totals, clientes) {
   const fm = n => '$' + Math.round(n).toLocaleString('es-CR');
   const fp = n => (n>=0?'▲ +':'▼ ')+Math.abs(n).toFixed(1)+'%';
   const vc = v => v>=0?'#059669':'#dc2626';
-  const vt = totals.hist_q3_2025>0?((totals.meta_q3-totals.hist_q3_2025)/totals.hist_q3_2025)*100:0;
+  const vt = totals.hist_q4_2025>0?((totals.meta_q4-totals.hist_q4_2025)/totals.hist_q4_2025)*100:0;
   const nm = vendedor.replace(/^\d+-/,'').trim();
   // Los montos por cliente/marca son los MISMOS valores reales (jul/ago/sep)
   // que muestra la vista "Vend-Cliente" de la app -- vienen del mismo split
   // reconciliado (vendProj x marcaProj x vcmRaw), no de una re-proporcion
   // independiente. Asi el correo y la app siempre coinciden.
-  const rows = clientes.sort((a,b)=>b.meta_q3-a.meta_q3).map(c=>{
-    const mr=(c.marcas||[]).sort((a,b)=>b.meta_q3-a.meta_q3).map(m=>{
+  const rows = clientes.sort((a,b)=>b.meta_q4-a.meta_q4).map(c=>{
+    const mr=(c.marcas||[]).sort((a,b)=>b.meta_q4-a.meta_q4).map(m=>{
       const pc=PORT_COLORS[m.portafolio]||'#6b7280';
-      return `<tr style="background:#f9fafb"><td style="padding:6px 8px 6px 28px;font-size:12px;color:#374151;border-bottom:1px solid #f3f4f6">${m.marca}<span style="font-size:10px;color:#9ca3af;margin-left:4px">${m.portafolio}</span></td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.jul)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.ago)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.sep)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;font-weight:700;color:#1e3a8a;border-bottom:1px solid #f3f4f6">${fm(m.meta_q3)}</td></tr>`;
+      return `<tr style="background:#f9fafb"><td style="padding:6px 8px 6px 28px;font-size:12px;color:#374151;border-bottom:1px solid #f3f4f6">${m.marca}<span style="font-size:10px;color:#9ca3af;margin-left:4px">${m.portafolio}</span></td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.jul)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.ago)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;color:#374151;border-bottom:1px solid #f3f4f6">${fm(m.sep)}</td><td style="padding:6px 8px;font-size:12px;text-align:right;font-weight:700;color:#1e3a8a;border-bottom:1px solid #f3f4f6">${fm(m.meta_q4)}</td></tr>`;
     }).join('');
-    return `<tr><td colspan="5" style="padding:0"><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><colgroup><col style="width:40%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup><tr style="background:#eff6ff"><td style="padding:9px 12px;font-size:13px;font-weight:600;color:#1e40af;border-bottom:1px solid #dbeafe">\ud83c\udfaa ${c.alias}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.jul)}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.ago)}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.sep)}</td><td style="padding:9px 12px;font-size:13px;font-weight:700;text-align:right;color:#0f766e;border-bottom:1px solid #dbeafe">${fm(c.meta_q3)}</td></tr>${mr}</table></td></tr>`;
+    return `<tr><td colspan="5" style="padding:0"><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><colgroup><col style="width:40%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup><tr style="background:#eff6ff"><td style="padding:9px 12px;font-size:13px;font-weight:600;color:#1e40af;border-bottom:1px solid #dbeafe">\ud83c\udfaa ${c.alias}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.jul)}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.ago)}</td><td style="padding:9px 12px;font-size:13px;font-weight:600;text-align:right;color:#1e40af;border-bottom:1px solid #dbeafe">${fm(c.sep)}</td><td style="padding:9px 12px;font-size:13px;font-weight:700;text-align:right;color:#0f766e;border-bottom:1px solid #dbeafe">${fm(c.meta_q4)}</td></tr>${mr}</table></td></tr>`;
   }).join('');
   return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif"><table width="100%" cellpadding="0" cellspacing="0" style="max-width:700px;margin:24px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)"><tr><td style="padding:28px 32px 16px"><div style="font-size:16px;color:#111827;font-weight:600">Estimado/a ${nm},</div><div style="font-size:14px;color:#6b7280;margin-top:8px;line-height:1.6">A continuaci\u00f3n encontr\u00e1s las metas de ventas proyectadas para el tercer trimestre 2026, desglosadas por mes, cliente y marca.</div></td></tr><tr><td style="padding:0 32px 24px">
 <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #e5e7eb">
   <tr style="background:#f0fdf4">
     <td colspan="3" style="padding:16px 20px 10px">
       <div style="font-size:11px;font-weight:700;color:#059669;letter-spacing:0.8px;text-transform:uppercase">Meta Total</div>
-      <div style="font-size:26px;font-weight:800;color:#064e3b;margin-top:4px">${fm(totals.meta_q3)}</div>
+      <div style="font-size:26px;font-weight:800;color:#064e3b;margin-top:4px">${fm(totals.meta_q4)}</div>
     </td>
   </tr>
   <tr style="background:#f0fdf4;border-top:1px solid #d1fae5">
-    ${['Jul 2026','Ago 2026','Sep 2026'].map((mes,i)=>{
+    ${['Oct 2026','Nov 2026','Dic 2026'].map((mes,i)=>{
       const v=[totals.meta_jul,totals.meta_ago,totals.meta_sep][i]||0;
-      const pct=totals.meta_q3>0?(v/totals.meta_q3*100).toFixed(1):'0.0';
+      const pct=totals.meta_q4>0?(v/totals.meta_q4*100).toFixed(1):'0.0';
       return `<td style="padding:10px 20px;text-align:center;${i>0?'border-left:1px solid #d1fae5':''}">
         <div style="font-size:10px;font-weight:700;color:#6b7280;letter-spacing:0.5px">${mes}</div>
         <div style="font-size:15px;font-weight:700;color:#064e3b;margin-top:3px">${fm(v)}</div>
@@ -4247,7 +4247,7 @@ function buildEmailHTML(vendedor, totals, clientes) {
     }).join('')}
   </tr>
 </table>
-</td></tr><tr><td style="padding:0 32px 32px"><div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Desglose por Cliente y Marca</div><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e5e7eb"><colgroup><col style="width:40%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup><thead><tr style="background:#009ee3"><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:left">Cliente / Marca</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Jul</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Ago</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Sep</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Total Q3</th></tr></thead><tbody>${rows}</tbody></table></td></tr><tr><td style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb"><div style="font-size:12px;color:#374151;line-height:1.9">Quedo atento ante cualquier consulta y apoyo.<br>Saludos cordiales,<br><strong>Jorge García</strong></div></td></tr></table></body></html>`;
+</td></tr><tr><td style="padding:0 32px 32px"><div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Desglose por Cliente y Marca</div><table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e5e7eb"><colgroup><col style="width:40%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup><thead><tr style="background:#009ee3"><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:left">Cliente / Marca</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Oct</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Nov</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Meta Dic</th><th style="padding:10px 12px;font-size:11px;font-weight:600;color:#fff;text-align:right">Total Q4</th></tr></thead><tbody>${rows}</tbody></table></td></tr><tr><td style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb"><div style="font-size:12px;color:#374151;line-height:1.9">Quedo atento ante cualquier consulta y apoyo.<br>Saludos cordiales,<br><strong>Jorge García</strong></div></td></tr></table></body></html>`;
 }
 
 function buildVCMPayloadFromSplit(vendedor, vendProj, split) {
@@ -4293,26 +4293,26 @@ function buildVCMPayloadFromSplit(vendedor, vendProj, split) {
     Object.entries(split[vendKey]).forEach(([marca, clients]) => {
       const portafolio = RAW_DATA.marcas[marca]?.portafolio || '';
       Object.entries(clients).forEach(([alias, val]) => {
-        if (!byAlias[alias]) byAlias[alias] = { alias, marcas: [], jul: 0, ago: 0, sep: 0, meta_q3: 0 };
+        if (!byAlias[alias]) byAlias[alias] = { alias, marcas: [], jul: 0, ago: 0, sep: 0, meta_q4: 0 };
         const mTotal = val[0] + val[1] + val[2];
-        byAlias[alias].marcas.push({ marca, portafolio, jul: val[0], ago: val[1], sep: val[2], meta_q3: mTotal });
+        byAlias[alias].marcas.push({ marca, portafolio, jul: val[0], ago: val[1], sep: val[2], meta_q4: mTotal });
         byAlias[alias].jul += val[0];
         byAlias[alias].ago += val[1];
         byAlias[alias].sep += val[2];
-        byAlias[alias].meta_q3 += mTotal;
+        byAlias[alias].meta_q4 += mTotal;
       });
     });
   }
-  const clientes = Object.values(byAlias).filter(c => c.meta_q3 > 0);
+  const clientes = Object.values(byAlias).filter(c => c.meta_q4 > 0);
 
   const vp = vendKey ? vendProj[vendKey] : null;
   const proj = vp?.proj || [0, 0, 0];
-  const meta_q3 = proj.reduce((a,b) => a + b, 0);
+  const meta_q4 = proj.reduce((a,b) => a + b, 0);
 
   const totals = {
-    hist_q3_2025: vp?.histQ2_2025 || 0,
-    hist_q3_2024: vp?.histQ2_2024 || 0,
-    meta_q3,
+    hist_q4_2025: vp?.histQ2_2025 || 0,
+    hist_q4_2024: vp?.histQ2_2024 || 0,
+    meta_q4,
     meta_jul: proj[0],
     meta_ago: proj[1],
     meta_sep: proj[2]
@@ -4381,7 +4381,7 @@ async function sendEmails(){
         const v=_emailVendorData[parseInt(cb.dataset.idx)];
         if(!v)continue;
         const{clientes,totals}=buildVCMPayloadFromSplit(v.vendedor,vendProj,split);
-        if (!totals.meta_q3) continue; // sin datos de ningún tipo → omitir
+        if (!totals.meta_q4) continue; // sin datos de ningún tipo → omitir
         vendedores.push({vendedor:v.vendedor,correo:v.correo,correo_supervisor:v.correo_supervisor,clientes,totals});
       }
     }
@@ -4446,7 +4446,7 @@ function exportPDF() {
   document.getElementById('pdfKPIs').innerHTML = [
     { label:'Venta Q2 2025', val:'$'+fmt(q2Hist), sub:'Histórico real', color:'var(--text)' },
     { label:'Presupuesto Trimestral', val:'$'+fmt(budget), sub:'Meta estratégica', color:'#c47a00' },
-    { label:'Meta Trimestral', val:'$'+fmt(totalProj), sub:(varHist>=0?'▲':'▼')+' '+fmtPct(Math.abs(varHist))+' vs Q3 2025', color:'var(--blue)' },
+    { label:'Meta Trimestral', val:'$'+fmt(totalProj), sub:(varHist>=0?'▲':'▼')+' '+fmtPct(Math.abs(varHist))+' vs Q4 2025', color:'var(--blue)' },
     { label:'Cumplimiento', val:cumpl.toFixed(1)+'%', sub:cumpl>=100?'✓ Meta alcanzada':'Brecha: $'+fmt(budget-totalProj), color:kpiColor }
   ].map(k=>`
     <div style="border:1px solid #dde3ee;border-radius:10px;padding:14px;background:#f8fafd">
@@ -4461,7 +4461,7 @@ function exportPDF() {
     <div style="border:1px solid #dde3ee;border-radius:10px;padding:14px;background:#f8fafd">
       <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:10px">📅 Distribución Mensual Meta</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-        ${['Jul 2026','Ago 2026','Sep 2026'].map((m,i)=>`
+        ${['Oct 2026','Nov 2026','Dic 2026'].map((m,i)=>`
           <div style="text-align:center;background:#fff;border-radius:8px;padding:8px;border:1px solid #eaedf4">
             <div style="font-size:14px;font-weight:700;color:#6b7fa3">${m}</div>
             <div style="font-size:16px;font-weight:700;color:var(--blue)">$${(monthlyP[i]/1e6).toFixed(0)}M</div>
@@ -4476,7 +4476,7 @@ function exportPDF() {
     <div style="border:1px solid #f0c040;border-radius:10px;padding:14px;background:#fffbf0">
       <div style="font-size:14px;font-weight:700;color:#c47a00;margin-bottom:10px">💰 Distribución Mensual Presupuesto</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-        ${['Jul 2026','Ago 2026','Sep 2026'].map((m,i)=>`
+        ${['Oct 2026','Nov 2026','Dic 2026'].map((m,i)=>`
           <div style="text-align:center;background:#fff;border-radius:8px;padding:8px;border:1px solid #f0c040">
             <div style="font-size:14px;font-weight:700;color:#6b7fa3">${m}</div>
             <div style="font-size:16px;font-weight:700;color:#c47a00">$${(budget*bw[i]/1e6).toFixed(0)}M</div>
@@ -4651,15 +4651,15 @@ async function _doExportExcel(exportBtn) {
   const vendModelTotal = {};
   Object.entries(vendProj).forEach(([v,d]) => { vendModelTotal[v] = d.proj.reduce((a,b)=>a+b,0); });
   const vendHistSum = {};
-  vcmData.forEach(r => { vendHistSum[r.vendedor] = (vendHistSum[r.vendedor]||0) + (Number(r.hist_q3_2025)||0); });
+  vcmData.forEach(r => { vendHistSum[r.vendedor] = (vendHistSum[r.vendedor]||0) + (Number(r.hist_q4_2025)||0); });
 
   vcmData.forEach(r => {
     const cell = vcmSplit[r.vendedor]?.[r.marca]?.[r.alias];
     if (cell) {
-      r.meta_jul_2026     = cell[0];
-      r.meta_ago_2026     = cell[1];
-      r.meta_sep_2026     = cell[2];
-      r.proyectado_q3_2026 = cell[0] + cell[1] + cell[2];
+      r.meta_oct_2026     = cell[0];
+      r.meta_nov_2026     = cell[1];
+      r.meta_dic_2026     = cell[2];
+      r.proyectado_q4_2026 = cell[0] + cell[1] + cell[2];
       return;
     }
     // Fallback: fila sin match exacto en el grid → reparto uniforme dentro
@@ -4670,16 +4670,16 @@ async function _doExportExcel(exportBtn) {
       modelTotal = key ? vendModelTotal[key] : 0;
     }
     const histSum = vendHistSum[r.vendedor] || 1;
-    const h25 = Number(r.hist_q3_2025) || 0;
+    const h25 = Number(r.hist_q4_2025) || 0;
     const metaQ3 = histSum > 0 ? (h25 / histSum) * modelTotal : 0;
     // Para el fallback, usar los pesos del vendedor del modelo (proj[0/1/2] / total)
     const vProj = vendProj[r.vendedor] || Object.values(vendProj).find((_,i,a) => Object.keys(vendProj)[i] && normVend(Object.keys(vendProj)[i]) === normVend(r.vendedor));
     const vp = vProj?.proj || [1/3, 1/3, 1/3];
     const vpTotal = vp.reduce((a,b)=>a+b,0) || 1;
-    r.meta_jul_2026      = metaQ3 * vp[0] / vpTotal;
-    r.meta_ago_2026      = metaQ3 * vp[1] / vpTotal;
-    r.meta_sep_2026      = metaQ3 * vp[2] / vpTotal;
-    r.proyectado_q3_2026 = metaQ3;
+    r.meta_oct_2026      = metaQ3 * vp[0] / vpTotal;
+    r.meta_nov_2026      = metaQ3 * vp[1] / vpTotal;
+    r.meta_dic_2026      = metaQ3 * vp[2] / vpTotal;
+    r.proyectado_q4_2026 = metaQ3;
   });
 
   // ── HOJA 1: RESUMEN ──────────────────────────────────────────────────────
@@ -4688,24 +4688,24 @@ async function _doExportExcel(exportBtn) {
     [`Generado: ${now}`, '', '', '', ''],
     [],
     ['INDICADOR', 'VALOR ($ CRC)', '', '', ''],
-    ['Venta Q3 2025 (Histórico)', q2Hist, '', '', ''],
+    ['Venta Q4 2025 (Histórico)', q2Hist, '', '', ''],
     ['Presupuesto Trimestral', budget, '', '', ''],
     ['Meta Trimestral', totalProj, '', '', ''],
-    ['Var % vs Q3 2025', (totalProj-q2Hist)/q2Hist, '', '', ''],
+    ['Var % vs Q4 2025', (totalProj-q2Hist)/q2Hist, '', '', ''],
     ['Cumplimiento Presupuesto', totalProj/budget, '', '', ''],
     [],
     ['DISTRIBUCIÓN MENSUAL META TRIMESTRAL', '', '', '', ''],
     ['Mes', 'Meta $', '% Distribución', '', ''],
-    ['Jul 2026', mProj[0], mProj[0]/totalProj, '', ''],
-    ['Ago 2026', mProj[1], mProj[1]/totalProj, '', ''],
-    ['Sep 2026', mProj[2], mProj[2]/totalProj, '', ''],
+    ['Oct 2026', mProj[0], mProj[0]/totalProj, '', ''],
+    ['Nov 2026', mProj[1], mProj[1]/totalProj, '', ''],
+    ['Dic 2026', mProj[2], mProj[2]/totalProj, '', ''],
     ['TOTAL TRIMESTRE', totalProj, 1, '', ''],
     [],
     ['DISTRIBUCIÓN MENSUAL PRESUPUESTO', '', '', '', ''],
     ['Mes', 'Presupuesto $', '% Distribución', '', ''],
-    ['Jul 2026', budget*wJul, wJul, '', ''],
-    ['Ago 2026', budget*wAgo, wAgo, '', ''],
-    ['Sep 2026', budget*wSep, wSep, '', ''],
+    ['Oct 2026', budget*wJul, wJul, '', ''],
+    ['Nov 2026', budget*wAgo, wAgo, '', ''],
+    ['Dic 2026', budget*wSep, wSep, '', ''],
     ['TOTAL TRIMESTRE', budget, 1, '', ''],
   ];
   const wsRes = XLSX.utils.aoa_to_sheet(resRows);
@@ -4720,14 +4720,14 @@ async function _doExportExcel(exportBtn) {
   XLSX.utils.book_append_sheet(wb, wsRes, '1_Resumen');
 
   // ── HOJA 2: CLIENTES (Alias Comercial + Código Cliente, granular por sucursal) ──
-  const clH = ['#','Alias Comercial','Código Cliente','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %'];
+  const clH = ['#','Alias Comercial','Código Cliente','Hist Q4 2024 $','Hist Q4 2025 $',
+    'Meta Oct 2026 $','Meta Nov 2026 $','Meta Dic 2026 $','Total Trimestre $','Var %'];
   const byAliasCl = {};
   vcmData.forEach(r => {
     if (!byAliasCl[r.alias]) byAliasCl[r.alias] = { cod: r.cod_cliente, h24:0, h25:0, meta:0 };
-    byAliasCl[r.alias].h24  += Number(r.hist_q3_2024) || 0;
-    byAliasCl[r.alias].h25  += Number(r.hist_q3_2025) || 0;
-    byAliasCl[r.alias].meta += r.proyectado_q3_2026 || 0;
+    byAliasCl[r.alias].h24  += Number(r.hist_q4_2024) || 0;
+    byAliasCl[r.alias].h25  += Number(r.hist_q4_2025) || 0;
+    byAliasCl[r.alias].meta += r.proyectado_q4_2026 || 0;
     if (!byAliasCl[r.alias].cod && r.cod_cliente) byAliasCl[r.alias].cod = r.cod_cliente;
   });
   const clSorted = Object.entries(byAliasCl)
@@ -4735,7 +4735,7 @@ async function _doExportExcel(exportBtn) {
     .sort((a,b)=>b.meta-a.meta);
   const clRows = [clH, ...clSorted.map((x,i)=>{
     const v = x.h25>0 ? (x.meta-x.h25)/x.h25 : 0;
-    // Distribute Q3 total across months using the global model weights
+    // Distribute Q4 total across months using the global model weights
     const wMonths = totalProj>0 ? [mProj[0]/totalProj, mProj[1]/totalProj, mProj[2]/totalProj] : [1/3,1/3,1/3];
     return [i+1, x.alias, x.cod||'', Math.round(x.h24), Math.round(x.h25),
       Math.round(x.meta*wMonths[0]), Math.round(x.meta*wMonths[1]), Math.round(x.meta*wMonths[2]),
@@ -4744,8 +4744,8 @@ async function _doExportExcel(exportBtn) {
   XLSX.utils.book_append_sheet(wb, mkWS(clRows, [5,40,18,18,18,18,18,18,20,10], [3,4,5,6,7,8], [9]), '2_Clientes');
 
   // ── HOJA 3: MARCAS ───────────────────────────────────────────────────────
-  const mH = ['Marca','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','% Part.'];
+  const mH = ['Marca','Hist Q4 2024 $','Hist Q4 2025 $',
+    'Meta Oct 2026 $','Meta Nov 2026 $','Meta Dic 2026 $','Total Trimestre $','Var %','% Part.'];
   const mSorted = Object.entries(marcaProj)
     .map(([m,d])=>({m,...d,total:d.proj.reduce((a,b)=>a+b,0)}))
     .sort((a,b)=>b.total-a.total);
@@ -4760,8 +4760,8 @@ async function _doExportExcel(exportBtn) {
 
 
   // ── HOJA 4: ZONAS DE VENTA ───────────────────────────────────────────────
-  const vH = ['Zona de Venta','Portafolio','Hist Q3 2024 $','Hist Q3 2025 $','Prom Mensual $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','Ajuste %'];
+  const vH = ['Zona de Venta','Portafolio','Hist Q4 2024 $','Hist Q4 2025 $','Prom Mensual $',
+    'Meta Oct 2026 $','Meta Nov 2026 $','Meta Dic 2026 $','Total Trimestre $','Var %','Ajuste %'];
   const vSorted = Object.entries(vendProj)
     .map(([v,d])=>({v,...d,total:d.proj.reduce((a,b)=>a+b,0)}))
     .sort((a,b)=>a.v.replace(/^\d+-/,'').trim().localeCompare(b.v.replace(/^\d+-/,'').trim(),'es'));
@@ -4775,8 +4775,8 @@ async function _doExportExcel(exportBtn) {
 
   // ── HOJA 5: VEND-CLIENTE (con Razón Social + Código/Alias) ──────────────
   const hasMap = RAW_DATA.vendedorClientes&&Object.keys(RAW_DATA.vendedorClientes).length>0;
-  const vcH = ['Nivel','Zona de Venta','Razón Social','Código / Alias','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','% Part.'];
+  const vcH = ['Nivel','Zona de Venta','Razón Social','Código / Alias','Hist Q4 2024 $','Hist Q4 2025 $',
+    'Meta Oct 2026 $','Meta Nov 2026 $','Meta Dic 2026 $','Total Trimestre $','Var %','% Part.'];
   const vcGrand = vSorted.reduce((s,x)=>s+x.total,0)||1;
   const vcRows = [vcH];
   vSorted.forEach(x=>{
@@ -4799,8 +4799,8 @@ async function _doExportExcel(exportBtn) {
   XLSX.utils.book_append_sheet(wb, mkWS(vcRows, [10,35,40,30,18,18,18,18,18,20,10,10], [4,5,6,7,8,9], [10,11]), '5_Vend_Cliente');
 
   // ── HOJA 6: VEND-MARCA ───────────────────────────────────────────────────
-  const vmH = ['Nivel','Zona de Venta','Portafolio','Marca','Hist Q3 2024 $','Hist Q3 2025 $',
-    'Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Total Trimestre $','Var %','% Part.'];
+  const vmH = ['Nivel','Zona de Venta','Portafolio','Marca','Hist Q4 2024 $','Hist Q4 2025 $',
+    'Meta Oct 2026 $','Meta Nov 2026 $','Meta Dic 2026 $','Total Trimestre $','Var %','% Part.'];
   const vmGrand = vSorted.reduce((s,x)=>s+x.total,0)||1;
   const vmRows = [vmH];
   const vPmap = RAW_DATA.vendedorPortafolio || {};
@@ -4823,7 +4823,7 @@ async function _doExportExcel(exportBtn) {
 
   // ── HOJA 7: VEND-CLIENTE-MARCA (usa vcmData ya cargado, escalado al modelo) ──
   const vcmH = ['Nivel','Zona de Venta','Razón Social','Código Cliente','Alias','Portafolio','Marca',
-    'Hist Q3 2024 $','Hist Q3 2025 $','Meta Jul 2026 $','Meta Ago 2026 $','Meta Sep 2026 $','Meta Trimestral $','Var %'];
+    'Hist Q4 2024 $','Hist Q4 2025 $','Meta Oct 2026 $','Meta Nov 2026 $','Meta Dic 2026 $','Meta Trimestral $','Var %'];
   const vcmRows = [vcmH];
 
   if (vcmData.length > 0) {
@@ -4842,8 +4842,8 @@ async function _doExportExcel(exportBtn) {
 
     Object.keys(byVend).sort((a,b)=>a.replace(/^\d+-/,'').trim().localeCompare(b.replace(/^\d+-/,'').trim(),'es')).forEach(vend => {
       const vendClients = byVend[vend];
-      const vendH24 = Object.values(vendClients).reduce((s,c)=>s+c.marcas.reduce((ss,m)=>ss+(Number(m.hist_q3_2024)||0),0),0);
-      const vendH25 = Object.values(vendClients).reduce((s,c)=>s+c.marcas.reduce((ss,m)=>ss+(Number(m.hist_q3_2025)||0),0),0);
+      const vendH24 = Object.values(vendClients).reduce((s,c)=>s+c.marcas.reduce((ss,m)=>ss+(Number(m.hist_q4_2024)||0),0),0);
+      const vendH25 = Object.values(vendClients).reduce((s,c)=>s+c.marcas.reduce((ss,m)=>ss+(Number(m.hist_q4_2025)||0),0),0);
 
       // ZONA usa vendProj directamente — misma fuente que hojas 4-7
       const vp = getVP(vend);
@@ -4862,13 +4862,13 @@ async function _doExportExcel(exportBtn) {
       let detailJul=0, detailAgo=0, detailSep=0;
 
       Object.entries(vendClients)
-        .sort((a,b)=>b[1].marcas.reduce((s,m)=>s+(Number(m.hist_q3_2025)||0),0)-a[1].marcas.reduce((s,m)=>s+(Number(m.hist_q3_2025)||0),0))
+        .sort((a,b)=>b[1].marcas.reduce((s,m)=>s+(Number(m.hist_q4_2025)||0),0)-a[1].marcas.reduce((s,m)=>s+(Number(m.hist_q4_2025)||0),0))
         .forEach(([alias, cd]) => {
-          const cH24  = cd.marcas.reduce((s,m)=>s+(Number(m.hist_q3_2024)||0),0);
-          const cH25  = cd.marcas.reduce((s,m)=>s+(Number(m.hist_q3_2025)||0),0);
-          const cJul  = cd.marcas.reduce((s,m)=>s+(m.meta_jul_2026||0),0);
-          const cAgo  = cd.marcas.reduce((s,m)=>s+(m.meta_ago_2026||0),0);
-          const cSep  = cd.marcas.reduce((s,m)=>s+(m.meta_sep_2026||0),0);
+          const cH24  = cd.marcas.reduce((s,m)=>s+(Number(m.hist_q4_2024)||0),0);
+          const cH25  = cd.marcas.reduce((s,m)=>s+(Number(m.hist_q4_2025)||0),0);
+          const cJul  = cd.marcas.reduce((s,m)=>s+(m.meta_oct_2026||0),0);
+          const cAgo  = cd.marcas.reduce((s,m)=>s+(m.meta_nov_2026||0),0);
+          const cSep  = cd.marcas.reduce((s,m)=>s+(m.meta_dic_2026||0),0);
           const cMeta = cJul + cAgo + cSep;
           if (cMeta < 5000) return; // solo omitir microcombinaciones irrelevantes
           detailJul += cJul; detailAgo += cAgo; detailSep += cSep;
@@ -4879,10 +4879,10 @@ async function _doExportExcel(exportBtn) {
             Math.round(cMeta), cVar]);
 
           cd.marcas
-            .sort((a,b)=>(Number(b.hist_q3_2025)||0)-(Number(a.hist_q3_2025)||0))
+            .sort((a,b)=>(Number(b.hist_q4_2025)||0)-(Number(a.hist_q4_2025)||0))
             .forEach(m => {
-              const mH24=Number(m.hist_q3_2024)||0, mH25=Number(m.hist_q3_2025)||0;
-              const mJul=m.meta_jul_2026||0, mAgo=m.meta_ago_2026||0, mSep=m.meta_sep_2026||0;
+              const mH24=Number(m.hist_q4_2024)||0, mH25=Number(m.hist_q4_2025)||0;
+              const mJul=m.meta_oct_2026||0, mAgo=m.meta_nov_2026||0, mSep=m.meta_dic_2026||0;
               const mMeta=mJul+mAgo+mSep;
               if(mMeta<500)return;
               const mVar=mH25>0?(mMeta-mH25)/mH25:0;
@@ -4952,9 +4952,9 @@ async function _doExportExcel(exportBtn) {
     return Math.round((utcDate - epoch) / 86400000);
   };
   const monthSerials = [
-    excelSerial(2026, 7, 1), // Julio 2026   → 46204
-    excelSerial(2026, 8, 1), // Agosto 2026  → 46235
-    excelSerial(2026, 9, 1)  // Septiembre 2026 → 46266
+    excelSerial(2026, 10, 1), // Octubre 2026   → 46296
+    excelSerial(2026, 11, 1), // Noviembre 2026  → 46327
+    excelSerial(2026, 12, 1)  // Diciembre 2026 → 46357
   ];
 
   // Granularidad de artículo: fetch masivo (una sola llamada, Vendedor ×
@@ -4985,11 +4985,11 @@ async function _doExportExcel(exportBtn) {
     if (!artByVendMarca[a.vendedor][a.marca]) artByVendMarca[a.vendedor][a.marca] = [];
     artByVendMarca[a.vendedor][a.marca].push({
       articulo: a.articulo,
-      h25: Number(a.hist_q3_2025) || 0,
-      // m12/m13/m14 = Jul/Ago/Sep 2025 (mismo índice que usa el resto de la app)
-      wJul: Number(a.m12) || 0,
-      wAgo: Number(a.m13) || 0,
-      wSep: Number(a.m14) || 0
+      h25: Number(a.hist_q4_2025) || 0,
+      // m15/m16/m17 = Oct/Nov/Dic 2025 (mismo índice que usa el resto de la app)
+      wJul: Number(a.m15) || 0,
+      wAgo: Number(a.m16) || 0,
+      wSep: Number(a.m17) || 0
     });
   });
   const findArtVendKey = (vendedor) => {
@@ -5005,9 +5005,9 @@ async function _doExportExcel(exportBtn) {
     vcmData.forEach(r => {
       // Usar los valores mensuales reales calculados por el modelo IPF —
       // misma fuente que hoja 7, sin redistribución adicional.
-      const jul = Math.round(r.meta_jul_2026 || 0);
-      const ago = Math.round(r.meta_ago_2026 || 0);
-      const sep = Math.round(r.meta_sep_2026 || 0);
+      const jul = Math.round(r.meta_oct_2026 || 0);
+      const ago = Math.round(r.meta_nov_2026 || 0);
+      const sep = Math.round(r.meta_dic_2026 || 0);
       if (jul <= 0 && ago <= 0 && sep <= 0) return;
 
       const clienteKey = formatClienteKey(r.cod_cliente || r.alias || '');
@@ -5143,7 +5143,7 @@ const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIs
 const SUPA_URL_VENTAS = 'https://iiiutggecxabnswxlcsw.supabase.co';
 const SUPA_KEY_VENTAS = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpaXV0Z2dlY3hhYm5zd3hsY3N3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxOTAyNjIsImV4cCI6MjEwNTc2NjI2Mn0.f1OP_7YHiDH_G4ZL0yBykxtdiud1HfxKrDnATy3tIWE';
 
-// Month labels for Supabase 24-month window (Jul 2024 – Sep 2026)
+// Month labels for Supabase 24-month window (Jul 2024 – Dic 2026)
 // Padded with 6 zeros at start so Q2 2025 stays at indices 15-17 (same as embedded data)
 // PAD[0-5]=Jan-Jun2024(0), REAL[6-29]=Jul2024-Jun2026
 const SUPA_MONTH_LABELS = [
@@ -5226,7 +5226,7 @@ async function loadFromSupabase() {
     // ── Build RAW_DATA.vendMarcaHist: { marca: { vendedor: {w, h25, h24} } } ──
     // Real vendor×brand participation (same vendedor_secundario join as
     // get_vendedores_hist). w = peso histórico de 24 meses (para IPF/seed),
-    // h25/h24 = Jul-Sep histórico (para mostrar variación en la tabla).
+    // h25/h24 = Oct-Dic histórico (para mostrar variación en la tabla).
     const newVendMarcaHist = {};
     vendMarcaRows.forEach(r => {
       if (!r.vendedor || !r.marca) return;
@@ -5249,7 +5249,7 @@ async function loadFromSupabase() {
     // para que las vistas en vivo también puedan repartir por cliente real)
     RAW_DATA.vcmRaw = (vcmRows || []).map(r => ({
       vendedor: r.vendedor, alias: r.alias, marca: r.marca,
-      h25: Number(r.hist_q3_2025) || 0, h24: Number(r.hist_q3_2024) || 0
+      h25: Number(r.hist_q4_2025) || 0, h24: Number(r.hist_q4_2024) || 0
     }));
 
     // Build vendedor → portafolio mapping from RPC result
@@ -5321,11 +5321,11 @@ async function loadFromSupabase() {
         hist.forEach((v, i) => { newVendCli[r.vendedor][r.alias].historico[i] += v; });
       }
     });
-    // histQ2_2025/histQ2_2024 = histórico real Q3 (Jul-Sep), mismo criterio que
+    // histQ2_2025/histQ2_2024 = histórico real Q4 (Oct-Dic), mismo criterio que
     // vendedores/marcas/portafolios (getHistQ2). Antes se tomaba el campo
-    // hist_q2_2025 del RPC (que es Abr-Jun real) y hist Q3 2024 nunca se
+    // hist_q2_2025 del RPC (que es Abr-Jun real) y hist Q4 2024 nunca se
     // calculaba (quedaba en 0) — el nivel Cliente de VCM mostraba así datos de
-    // otro trimestre bajo las columnas "Hist Q3 2024/2025", inconsistentes con
+    // otro trimestre bajo las columnas "Hist Q4 2024/2025", inconsistentes con
     // el total del vendedor y con las marcas del cliente.
     Object.values(newVendCli).forEach(clientMap => {
       Object.values(clientMap).forEach(cd => {
@@ -5452,7 +5452,7 @@ function buildDataContext(type) {
   const varTotal = ((totalProj-q2Hist)/q2Hist*100).toFixed(1);
 
   // Always include a compact summary
-  const summary = `COFERSA Ventas Trimestrales | Hist Q3 2025: $${(q2Hist/1e6).toFixed(0)}M | Meta Trimestral: $${(totalProj/1e6).toFixed(0)}M | Var: ${varTotal}% | Presup: $${(state.budgetTarget/1e6).toFixed(0)}M | Cumpl: ${cumplimiento}%`;
+  const summary = `COFERSA Ventas Trimestrales | Hist Q4 2025: $${(q2Hist/1e6).toFixed(0)}M | Meta Trimestral: $${(totalProj/1e6).toFixed(0)}M | Var: ${varTotal}% | Presup: $${(state.budgetTarget/1e6).toFixed(0)}M | Cumpl: ${cumplimiento}%`;
 
   // Portafolio (always compact)
   const portLine = Object.entries(portProj).map(([p,d])=>{
@@ -5552,7 +5552,7 @@ async function runAIResumen(btn) {
     .sort((a,b)=>b.meta-a.meta).slice(0,5);
 
   const ctx = `COFERSA
-Meta Total: $${(totalMeta/1e6).toFixed(1)}M | Q3 2025 Real: $${(totalHist/1e6).toFixed(1)}M | Variacion: ${varPct}%
+Meta Total: $${(totalMeta/1e6).toFixed(1)}M | Q4 2025 Real: $${(totalHist/1e6).toFixed(1)}M | Variacion: ${varPct}%
 TOP VENDEDORES (meta): ${topVend.map(v=>`${v.n} $${(v.meta/1e6).toFixed(1)}M`).join(' | ')}
 VENDEDORES EN BAJA: ${lowVend.map(v=>`${v.n} ${((v.meta-v.hist)/v.hist*100).toFixed(0)}%`).join(' | ')}
 TOP MARCAS: ${topMarcas.map(m=>`${m.m}(${m.port||'?'}) $${(m.meta/1e6).toFixed(1)}M`).join(' | ')}
@@ -6282,7 +6282,7 @@ function saveReasignacion() {
   const banner = document.getElementById('reasigSuccessBanner');
   const bannerText = document.getElementById('reasigSuccessText');
   if (banner && bannerText) {
-    bannerText.innerHTML = `Cambio ejecutado: <strong>${deLbl}</strong> → <strong>${aLbl}</strong>. Meta Q3 recalculada en ${fmt(destTotal)}. El cambio ya se refleja en Vendedores, Marcas, Portafolio y Clientes.`;
+    bannerText.innerHTML = `Cambio ejecutado: <strong>${deLbl}</strong> → <strong>${aLbl}</strong>. Meta Q4 recalculada en ${fmt(destTotal)}. El cambio ya se refleja en Vendedores, Marcas, Portafolio y Clientes.`;
     banner.style.display = 'flex';
     clearTimeout(window._reasigBannerTimer);
     window._reasigBannerTimer = setTimeout(() => { banner.style.display = 'none'; }, 8000);
@@ -6451,7 +6451,7 @@ function renderReasigList() {
     const destTotal = vendProj[r.a]?.proj?.reduce((x,y)=>x+y,0) || 0;
     const statusBadge = `<span style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;color:#15803d;border:1px solid #86efac;font-size:14px;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:4px">
         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-        EJECUTADO — Meta Q3 ${fmt(destTotal)}
+        EJECUTADO — Meta Q4 ${fmt(destTotal)}
       </span>`;
 
     return `<div style="padding:10px 14px;border-bottom:1px solid var(--border)">
@@ -6950,16 +6950,16 @@ async function toggleTendMarcaArt(rowId, marca) {
   const byArt = {};
   arts.forEach(r => {
     if (!byArt[r.articulo]) {
-      byArt[r.articulo] = { articulo: r.articulo, descripcion: r.descripcion, portafolio: r.portafolio, hist_q3_2025: 0, hist_q3_2024: 0, m: Array(24).fill(0) };
+      byArt[r.articulo] = { articulo: r.articulo, descripcion: r.descripcion, portafolio: r.portafolio, hist_q4_2025: 0, hist_q4_2024: 0, m: Array(24).fill(0) };
     }
     const a = byArt[r.articulo];
-    a.hist_q3_2025 += Number(r.hist_q3_2025) || 0;
-    a.hist_q3_2024 += Number(r.hist_q3_2024) || 0;
+    a.hist_q4_2025 += Number(r.hist_q4_2025) || 0;
+    a.hist_q4_2024 += Number(r.hist_q4_2024) || 0;
     for (let i = 0; i < 24; i++) a.m[i] += Number(r['m'+i]) || 0;
   });
 
-  const rows = Object.values(byArt).sort((a,b) => b.hist_q3_2025 - a.hist_q3_2025);
-  const totH25 = rows.reduce((s,r) => s + r.hist_q3_2025, 0) || 1;
+  const rows = Object.values(byArt).sort((a,b) => b.hist_q4_2025 - a.hist_q4_2025);
+  const totH25 = rows.reduce((s,r) => s + r.hist_q4_2025, 0) || 1;
   const mProj = computeMarcaProjections();
   const mp = mProj[marca.trim()];
   const mTotal = mp ? mp.proj.reduce((a,b)=>a+b,0) : 0;
@@ -6968,7 +6968,7 @@ async function toggleTendMarcaArt(rowId, marca) {
   const HIST_IDX = [15,16,17,18,19,20,21,22,23];
 
   const rowsHtml = rows.map(r => {
-    const share = r.hist_q3_2025 / totH25;
+    const share = r.hist_q4_2025 / totH25;
     const proj = mTotal > 0 ? mp.proj.map(p => p * share) : [0,0,0];
     const hist9 = HIST_IDX.map(i => r.m[i]);
     const fullLabel = `${r.articulo||''} ${r.descripcion||''}`.replace(/"/g,'&quot;');
@@ -7169,7 +7169,7 @@ async function toggleArtMarca(rowId, vendedor, marca) {
   const PORT_COLORS = { 'Portafolio 1':'#dc2626','Portafolio 2':'#06b6d4','Portafolio 3':'#1e3a8a' };
   const mProj = computeMarcaProjections();
   const mp    = mProj[marca.trim()];
-  const totH25 = arts.reduce((s,r)=>s+(Number(r.hist_q3_2025)||0),0)||1;
+  const totH25 = arts.reduce((s,r)=>s+(Number(r.hist_q4_2025)||0),0)||1;
 
   if (!arts.length) {
     const c = document.getElementById(`${rowId}_content`);
@@ -7178,10 +7178,10 @@ async function toggleArtMarca(rowId, vendedor, marca) {
   }
 
   const rows = arts.map(r => {
-    const h25 = Number(r.hist_q3_2025)||0;
-    const h24 = Number(r.hist_q3_2024)||0;
+    const h25 = Number(r.hist_q4_2025)||0;
+    const h24 = Number(r.hist_q4_2024)||0;
     const tot = mp ? mp.proj.reduce((a,b)=>a+b,0) * (h25/totH25) : h25;
-    const wJul = Number(r.m12)||0, wAgo = Number(r.m13)||0, wSep = Number(r.m14)||0;
+    const wJul = Number(r.m15)||0, wAgo = Number(r.m16)||0, wSep = Number(r.m17)||0;
     const wSum = wJul+wAgo+wSep;
     const mJul = wSum>0?tot*wJul/wSum:tot/3;
     const mAgo = wSum>0?tot*wAgo/wSum:tot/3;
