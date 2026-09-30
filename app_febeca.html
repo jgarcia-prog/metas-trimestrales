@@ -1565,9 +1565,9 @@ function getMonthIdx(name) {
 
 function getHistQ2(historico, year) {
   // Q4 indices (Oct/Nov/Dic) — consistent for both data sources:
-  // - Embedded data (27 months Jan2024-Mar2026): Q4 2024=[9,10,11], Q4 2025=[21,22,23]
-  // - Supabase data (30 months = 6 zeros + 24 real Jul2024-Jun2026): Q4 2024=[9,10,11], Q4 2025=[21,22,23]
-  const idx = year === 2025 ? [21,22,23] : [9,10,11];
+  // - Embedded data (27 months Jan2024-Mar2026): Q4 2024=[6,7,8], Q4 2025=[18,19,20]
+  // - Supabase data (30 months = 6 zeros + 24 real Oct2024-Sep2026): Q4 2024=[6,7,8], Q4 2025=[18,19,20]
+  const idx = year === 2025 ? [18,19,20] : [6,7,8];
   return idx.reduce((s, i) => s + (historico[i] || 0), 0);
 }
 
@@ -1605,9 +1605,9 @@ function projectQ2JS(historico) {
   const trend = [nMeses, nMeses+1, nMeses+2].map(t => Math.max(0, m*t+b));
 
   // Seasonality: Q4 months (Oct/Nov/Dic) relative to START of full data array
-  // Q4 2024=[9,10,11], Q4 2025=[21,22,23] — consistent for both embedded and Supabase data
+  // Q4 2024=[6,7,8], Q4 2025=[18,19,20] — consistent for both embedded and Supabase data
   const offset = n - window;
-  const q2AbsIdx = { 0: [9,10,11], 1: [21,22,23] };
+  const q2AbsIdx = { 0: [6,7,8], 1: [18,19,20] };
   const getQ2 = (yr) => (q2AbsIdx[yr] || []).map(i => {
     const relIdx = i - offset;             // relative index within last24
     return (relIdx >= 0 && relIdx < nMeses) ? last24[relIdx] : (data[i] || 0);
@@ -2181,7 +2181,7 @@ function render() {
   // Monthly Q4 2025 historical (indices 18,19,20 = Oct/Nov/Dic 2025)
   // Use RAW_DATA.vendedores directly to access full historico
   const vendKeys = Object.keys(filtVendProj);
-  const monthlyHist25 = [21,22,23].map(i =>
+  const monthlyHist25 = [18,19,20].map(i =>
     vendKeys.reduce((s, v) => s + (RAW_DATA.vendedores[v]?.historico?.[i] || 0), 0)
   );
 
@@ -4986,10 +4986,10 @@ async function _doExportExcel(exportBtn) {
     artByVendMarca[a.vendedor][a.marca].push({
       articulo: a.articulo,
       h25: Number(a.hist_q4_2025) || 0,
-      // m15/m16/m17 = Oct/Nov/Dic 2025 (mismo índice que usa el resto de la app)
-      wJul: Number(a.m15) || 0,
-      wAgo: Number(a.m16) || 0,
-      wSep: Number(a.m17) || 0
+      // m12/m13/m14 = Oct/Nov/Dic 2025 (mismo índice que usa el resto de la app)
+      wJul: Number(a.m12) || 0,
+      wAgo: Number(a.m13) || 0,
+      wSep: Number(a.m14) || 0
     });
   });
   const findArtVendKey = (vendedor) => {
@@ -5143,15 +5143,15 @@ const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIs
 const SUPA_URL_VENTAS = 'https://iiiutggecxabnswxlcsw.supabase.co';
 const SUPA_KEY_VENTAS = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpaXV0Z2dlY3hhYm5zd3hsY3N3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxOTAyNjIsImV4cCI6MjEwNTc2NjI2Mn0.f1OP_7YHiDH_G4ZL0yBykxtdiud1HfxKrDnATy3tIWE';
 
-// Month labels for Supabase 24-month window (Jul 2024 – Dic 2026)
+// Month labels for Supabase 24-month window (Oct 2024 – Sep 2026)
 // Padded with 6 zeros at start so Q2 2025 stays at indices 15-17 (same as embedded data)
 // PAD[0-5]=Jan-Jun2024(0), REAL[6-29]=Jul2024-Jun2026
 const SUPA_MONTH_LABELS = [
   'ene-24','feb-24','mar-24','abr-24','may-24','jun-24', // padding (zeros)
-  'jul-24','ago-24','sep-24','oct-24','nov-24','dic-24',
-  'ene-25','feb-25','mar-25','abr-25','may-25','jun-25',
-  'jul-25','ago-25','sep-25','oct-25','nov-25','dic-25',
-  'ene-26','feb-26','mar-26','abr-26','may-26','jun-26'
+  'oct-24','nov-24','dic-24','ene-25','feb-25','mar-25',
+  'abr-25','may-25','jun-25','jul-25','ago-25','sep-25',
+  'oct-25','nov-25','dic-25','ene-26','feb-26','mar-26',
+  'abr-26','may-26','jun-26','jul-26','ago-26','sep-26'
 ];
 
 async function supaRPC(fn, params = {}, useVentas = false) {
@@ -7181,7 +7181,7 @@ async function toggleArtMarca(rowId, vendedor, marca) {
     const h25 = Number(r.hist_q4_2025)||0;
     const h24 = Number(r.hist_q4_2024)||0;
     const tot = mp ? mp.proj.reduce((a,b)=>a+b,0) * (h25/totH25) : h25;
-    const wJul = Number(r.m15)||0, wAgo = Number(r.m16)||0, wSep = Number(r.m17)||0;
+    const wJul = Number(r.m12)||0, wAgo = Number(r.m13)||0, wSep = Number(r.m14)||0;
     const wSum = wJul+wAgo+wSep;
     const mJul = wSum>0?tot*wJul/wSum:tot/3;
     const mAgo = wSum>0?tot*wAgo/wSum:tot/3;
