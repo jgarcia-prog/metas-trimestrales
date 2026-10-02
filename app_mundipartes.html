@@ -1468,6 +1468,7 @@ let state = {
   articuloOverrides: {}, // { 'vendedoraliasmarcaarticulo': {vendedor,alias,marca,articulo,jul,ago,sep,baseJul,baseAgo,baseSep} }
   adjVsQ22025: {},
   budgetWeights: null,
+  budgetWeightsEditOrder: [],
   blendWeight: 0.60,
   smoothOutliers: false,
   smoothSigma: 2.0,
@@ -3792,7 +3793,7 @@ function renderBudgetBreakdown() {
   if (!b || !isFinite(b)) return;
   const [wa, wm, wj] = getBudgetMonthlyWeights();
   const weights = [wa, wm, wj];
-  const labels = ['Jul', 'Ago', 'Sep'];
+  const labels = ['Oct', 'Nov', 'Dic'];
   const ids = ['bw_abr', 'bw_may', 'bw_jun'];
   const total = (wa + wm + wj) * 100;
   const sumOk = Math.abs(total - 100) < 0.2;
@@ -3829,17 +3830,33 @@ function updateBudgetWeight(idx, val) {
   // Get current weights without auto-rebalancing
   const w = getBudgetMonthlyWeights().slice();
   w[idx] = Math.max(0, Math.min(100, parseFloat(val) || 0)) / 100;
+
+  // Fuerza el total a 100%: los últimos dos meses editados (incluyendo este)
+  // quedan fijos con el valor que el usuario escribió; el tercer mes (el que
+  // no se tocó recientemente) absorbe la diferencia para completar siempre 100%.
+  if (!state.budgetWeightsEditOrder) state.budgetWeightsEditOrder = [];
+  state.budgetWeightsEditOrder = state.budgetWeightsEditOrder.filter(i => i !== idx);
+  state.budgetWeightsEditOrder.push(idx);
+  if (state.budgetWeightsEditOrder.length > 2) state.budgetWeightsEditOrder.shift();
+  const locked = state.budgetWeightsEditOrder.length === 2
+    ? state.budgetWeightsEditOrder
+    : [idx, ...[0, 1, 2].filter(i => i !== idx)].slice(0, 2);
+  const autoIdx = [0, 1, 2].find(i => !locked.includes(i));
+  const lockedSum = locked.reduce((s, i) => s + w[i], 0);
+  w[autoIdx] = Math.max(0, Math.min(1, 1 - lockedSum));
+
   state.budgetWeights = w;
   const b = state.budgetTarget;
   const ids = ['bw_abr', 'bw_may', 'bw_jun'];
-  const labels = ['Jul', 'Ago', 'Sep'];
-  // Recalculate sum indicator
+  const labels = ['Oct', 'Nov', 'Dic'];
+  // Con el mes auto-completado el total siempre cierra en 100%
   const total = w.reduce((s, v) => s + v, 0) * 100;
   const sumOk = Math.abs(total - 100) < 0.2;
-  // Update $ amounts for each month
+  // Update % + $ amounts for each month (el mes auto-completado también se refresca)
   ids.forEach((id, i) => {
     const inp = document.getElementById(id);
     if (!inp) return;
+    if (i === autoIdx) inp.value = (w[i] * 100).toFixed(1);
     const card = inp.closest('div[style*="border-radius:8px"]');
     if (card) {
       const amtEl = card.querySelector('div:nth-child(2)');
@@ -3852,8 +3869,10 @@ function updateBudgetWeight(idx, val) {
     sumEl.style.color = sumOk ? 'rgba(255,255,255,0.7)' : '#ffd580';
     sumEl.textContent = sumOk ? '✓ Suma: 100%' : `⚠ Suma: ${total.toFixed(1)}% — debe ser 100%`;
   }
-  // Only trigger full render if sum is valid
-  if (sumOk) render();
+  // La distribución (Presupuesto Trimestral) y la Meta Trimestral comparten
+  // state.budgetWeights, así que render() replica esta misma proporción en
+  // Meta Trimestral automáticamente.
+  render();
 }
 
 function autoAdjust() {
@@ -6504,6 +6523,7 @@ function doLimpiar() {
   state.smoothSigma    = 2.0;
   state.adjVsQ22025    = {};
   state.budgetWeights  = null;
+  state.budgetWeightsEditOrder = [];
   state.budgetTarget   = 0;
   state.filterPortfolio = 'all';
   state.filterVendedor  = '';
@@ -6769,6 +6789,7 @@ function doReset() {
   state.smoothSigma    = 2.0;
   state.adjVsQ22025    = {};
   state.budgetWeights  = null;
+  state.budgetWeightsEditOrder = [];
   state.charts         = {};
 
   const blendSlider = document.getElementById('blendSlider');
